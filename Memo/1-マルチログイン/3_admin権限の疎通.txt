@@ -1,0 +1,53 @@
+
+下記コマンドで、コントローラー作成
+
+php artisan make:controller AdminController
+php artisan make:controller VendorController
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\VendorController;
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+  Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])
+    ->name('admin.dashobard');
+});
+
+Route::middleware(['auth', 'role:vendor'])->group(function () {
+  Route::get('/vendor/dashboard', [VendorController::class, 'VendorDashboard'])
+    ->name('vendor.dashobard');
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\admin\admin_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AdminDashboard()
+  {
+    return view('admin.admin_dashboard');
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
