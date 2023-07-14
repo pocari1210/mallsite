@@ -82,12 +82,6 @@
     </div>
   </div><!--end row-->
 
-
-
-
-
-
-
   <div class="card radius-10">
     <div class="card-body">
       <div class="d-flex align-items-center">
