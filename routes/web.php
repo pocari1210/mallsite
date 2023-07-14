@@ -17,10 +17,18 @@ use App\Http\Controllers\VendorController;
 |
 */
 
+// ★Admin権限のルート★
 Route::middleware(['auth', 'role:admin'])->group(function () {
   Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])
     ->name('admin.dashboard');
+
+  // Admin:ログアウト処理のルート
+  Route::get('/admin/logout', [AdminController::class, 'AdminDestroy'])
+    ->name('admin.logout');
 });
+
+// Admin:ログイン処理のルート
+Route::get('/admin/login', [AdminController::class, 'AdminLogin']);
 
 Route::middleware(['auth', 'role:vendor'])->group(function () {
   Route::get('/vendor/dashboard', [VendorController::class, 'VendorDashboard'])

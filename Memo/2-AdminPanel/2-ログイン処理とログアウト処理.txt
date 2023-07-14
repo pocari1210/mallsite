@@ -1,0 +1,80 @@
+
+2-ログイン処理とログアウト処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Admin:ログアウト処理のルート
+  Route::get('/admin/logout', [AdminController::class, 'AdminDestroy'])
+    ->name('admin.logout');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a class="dropdown-item" href="{{ route('admin.logout') }}">
+      <i class='bx bx-log-out-circle'></i>
+      <span>Logout</span>
+    </a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Loginページ(新規作成)◆
+
+ディレクトリ
+\resources\views\admin\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a class="dropdown-item" href="{{ route('admin.logout') }}">
+      <i class='bx bx-log-out-circle'></i>
+      <span>Logout</span>
+    </a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // ★Admin権限のLoginのコントローラー★
+  public function AdminLogin()
+  {
+    return view('admin.admin_login');
+  } // End Mehtod 
+
+  // ★Admin権限のLogoutのコントローラー★
+  public function AdminDestroy(Request $request)
+  {
+    Auth::guard('web')->logout();
+
+    $request->session()->invalidate();
+
+    $request->session()->regenerateToken();
+
+    return redirect('/admin/login');
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Adminのダッシュボードからログアウトし、
+AdminのログインページにリダイレクトされたらOK
