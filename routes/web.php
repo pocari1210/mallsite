@@ -25,6 +25,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   // Admin:ログアウト処理のルート
   Route::get('/admin/logout', [AdminController::class, 'AdminDestroy'])
     ->name('admin.logout');
+
+  // Admin:プロフィールページのルート
+  Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])
+    ->name('admin.profile');
 });
 
 // Admin:ログイン処理のルート

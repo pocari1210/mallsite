@@ -330,7 +330,7 @@
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>
+          <li><a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="bx bx-user"></i><span>Profile</span></a>
           </li>
           <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-cog"></i><span>Settings</span></a>
           </li>
@@ -343,11 +343,7 @@
           <li>
             <div class="dropdown-divider mb-0"></div>
           </li>
-          <li>
-            <a class="dropdown-item" href="{{ route('admin.logout') }}">
-              <i class='bx bx-log-out-circle'></i>
-              <span>Logout</span>
-            </a>
+          <li><a class="dropdown-item" href="{{ route('admin.logout') }}"><i class='bx bx-log-out-circle'></i><span>Logout</span></a>
           </li>
         </ul>
       </div>
