@@ -70,4 +70,10 @@ class AdminController extends Controller
 
     return redirect()->back()->with($notification);
   } // End Mehtod 
+
+  // パスワード変更ページのコントローラー
+  public function AdminChangePassword()
+  {
+    return view('admin.admin_change_password');
+  } // End Mehtod 
 }

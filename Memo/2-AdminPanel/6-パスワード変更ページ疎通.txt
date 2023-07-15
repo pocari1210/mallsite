@@ -1,0 +1,59 @@
+
+6-パスワード変更ページ疎通
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Admin権限のルート★
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Admin:パスワード変更のルート
+  Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])
+    ->name('admin.change.password');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a class="dropdown-item" href="{{ route('admin.change.password') }}">
+      <i class="bx bx-cog"></i><span>Change Pasdsword</span>
+    </a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // パスワード変更ページのコントローラー
+  public function AdminChangePassword()
+  {
+    return view('admin.admin_change_password');
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\admin\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+パスワード変更ページが疎通されたらOK
+

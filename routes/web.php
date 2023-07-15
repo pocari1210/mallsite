@@ -33,6 +33,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   // Admin:プロフィール情報保存のルート
   Route::post('/admin/profile/store', [AdminController::class, 'AdminProfileStore'])
     ->name('admin.profile.store');
+
+  // Admin:パスワード変更のルート
+  Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])
+    ->name('admin.change.password');
 });
 
 // Admin:ログイン処理のルート
