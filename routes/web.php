@@ -46,10 +46,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Admin:ログイン処理のルート
 Route::get('/admin/login', [AdminController::class, 'AdminLogin']);
 
+// ★Vendor権限のルート★
 Route::middleware(['auth', 'role:vendor'])->group(function () {
   Route::get('/vendor/dashboard', [VendorController::class, 'VendorDashboard'])
     ->name('vendor.dashboard');
+
+  // Vendor:ログアウト処理のルート
+  Route::get('/vendor/logout', [VendorController::class, 'VendorDestroy'])
+    ->name('vendor.logout');
 });
+
+// Vendor:ログイン処理のルート
+Route::get('/vendor/login', [VendorController::class, 'VendorLogin']);
 
 Route::get('/', function () {
   return view('welcome');
