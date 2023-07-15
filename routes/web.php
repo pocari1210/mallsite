@@ -37,6 +37,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   // Admin:パスワード変更のルート
   Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])
     ->name('admin.change.password');
+
+  // Admin:パスワード更新のルート
+  Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])
+    ->name('update.password');
 });
 
 // Admin:ログイン処理のルート
