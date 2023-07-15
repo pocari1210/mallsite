@@ -29,6 +29,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   // Admin:プロフィールページのルート
   Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])
     ->name('admin.profile');
+
+  // Admin:プロフィール情報保存のルート
+  Route::post('/admin/profile/store', [AdminController::class, 'AdminProfileStore'])
+    ->name('admin.profile.store');
 });
 
 // Admin:ログイン処理のルート
