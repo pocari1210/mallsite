@@ -54,6 +54,14 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
   // Vendor:ログアウト処理のルート
   Route::get('/vendor/logout', [VendorController::class, 'VendorDestroy'])
     ->name('vendor.logout');
+
+  // Vendor:プロフィール詳細ページのルート
+  Route::get('/vendor/profile', [VendorController::class, 'VendorProfile'])
+    ->name('vendor.profile');
+
+  // Vendor:プロフィール情報更新のルート
+  Route::post('/vendor/profile/store', [VendorController::class, 'VendorProfileStore'])
+    ->name('vendor.profile.store');
 });
 
 // Vendor:ログイン処理のルート
