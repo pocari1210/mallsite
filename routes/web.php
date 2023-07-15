@@ -62,6 +62,14 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
   // Vendor:プロフィール情報更新のルート
   Route::post('/vendor/profile/store', [VendorController::class, 'VendorProfileStore'])
     ->name('vendor.profile.store');
+
+  // Vendor:パスワード変更ページのルート
+  Route::get('/vendor/change/password', [VendorController::class, 'VendorChangePassword'])
+    ->name('vendor.change.password');
+
+  // Vendor:パスワード変更処理のルート
+  Route::post('/vendor/update/password', [VendorController::class, 'VendorUpdatePassword'])
+    ->name('vendor.update.password');
 });
 
 // Vendor:ログイン処理のルート

@@ -1,5 +1,5 @@
 
-3-プロフィール更新
+
 
 ◆ルートの編集◆
 
@@ -11,13 +11,13 @@
 // ★Vendor権限のルート★
 Route::middleware(['auth', 'role:vendor'])->group(function () {
 
-  // Vendor:プロフィール詳細ページのルート
-  Route::get('/vendor/profile', [VendorController::class, 'VendorProfile'])
-    ->name('vendor.profile');
+  // Vendor:パスワード変更ページのルート
+  Route::get('/vendor/change/password', [VendorController::class, 'VendorChangePassword'])
+    ->name('vendor.change.password');
 
-  // Vendor:プロフィール情報更新のルート
-  Route::post('/vendor/profile/store', [VendorController::class, 'VendorProfileStore'])
-    ->name('vendor.profile.store');
+  // Vendor:パスワード変更処理のルート
+  Route::post('/vendor/update/password', [VendorController::class, 'VendorUpdatePassword'])
+    ->name('vendor.update.password');
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +72,5 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     ]);
     return back()->with("status", " Password Changed Successfully");
   } // End Mehtod 
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
