@@ -75,8 +75,9 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 // Vendor:ログイン処理のルート
 Route::get('/vendor/login', [VendorController::class, 'VendorLogin']);
 
+// Frontend:トップページのルート
 Route::get('/', function () {
-  return view('welcome');
+  return view('frontend.index');
 });
 
 Route::get('/dashboard', function () {
