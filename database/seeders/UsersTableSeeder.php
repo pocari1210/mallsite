@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
 
       //Vendor 
       [
-        'name' => 'Ariyan Vendor',
+        'name' => 'Vendor',
         'username' => 'vendor',
         'email' => 'vendor@gmail.com',
         'password' => Hash::make('111'),

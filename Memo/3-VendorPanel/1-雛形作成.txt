@@ -1,0 +1,34 @@
+
+
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\index.blade.php
+\resources\views\vendor\body\footer.blade.php
+\resources\views\vendor\body\header.blade.php
+\resources\views\vendor\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+adminのdashboardを参考に作成する
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\VendorController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorDashboard()
+  {
+    return view('vendor.index');
+  } // End Mehtod 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+vendor権限でログインし、dashboard画面が表示されたらOK
