@@ -1,0 +1,100 @@
+
+5-ログイン時とログアウト時のtoastr
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\auth\login.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <!-- Toaster -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+  <!-- Toaster   -->
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <script>
+    @if(Session::has('message'))
+    var type = "{{ Session::get('alert-type','info') }}"
+    switch (type) {
+      case 'info':
+        toastr.info(" {{ Session::get('message') }} ");
+        break;
+      case 'success':
+        toastr.success(" {{ Session::get('message') }} ");
+        break;
+      case 'warning':
+        toastr.warning(" {{ Session::get('message') }} ");
+        break;
+      case 'error':
+        toastr.error(" {{ Session::get('message') }} ");
+        break;
+    }
+    @endif
+  </script>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集(ログイン)◆
+
+ディレクトリ
+\app\Http\Controllers\Auth\AuthenticatedSessionController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function store(LoginRequest $request): RedirectResponse
+  {
+    $request->authenticate();
+
+    $request->session()->regenerate();
+
+    $notification = array(
+      'message' => 'Login Successfully',
+      'alert-type' => 'success'
+    );
+
+    $url = '';
+
+    if ($request->user()->role === 'admin') {
+      $url = 'admin/dashboard';
+    } elseif ($request->user()->role === 'vendor') {
+      $url = 'vendor/dashboard';
+    } elseif ($request->user()->role === 'user') {
+      $url = '/dashboard';
+    }
+
+    return redirect()->intended($url)->with($notification);
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集(ログアウト)◆
+
+ディレクトリ
+C:\xampp\htdocs\mallsite\cms\app\Http\Controllers\UserController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // User権限のログアウト処理のコントローラー
+  public function UserLogout(Request $request)
+  {
+    Auth::guard('web')->logout();
+
+    $request->session()->invalidate();
+
+    $request->session()->regenerateToken();
+
+    $notification = array(
+      'message' => 'User Logout Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect('/login')->with($notification);
+  } // End Mehtod 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ログインとログアウトを実行した時に、
+toastrが表示されたらOK
