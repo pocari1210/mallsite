@@ -93,6 +93,10 @@ Route::middleware(['auth'])->group(function () {
   // User:ログアウト処理のルート
   Route::get('/user/logout', [UserController::class, 'UserLogout'])
     ->name('user.logout');
+
+  // User:パスワード変更処理のルート
+  Route::post('/user/update/password', [UserController::class, 'UserUpdatePassword'])
+    ->name('user.update.password');
 }); // Gorup Milldeware End
 
 Route::middleware('auth')->group(function () {
