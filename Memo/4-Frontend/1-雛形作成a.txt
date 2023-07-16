@@ -1,0 +1,59 @@
+
+下記コマンドで、コントローラーファイル作成
+php artisan make:controller UserController
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★User権限のルート★
+Route::middleware(['auth'])->group(function () {
+
+  Route::get('/dashboard', [UserController::class, 'UserDashboard'])
+    ->name('dashboard');
+}); // Gorup Milldeware End
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\index.blade.php
+\resources\views\dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\resources\views\dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+  public function UserDashboard()
+  {
+    $id = Auth::user()->id;
+    $userData = User::find($id);
+
+    return view(
+      'index',
+      compact('userData')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ログインページからダッシュボードページにアクセスできたらOK
