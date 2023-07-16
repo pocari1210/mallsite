@@ -89,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
 
   Route::post('/user/profile/store', [UserController::class, 'UserProfileStore'])
     ->name('user.profile.store');
+
+  // User:ログアウト処理のルート
+  Route::get('/user/logout', [UserController::class, 'UserLogout'])
+    ->name('user.logout');
 }); // Gorup Milldeware End
 
 Route::middleware('auth')->group(function () {
