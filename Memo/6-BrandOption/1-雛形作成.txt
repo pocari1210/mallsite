@@ -1,0 +1,145 @@
+
+下記コマンドでコントローラーファイルを作成
+php artisan make:controller Backend/BrandController
+
+下記コマンドで、モデルファイルとテーブルファイルを作成
+php artisan make:model Brand -m
+
+
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\Brand.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Brand extends Model
+{
+  use HasFactory;
+
+  protected $guarded = [];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テーブルの編集◆
+
+ディレクトリ
+\database\migrations\2023_07_17_105724_create_brands_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('brands', function (Blueprint $table) {
+      $table->id();
+      $table->string('brand_name');
+      $table->string('brand_slug');
+      $table->string('brand_image');
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\Backend\BrandController;
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Brand All Route 
+  Route::controller(BrandController::class)->group(function () {
+    Route::get('/all/brand', 'AllBrand')->name('all.brand');
+  });
+}); // End Middleware 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Brand</div>
+  </a>
+  <ul>
+
+    ↓↓route先追記↓↓
+    <li> <a href="{{ route('all.brand') }}"><i class="bx bx-right-arrow-alt"></i>All Brand</a>
+    </li>
+    <li> <a href="dashboard-eCommerce.html"><i class="bx bx-right-arrow-alt"></i>Add Brand </a>
+    </li>
+  </ul>
+</li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BrandController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\Brand;
+
+class BrandController extends Controller
+{
+  public function AllBrand()
+  {
+    $brands = Brand::latest()->get();
+
+    return view(
+      'backend.brand.brand_all',
+      compact('brands')
+    );
+  } // End Method 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆dataTables.min.js◆
+
+ディレクトリ
+\resources\views\admin\admin_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・」
+
+  <!-- DataTable -->
+  <link href="{{ asset('adminbackend/assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" 
+　　rel="stylesheet" />
+  <!-- DataTable-->
+
+  <!--Datatable-->
+  <script src="{{ asset('adminbackend/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+  <script>
+    $(document).ready(function() {
+
+　　　↓遷移先viewのtableのidと紐づいている
+      $('#example').DataTable();
+    });
+  </script>
+  <!--Datatable-->
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\brand\brand_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+adminの管理画面からbrand_all.blade.phpに疎通ができたらOK
+
