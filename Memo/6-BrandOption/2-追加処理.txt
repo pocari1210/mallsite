@@ -1,0 +1,83 @@
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Brand All Route 
+  Route::controller(BrandController::class)->group(function () {
+
+    // Brand:追加処理のルート
+    Route::get('/add/brand', 'AddBrand')
+      ->name('add.brand');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元1)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Brand</div>
+  </a>
+  <ul>
+    <li> <a href="{{ route('all.brand') }}"><i class="bx bx-right-arrow-alt"></i>All Brand</a>
+    </li>
+
+    // brandの追加処理のrouteを追記
+    <li> <a href="{{ route('add.brand') }}"><i class="bx bx-right-arrow-alt"></i>Add Brand </a>
+    </li>
+  </ul>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元2)◆
+
+ディレクトリ
+\resources\views\backend\brand\brand_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="ms-auto">
+      <div class="btn-group">
+
+        // brandの追加処理のrouteを追記
+        <a href="{{ route('add.brand') }}" class="btn btn-primary">Add Brand</a>
+      </div>
+    </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BrandController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Brand:追加ページのコントローラー
+  public function AddBrand()
+  {
+    return view('backend.brand.brand_add');
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\brand\brand_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Add Brandページが疎通されたらOK

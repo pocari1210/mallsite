@@ -17,4 +17,10 @@ class BrandController extends Controller
       compact('brands')
     );
   } // End Method 
+
+  // Brand:追加ページのコントローラー
+  public function AddBrand()
+  {
+    return view('backend.brand.brand_add');
+  } // End Method 
 }
