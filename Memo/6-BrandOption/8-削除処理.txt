@@ -1,0 +1,64 @@
+
+8-削除処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Brand All Route 
+  Route::controller(BrandController::class)->group(function () {
+
+
+    // Brand:削除処理のルート
+    Route::get('/delete/brand/{id}', 'DeleteBrand')
+      ->name('delete.brand');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BrandController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 削除処理のコントローラー
+  public function DeleteBrand($id)
+  {
+    $brand = Brand::findOrFail($id);
+    $img = $brand->brand_image;
+    unlink($img);
+
+    Brand::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Brand Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

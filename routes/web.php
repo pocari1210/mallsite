@@ -67,6 +67,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Brand:更新処理のルート
     Route::post('/update/brand', 'UpdateBrand')
       ->name('update.brand');
+
+    // Brand:削除処理のルート
+    Route::get('/delete/brand/{id}', 'DeleteBrand')
+      ->name('delete.brand');
   });
 }); // End Middleware 
 
