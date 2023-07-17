@@ -59,6 +59,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Brand:保存処理のルート
     Route::post('/store/brand', 'StoreBrand')
       ->name('store.brand');
+
+    // Brand:編集処理のルート
+    Route::get('/edit/brand/{id}', 'EditBrand')
+      ->name('edit.brand');
   });
 }); // End Middleware 
 

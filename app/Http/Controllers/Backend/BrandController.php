@@ -46,4 +46,15 @@ class BrandController extends Controller
 
     return redirect()->route('all.brand')->with($notification);
   } // End Method   
+
+  // Brand:編集処理のコントローラー
+  public function EditBrand($id)
+  {
+    $brand = Brand::findOrFail($id);
+
+    return view(
+      'backend.brand.brand_edit',
+      compact('brand')
+    );
+  } // End Method 
 }
