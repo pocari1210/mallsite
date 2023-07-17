@@ -63,6 +63,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Brand:編集処理のルート
     Route::get('/edit/brand/{id}', 'EditBrand')
       ->name('edit.brand');
+
+    // Brand:更新処理のルート
+    Route::post('/update/brand', 'UpdateBrand')
+      ->name('update.brand');
   });
 }); // End Middleware 
 
