@@ -1,0 +1,72 @@
+
+4-保存処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Brand All Route 
+  Route::controller(BrandController::class)->group(function () {
+
+    // Brand:保存処理のルート
+    Route::post('/store/brand', 'StoreBrand')
+      ->name('store.brand');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\brand\brand_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <form method="post" action="{{ route('store.brand') }}" enctype="multipart/form-data">
+    @csrf
+
+    <div class="row mb-3">
+      <div class="col-sm-3">
+        <h6 class="mb-0">Brand Name</h6>
+      </div>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BrandController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Brand:保存処理のコントローラー
+  public function StoreBrand(Request $request)
+  {
+    $image = $request->file('brand_image');
+    $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+    InterventionImage::make($image)->resize(300, 300)->save('upload/brand/' . $name_gen);
+    $save_url = 'upload/brand/' . $name_gen;
+
+    Brand::insert([
+      'brand_name' => $request->brand_name,
+      'brand_slug' => strtolower(str_replace(' ', '-', $request->brand_name)),
+      'brand_image' => $save_url,
+    ]);
+
+    $notification = array(
+      'message' => 'Brand Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.brand')->with($notification);
+  } // End Method   
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+追加処理を実行し、保存ができていたらOK

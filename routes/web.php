@@ -55,6 +55,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Brand:追加処理のルート
     Route::get('/add/brand', 'AddBrand')
       ->name('add.brand');
+
+    // Brand:保存処理のルート
+    Route::post('/store/brand', 'StoreBrand')
+      ->name('store.brand');
   });
 }); // End Middleware 
 
