@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Backend\BrandController;
+use App\Http\Controllers\Backend\CategoryController;
 
 
 /*
@@ -71,6 +72,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Brand:削除処理のルート
     Route::get('/delete/brand/{id}', 'DeleteBrand')
       ->name('delete.brand');
+  });
+
+  // Category All Route 
+  Route::controller(CategoryController::class)->group(function () {
+
+    // Category:一覧のルート
+    Route::get('/all/category', 'AllCategory')
+      ->name('all.category');
+
+    // Category:追加処理のルート
+    Route::get('/add/category', 'AddCategory')
+      ->name('add.category');
+
+    // Category:保存処理のルート
+    Route::post('/store/category', 'StoreCategory')
+      ->name('store.category');
   });
 }); // End Middleware 
 
