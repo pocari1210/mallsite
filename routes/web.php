@@ -109,6 +109,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // subcategory:一覧のルート
     Route::get('/all/subcategory', 'AllSubCategory')
       ->name('all.subcategory');
+
+    // subcategory:新規作成のルート
+    Route::get('/add/subcategory', 'AddSubCategory')
+      ->name('add.subcategory');
+
+    // subcategory:保存処理のルート
+    Route::post('/store/subcategory', 'StoreSubCategory')
+      ->name('store.subcategory');
   });
 }); // End Middleware 
 
