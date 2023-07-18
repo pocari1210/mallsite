@@ -7,6 +7,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\SubCategoryController;
 
 
 /*
@@ -100,6 +101,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Category:削除処理のルート
     Route::get('/delete/category/{id}', 'DeleteCategory')
       ->name('delete.category');
+  });
+
+  // SubCategory All Route 
+  Route::controller(SubCategoryController::class)->group(function () {
+
+    // subcategory:一覧のルート
+    Route::get('/all/subcategory', 'AllSubCategory')
+      ->name('all.subcategory');
   });
 }); // End Middleware 
 
