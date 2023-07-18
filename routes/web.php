@@ -88,6 +88,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Category:保存処理のルート
     Route::post('/store/category', 'StoreCategory')
       ->name('store.category');
+
+    // Category:編集のルート
+    Route::get('/edit/category/{id}', 'EditCategory')
+      ->name('edit.category');
+
+    // Category:更新処理のルート
+    Route::post('/update/category', 'UpdateCategory')
+      ->name('update.category');
+
+    // Category:削除処理のルート
+    Route::get('/delete/category/{id}', 'DeleteCategory')
+      ->name('delete.category');
   });
 }); // End Middleware 
 

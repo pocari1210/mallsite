@@ -1,0 +1,140 @@
+
+2-編集、更新、削除
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Category All Route 
+  Route::controller(CategoryController::class)->group(function () {
+
+    // Category:編集のルート
+    Route::get('/edit/category/{id}', 'EditCategory')
+      ->name('edit.category');
+
+    // Category:更新処理のルート
+    Route::post('/update/category', 'UpdateCategory')
+      ->name('update.category');
+
+    // Category:削除処理のルート
+    Route::get('/delete/category/{id}', 'DeleteCategory')
+      ->name('delete.category');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\category\category_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($categories as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+    <td>{{ $item->category_name }}</td>
+    <td> <img src="{{ asset($item->category_image) }}" style="width: 70px; height:40px;"> </td>
+
+    <td>
+
+      ↓↓編集と削除処理のrouteを追記↓↓
+      <a href="{{ route('edit.category',$item->id) }}" class="btn btn-info">Edit</a>
+      <a href="{{ route('delete.category',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+    </td>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\CategoryController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Categoryの編集のコントローラー
+  public function EditCategory($id)
+  {
+    $category = Category::findOrFail($id);
+    return view('backend.category.category_edit', compact('category'));
+  } // End Method 
+
+  // Categoryの更新処理のコントローラー
+  public function UpdateCategory(Request $request)
+  {
+    $cat_id = $request->id;
+    $old_img = $request->old_image;
+
+    if ($request->file('category_image')) {
+
+      $image = $request->file('category_image');
+      $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+      Image::make($image)->resize(120, 120)->save('upload/category/' . $name_gen);
+      $save_url = 'upload/category/' . $name_gen;
+
+      if (file_exists($old_img)) {
+        unlink($old_img);
+      }
+
+      Category::findOrFail($cat_id)->update([
+        'category_name' => $request->category_name,
+        'category_slug' => strtolower(str_replace(' ', '-', $request->category_name)),
+        'category_image' => $save_url,
+      ]);
+
+      $notification = array(
+        'message' => 'Category Updated with image Successfully',
+        'alert-type' => 'success'
+      );
+
+      return redirect()->route('all.category')->with($notification);
+    } else {
+
+      Category::findOrFail($cat_id)->update([
+        'category_name' => $request->category_name,
+        'category_slug' => strtolower(str_replace(' ', '-', $request->category_name)),
+      ]);
+
+      $notification = array(
+        'message' => 'Category Updated without image Successfully',
+        'alert-type' => 'success'
+      );
+
+      return redirect()->route('all.category')->with($notification);
+    } // end else
+
+  } // End Method 
+
+  public function DeleteCategory($id)
+  {
+    $category = Category::findOrFail($id);
+    $img = $category->category_image;
+    unlink($img);
+
+    Category::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Category Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\category\category_edit.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+編集ページから更新が行え、
+deleteボタンで削除がおこなえたらOK
