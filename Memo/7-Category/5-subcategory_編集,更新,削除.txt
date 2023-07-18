@@ -1,0 +1,106 @@
+
+5-subcategory_編集,更新,削除
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // SubCategory All Route 
+  Route::controller(SubCategoryController::class)->group(function () {
+
+    // subcategory:編集のルート
+    Route::get('/edit/subcategory/{id}', 'EditSubCategory')
+      ->name('edit.subcategory');
+
+    // subcategory:更新処理のルート
+    Route::post('/update/subcategory', 'UpdateSubCategory')
+      ->name('update.subcategory');
+
+    // subcategory:削除処理のルート
+    Route::get('/delete/subcategory/{id}', 'DeleteSubCategory')
+      ->name('delete.subcategory');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\subcategory\subcategory_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($subcategories as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+    <td> {{ $item->category_id }}</td>
+    <td> {{ $item->subcategory_name }} </td>
+
+    <td>
+      <a href="{{ route('edit.subcategory',$item->id) }}" class="btn btn-info">Edit</a>
+      <a href="{{ route('delete.subcategory',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+    </td>
+  </tr>
+  @endforeach
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\SubCategoryController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 詳細のコントローラー
+  public function EditSubCategory($id)
+  {
+    $categories = Category::orderBy('category_name', 'ASC')->get();
+    $subcategory = SubCategory::findOrFail($id);
+
+    return view(
+      'backend.subcategory.subcategory_edit',
+      compact('categories', 'subcategory')
+    );
+  } // End Method 
+
+  // 更新処理のコントローラー
+  public function UpdateSubCategory(Request $request)
+  {
+    $subcat_id = $request->id;
+
+    SubCategory::findOrFail($subcat_id)->update([
+      'category_id' => $request->category_id,
+      'subcategory_name' => $request->subcategory_name,
+      'subcategory_slug' => strtolower(str_replace(' ', '-', $request->subcategory_name)),
+    ]);
+
+    $notification = array(
+      'message' => 'SubCategory Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.subcategory')->with($notification);
+  } // End Method 
+
+  // 削除処理のコントローラー
+  public function DeleteSubCategory($id)
+  {
+    SubCategory::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'SubCategory Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method   
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

@@ -42,4 +42,48 @@ class SubCategoryController extends Controller
 
     return redirect()->route('all.subcategory')->with($notification);
   } // End Method   
+
+  // 詳細のコントローラー
+  public function EditSubCategory($id)
+  {
+    $categories = Category::orderBy('category_name', 'ASC')->get();
+    $subcategory = SubCategory::findOrFail($id);
+
+    return view(
+      'backend.subcategory.subcategory_edit',
+      compact('categories', 'subcategory')
+    );
+  } // End Method 
+
+  // 更新処理のコントローラー
+  public function UpdateSubCategory(Request $request)
+  {
+    $subcat_id = $request->id;
+
+    SubCategory::findOrFail($subcat_id)->update([
+      'category_id' => $request->category_id,
+      'subcategory_name' => $request->subcategory_name,
+      'subcategory_slug' => strtolower(str_replace(' ', '-', $request->subcategory_name)),
+    ]);
+
+    $notification = array(
+      'message' => 'SubCategory Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.subcategory')->with($notification);
+  } // End Method 
+
+  // 削除処理のコントローラー
+  public function DeleteSubCategory($id)
+  {
+    SubCategory::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'SubCategory Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method   
 }
