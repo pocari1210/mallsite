@@ -1,0 +1,72 @@
+
+5-Inactive Vendorの詳細
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Vendor Active and Inactive All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    // InactiveVendor:詳細表示のルート
+    Route::get('/inactive/vendor/details/{id}', 'InactiveVendorDetails')
+      ->name('inactive.vendor.details');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\vendor\inactive_vendor.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($inActiveVendor as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+    <td> {{ $item->name }}</td>
+    <td> {{ $item->username }}</td>
+    <td> {{ $item->vendor_join }}</td>
+    <td> {{ $item->email }} </td>
+    <td> <span class="btn btn-secondary">{{ $item->status }}</span> </td>
+
+    ↓↓routeの追記↓↓
+    <td>
+      <a href="{{ route('inactive.vendor.details',$item->id) }}" class="btn btn-info">Vendor Details</a>
+    </td>
+  </tr>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // InactiveVendor：詳細表示のコントローラー
+  public function InactiveVendorDetails($id)
+  {
+    $inactiveVendorDetails = User::findOrFail($id);
+
+    return view(
+      'backend.vendor.inactive_vendor_details',
+      compact('inactiveVendorDetails')
+    );
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\vendor\inactive_vendor.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+詳細ページが表示できたらOK

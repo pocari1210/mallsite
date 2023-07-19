@@ -141,6 +141,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // ActiveVendor:一覧のルート
     Route::get('/active/vendor', 'ActiveVendor')
       ->name('active.vendor');
+
+    // InactiveVendor:詳細表示のルート
+    Route::get('/inactive/vendor/details/{id}', 'InactiveVendorDetails')
+      ->name('inactive.vendor.details');
   });
 }); // End Middleware 
 
