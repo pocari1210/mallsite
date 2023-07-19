@@ -145,6 +145,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // InactiveVendor:詳細表示のルート
     Route::get('/inactive/vendor/details/{id}', 'InactiveVendorDetails')
       ->name('inactive.vendor.details');
+
+    // InactiveVendor:承認のルート(ステータス変更)
+    Route::post('/active/vendor/approve', 'ActiveVendorApprove')
+      ->name('active.vendor.approve');
+
+    // ActiveVendor:詳細のルート
+    Route::get('/active/vendor/details/{id}', 'ActiveVendorDetails')
+      ->name('active.vendor.details');
+
+    // ActiveVendor:ステータス変更のルート
+    Route::post('/inactive/vendor/approve', 'InActiveVendorApprove')
+      ->name('inactive.vendor.approve');
   });
 }); // End Middleware 
 
