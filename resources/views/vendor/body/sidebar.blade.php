@@ -19,7 +19,7 @@ $status = $verdorId->status;
   <ul class="metismenu" id="menu">
 
     <li>
-      <a href="{{ route('vendor.dashobard') }}">
+      <a href="{{ route('vendor.dashboard') }}">
         <div class="parent-icon"><i class='bx bx-cookie'></i>
         </div>
         <div class="menu-title">Dashboard</div>
