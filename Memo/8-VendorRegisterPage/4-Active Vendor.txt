@@ -1,0 +1,67 @@
+
+4-Active Vendor
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Vendor Active and Inactive All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    // ActiveVendor:一覧のルート
+    Route::get('/active/vendor', 'ActiveVendor')
+      ->name('active.vendor');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Vendor Manage </div>
+  </a>
+  <ul>
+    <li> <a href="{{ route('inactive.vendor') }}"><i class="bx bx-right-arrow-alt"></i>Inactive Vendor</a>
+    </li>
+
+    ↓↓routeの追記↓↓
+    <li> <a href="{{ route('active.vendor') }}"><i class="bx bx-right-arrow-alt"></i>Active Vendor</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ActiveVendor()
+  {
+    $ActiveVendor = User::where('status', 'active')
+      ->where('role', 'vendor')->latest()->get();
+
+    return view(
+      'backend.vendor.active_vendor',
+      compact('ActiveVendor')
+    );
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\vendor\active_vendor.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+ActiveVendorの一覧をサイドバーからひらけたらOK
