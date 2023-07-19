@@ -165,8 +165,13 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 Route::get('/vendor/login', [VendorController::class, 'VendorLogin'])
   ->name('vendor.login');
 
+// Vendor:登録ページのルート
 Route::get('/become/vendor', [VendorController::class, 'BecomeVendor'])
   ->name('become.vendor');
+
+// Vendor:登録処理のルート
+Route::post('/vendor/register', [VendorController::class, 'VendorRegister'])
+  ->name('vendor.register');
 
 // Frontend:トップページのルート
 Route::get('/', function () {
