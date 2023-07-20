@@ -1,0 +1,148 @@
+
+下記コマンドでコントローラーファイル生成
+php artisan make:controller Backend/ProductController
+
+下記コマンドでmodelとtable作成
+php artisan make:model MultiImg -m
+php artisan make:model Product -m
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\MultiImg.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class MultiImg extends Model
+{
+  use HasFactory;
+
+  protected $guarded = [];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集◆
+
+ディレクトリ
+\database\migrations\2023_07_20_112004_create_multi_imgs_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('multi_imgs', function (Blueprint $table) {
+      $table->id();
+      $table->integer('product_id');
+      $table->string('photo_name');
+      $table->timestamps();
+    });
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\MultiImg.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class MultiImg extends Model
+{
+  use HasFactory;
+
+  protected $guarded = [];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集◆
+
+ディレクトリ
+\database\migrations\2023_07_20_112103_create_products_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('products', function (Blueprint $table) {
+      $table->id();
+      $table->integer('brand_id');
+      $table->integer('category_id');
+      $table->integer('subcategory_id');
+      $table->string('product_name');
+      $table->string('product_slug');
+      $table->string('product_code');
+      $table->string('product_qty');
+      $table->string('product_tags')->nullable();
+      $table->string('product_size')->nullable();
+      $table->string('product_color')->nullable();
+      $table->string('selling_price');
+      $table->string('discount_price')->nullable();
+      $table->text('short_descp');
+      $table->text('long_descp');
+      $table->string('product_thambnail');
+      $table->string('vendor_id')->nullable();
+      $table->integer('hot_deals')->nullable();
+      $table->integer('featured')->nullable();
+      $table->integer('special_offer')->nullable();
+      $table->integer('special_deals')->nullable();
+      $table->integer('status')->default(0);
+      $table->timestamps();
+    });
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Product Manage</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('all.subcategory') }}"><i class="bx bx-right-arrow-alt"></i>All Product</a>
+        </li>
+        <li> <a href="{{ route('add.subcategory') }}"><i class="bx bx-right-arrow-alt"></i>Add Product</a>
+        </li>
+      </ul>
+    </li>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
