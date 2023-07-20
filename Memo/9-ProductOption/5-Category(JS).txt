@@ -1,4 +1,22 @@
 
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function GetSubCategory($category_id)
+  {
+    $subcat = SubCategory::where('category_id', $category_id)
+      ->orderBy('subcategory_name', 'ASC')->get();
+
+    return json_encode($subcat);
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 ◆ビューの編集(遷移元)◆
 
@@ -37,4 +55,19 @@
 サブカテゴリーのOptionで表示されるようになる
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function GetSubCategory($category_id)
+  {
+    $subcat = SubCategory::where('category_id', $category_id)
+      ->orderBy('subcategory_name', 'ASC')->get();
+
+    return json_encode($subcat);
+  } // End Method 
 

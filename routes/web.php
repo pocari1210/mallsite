@@ -130,6 +130,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // subcategory:削除処理のルート
     Route::get('/delete/subcategory/{id}', 'DeleteSubCategory')
       ->name('delete.subcategory');
+
+    Route::get('/subcategory/ajax/{category_id}', 'GetSubCategory');
   });
 
   // Vendor Active and Inactive All Route 
@@ -170,6 +172,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:追加ページのルート
     Route::get('/add/product', 'AddProduct')
       ->name('add.product');
+
+    // Product:保存処理のルート
+    Route::post('/store/product', 'StoreProduct')
+      ->name('store.product');
   });
 }); // End Middleware 
 
