@@ -166,6 +166,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:一覧表示のルート
     Route::get('/all/product', 'AllProduct')
       ->name('all.product');
+
+    // Product:追加ページのルート
+    Route::get('/add/product', 'AddProduct')
+      ->name('add.product');
   });
 }); // End Middleware 
 

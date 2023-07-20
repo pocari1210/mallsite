@@ -23,4 +23,10 @@ class ProductController extends Controller
       compact('products')
     );
   } // End Method 
+
+  // Productの追加ページ遷移のコントローラー
+  public function AddProduct()
+  {
+    return view('backend.product.product_add');
+  } // End Method 
 }
