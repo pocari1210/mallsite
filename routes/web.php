@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SubCategoryController;
+use App\Http\Controllers\Backend\ProductController;
 
 
 /*
@@ -157,6 +158,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // ActiveVendor:ステータス変更のルート
     Route::post('/inactive/vendor/approve', 'InActiveVendorApprove')
       ->name('inactive.vendor.approve');
+  });
+
+  // Product All Route 
+  Route::controller(ProductController::class)->group(function () {
+
+    // Product:一覧表示のルート
+    Route::get('/all/product', 'AllProduct')
+      ->name('all.product');
   });
 }); // End Middleware 
 
