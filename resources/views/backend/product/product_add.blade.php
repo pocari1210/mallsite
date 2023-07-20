@@ -119,9 +119,7 @@
                   <label for="inputCollection" class="form-label">Product SubCategory</label>
                   <select name="subcategory_id" class="form-select" id="inputCollection">
                     <option></option>
-                    @foreach($activeVendor as $vendor)
-                    <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                    @endforeach
+
                   </select>
                 </div>
 
@@ -129,9 +127,9 @@
                   <label for="inputCollection" class="form-label">Select Vendor</label>
                   <select name="vendor_id" class="form-select" id="inputCollection">
                     <option></option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    @foreach($activeVendor as $vendor)
+                    <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
+                    @endforeach
                   </select>
                 </div>
 
@@ -225,5 +223,29 @@
   });
 </script>
 
+<!-- CategoryのJS -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('select[name="category_id"]').on('change', function() {
+      var category_id = $(this).val();
+      if (category_id) {
+        $.ajax({
+          url: "{{ url('/subcategory/ajax') }}/" + category_id,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            $('select[name="subcategory_id"]').html('');
+            var d = $('select[name="subcategory_id"]').empty();
+            $.each(data, function(key, value) {
+              $('select[name="subcategory_id"]').append('<option value="' + value.id + '">' + value.subcategory_name + '</option>');
+            });
+          },
+        });
+      } else {
+        alert('danger');
+      }
+    });
+  });
+</script>
 
 @endsection
