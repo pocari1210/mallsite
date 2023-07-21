@@ -23,8 +23,10 @@
       <h5 class="card-title">Edit Product</h5>
       <hr />
 
-      <form id="myForm" method="post" action="{{ route('store.product') }}" enctype="multipart/form-data">
+      <form id="myForm" method="post" action="{{ route('update.product') }}">
         @csrf
+
+        <input type="hidden" name="id" value="{{ $products->id }}">
 
         <div class="form-body mt-4">
           <div class="row">
@@ -93,7 +95,7 @@
                     <select name="brand_id" class="form-select" id="inputProductType">
                       <option></option>
                       @foreach($brands as $brand)
-                      <option value="{{ $brand->id }}">{{ $brand->brand_name }}</option>
+                      <option value="{{ $brand->id }}" {{ $brand->id == $products->brand_id ? 'selected' : '' }}>{{ $brand->brand_name }}</option>
                       @endforeach
                     </select>
                   </div>
@@ -103,7 +105,7 @@
                     <select name="category_id" class="form-select" id="inputVendor">
                       <option></option>
                       @foreach($categories as $cat)
-                      <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
+                      <option value="{{ $cat->id }}" {{ $cat->id == $products->category_id ? 'selected' : '' }}>{{ $cat->category_name }}</option>
                       @endforeach
                     </select>
                   </div>
@@ -113,7 +115,7 @@
                     <select name="subcategory_id" class="form-select" id="inputCollection">
                       <option></option>
                       @foreach($subcategory as $subcat)
-                      <option value="{{ $subcat->id }}">{{ $subcat->subcategory_name }}</option>
+                      <option value="{{ $subcat->id }}" {{ $subcat->id == $products->subcategory_id ? 'selected' : '' }}>{{ $subcat->subcategory_name }}</option>
                       @endforeach
                     </select>
                   </div>

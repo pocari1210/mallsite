@@ -180,6 +180,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:編集ページのルート
     Route::get('/edit/product/{id}', 'EditProduct')
       ->name('edit.product');
+
+    // Product:更新処理のルート
+    Route::post('/update/product', 'UpdateProduct')
+      ->name('update.product');
   });
 }); // End Middleware 
 
