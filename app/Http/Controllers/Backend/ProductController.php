@@ -11,6 +11,7 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\User;
 use InterventionImage;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -43,7 +44,7 @@ class ProductController extends Controller
   {
     $image = $request->file('product_thambnail');
     $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-    Image::make($image)->resize(800, 800)->save('upload/products/thambnail/' . $name_gen);
+    InterventionImage::make($image)->resize(800, 800)->save('upload/products/thambnail/' . $name_gen);
     $save_url = 'upload/products/thambnail/' . $name_gen;
 
     $product_id = Product::insertGetId([
@@ -82,7 +83,7 @@ class ProductController extends Controller
     $images = $request->file('multi_img');
     foreach ($images as $img) {
       $make_name = hexdec(uniqid()) . '.' . $img->getClientOriginalExtension();
-      Image::make($img)->resize(800, 800)->save('upload/products/multi-image/' . $make_name);
+      InterventionImage::make($img)->resize(800, 800)->save('upload/products/multi-image/' . $make_name);
       $uploadPath = 'upload/products/multi-image/' . $make_name;
 
       MultiImg::insert([
