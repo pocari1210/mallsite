@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\UserController;
@@ -212,7 +213,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 }); // End Middleware 
 
 // Admin:ログイン処理のルート
-Route::get('/admin/login', [AdminController::class, 'AdminLogin']);
+Route::get('/admin/login', [AdminController::class, 'AdminLogin'])
+  ->middleware(RedirectIfAuthenticated::class);
 
 // ★Vendor権限のルート★
 Route::middleware(['auth', 'role:vendor'])->group(function () {
@@ -242,7 +244,8 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 
 // Vendor:ログイン処理のルート
 Route::get('/vendor/login', [VendorController::class, 'VendorLogin'])
-  ->name('vendor.login');
+  ->name('vendor.login')
+  ->middleware(RedirectIfAuthenticated::class);
 
 // Vendor:登録ページのルート
 Route::get('/become/vendor', [VendorController::class, 'BecomeVendor'])

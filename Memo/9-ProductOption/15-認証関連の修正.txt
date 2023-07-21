@@ -1,0 +1,47 @@
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Admin:ログイン処理のルート
+Route::get('/admin/login', [AdminController::class, 'AdminLogin'])
+  ->middleware(RedirectIfAuthenticated::class);
+
+// Vendor:ログイン処理のルート
+Route::get('/vendor/login', [VendorController::class, 'VendorLogin'])
+  ->name('vendor.login')
+  ->middleware(RedirectIfAuthenticated::class);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆RedirectIfAuthenticated◆
+
+ディレクトリ
+\app\Http\Middleware\RedirectIfAuthenticated.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    foreach ($guards as $guard) {
+      if (Auth::guard($guard)->check()) {
+        if (Auth::check() && Auth::user()->role == 'user') {
+          return redirect('/dashboard');
+        }
+        if (Auth::check() && Auth::user()->role == 'vendor') {
+          return redirect('/vendor/dashboard');
+        }
+        if (Auth::check() && Auth::user()->role == 'admin') {
+          return redirect('/admin/dashboard');
+        }
+      }
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ログインしているときに、admin/loginで検索し、
+dashboardのページにリダイレクトされたらOK
