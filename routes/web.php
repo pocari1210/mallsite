@@ -176,6 +176,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:保存処理のルート
     Route::post('/store/product', 'StoreProduct')
       ->name('store.product');
+
+    // Product:編集ページのルート
+    Route::get('/edit/product/{id}', 'EditProduct')
+      ->name('edit.product');
   });
 }); // End Middleware 
 
