@@ -204,6 +204,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:activeのルート
     Route::get('/product/active/{id}', 'ProductActive')
       ->name('product.active');
+
+    // Productの削除処理
+    Route::get('/delete/product/{id}', 'ProductDelete')
+      ->name('delete.product');
   });
 }); // End Middleware 
 
