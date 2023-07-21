@@ -192,6 +192,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:複数画像の更新処理のルート
     Route::post('/update/product/multiimage', 'UpdateProductMultiimage')
       ->name('update.product.multiimage');
+
+    // Product:複数画像の削除処理のルート
+    Route::get('/product/multiimg/delete/{id}', 'MulitImageDelelte')
+      ->name('product.multiimg.delete');
   });
 }); // End Middleware 
 
