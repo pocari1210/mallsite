@@ -184,6 +184,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Product:更新処理のルート
     Route::post('/update/product', 'UpdateProduct')
       ->name('update.product');
+
+    // Product:画像の更新処理のルート
+    Route::post('/update/product/thambnail', 'UpdateProductThambnail')
+      ->name('update.product.thambnail');
+
+    // Product:複数画像の更新処理のルート
+    Route::post('/update/product/multiimage', 'UpdateProductMultiimage')
+      ->name('update.product.multiimage');
   });
 }); // End Middleware 
 

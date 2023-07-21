@@ -1,0 +1,97 @@
+
+10-商品画像編集
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Product All Route 
+  Route::controller(ProductController::class)->group(function () {
+
+    // Product:画像の更新処理のルート
+    Route::post('/update/product/thambnail', 'UpdateProductThambnail')
+      ->name('update.product.thambnail');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\product\product_edit.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<!-- /// Main Image Thambnail Update ////// -->
+
+<div class="page-content">
+  <h6 class="mb-0 text-uppercase">Update Main Image Thambnail </h6>
+  <hr>
+  <div class="card">
+    <form method="post" action="{{ route('update.product.thambnail') }}" enctype="multipart/form-data">
+      @csrf
+
+      <input type="hidden" name="id" value="{{ $products->id }}">
+      <input type="hidden" name="old_img" value="{{ $products->product_thambnail }}">
+
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Chose Thambnail Image </label>
+          <input name="product_thambnail" class="form-control" type="file" id="formFile">
+        </div>
+
+        <div class="mb-3">
+          <label for="formFile" class="form-label"> </label>
+          <img src="{{ asset($products->product_thambnail) }}" style="width:100px; height:100px">
+        </div>
+        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- /// End Main Image Thambnail Update ////// -->
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 画像更新のコントローラー
+  public function UpdateProductThambnail(Request $request)
+  {
+    $pro_id = $request->id;
+    $oldImage = $request->old_img;
+
+    $image = $request->file('product_thambnail');
+    $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+    Image::make($image)->resize(800, 800)->save('upload/products/thambnail/' . $name_gen);
+    $save_url = 'upload/products/thambnail/' . $name_gen;
+
+    if (file_exists($oldImage)) {
+      unlink($oldImage);
+    }
+
+    Product::findOrFail($pro_id)->update([
+
+      'product_thambnail' => $save_url,
+      'updated_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Product Image Thambnail Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
