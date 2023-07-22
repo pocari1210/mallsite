@@ -256,6 +256,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Banner：保存処理のルート
     Route::post('/store/banner', 'StoreBanner')
       ->name('store.banner');
+
+    // Banner：編集ページのルート
+    Route::get('/edit/banner/{id}', 'EditBanner')
+      ->name('edit.banner');
+
+    // Banner：更新処理のルート
+    Route::post('/update/banner', 'UpdateBanner')
+      ->name('update.banner');
+
+    // Banner：削除処理のルート
+    Route::get('/delete/banner/{id}', 'DeleteBanner')
+      ->name('delete.banner');
   });
 }); // Admin End Middleware 
 
