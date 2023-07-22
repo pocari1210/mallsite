@@ -211,14 +211,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Productの削除処理
     Route::get('/delete/product/{id}', 'ProductDelete')
       ->name('delete.product');
+  });
 
-    // Slider All Route 
-    Route::controller(SliderController::class)->group(function () {
+  // Slider All Route 
+  Route::controller(SliderController::class)->group(function () {
 
-      // Slider：一覧表示のルート
-      Route::get('/all/slider', 'AllSlider')
-        ->name('all.slider');
-    });
+    // Slider：一覧表示のルート
+    Route::get('/all/slider', 'AllSlider')
+      ->name('all.slider');
+
+    // Slider：追加ページのルート
+    Route::get('/add/slider', 'AddSlider')
+      ->name('add.slider');
+
+    // Slider：保存処理のルート
+    Route::post('/store/slider', 'StoreSlider')
+      ->name('store.slider');
   });
 }); // Admin End Middleware 
 
