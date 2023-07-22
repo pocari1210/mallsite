@@ -257,6 +257,14 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     Route::post('/vendor/store/product', 'VendorStoreProduct')
       ->name('vendor.store.product');
 
+    // VendorProduct:編集ページのルート
+    Route::get('/vendor/edit/product/{id}', 'VendorEditProduct')
+      ->name('vendor.edit.product');
+
+    // VendorProduct:更新処理のルート
+    Route::post('/vendor/update/product', 'VendorUpdateProduct')
+      ->name('vendor.update.product');
+
     Route::get('/vendor/subcategory/ajax/{category_id}', 'VendorGetSubCategory');
   });
 });
