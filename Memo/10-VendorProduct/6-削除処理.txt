@@ -1,0 +1,53 @@
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Vendor Add Product All Route 
+  Route::controller(VendorProductController::class)->group(function () {
+
+    // VendorProduct:削除処理のルート
+    Route::get('/vendor/delete/product/{id}', 'VendorProductDelete')
+      ->name('vendor.delete.product');
+
+    // VendorProduct:iactiveのルート
+    Route::get('/vendor/product/inactive/{id}', 'VendorProductInactive')
+      ->name('vendor.product.inactive');
+
+    // VendorProduct:activeのルート
+    Route::get('/vendor/product/active/{id}', 'VendorProductActive')
+      ->name('vendor.product.active');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
