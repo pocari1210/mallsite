@@ -248,6 +248,12 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     // VendorProduct:一覧表示のルート
     Route::get('/vendor/all/product', 'VendorAllProduct')
       ->name('vendor.all.product');
+
+    // VendorProduct:追加ページのルート
+    Route::get('/vendor/add/product', 'VendorAddProduct')
+      ->name('vendor.add.product');
+
+    Route::get('/vendor/subcategory/ajax/{category_id}', 'VendorGetSubCategory');
   });
 });
 

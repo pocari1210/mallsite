@@ -1,21 +1,21 @@
-@extends('admin.admin_dashboard')
-@section('admin')
+@extends('vendor.vendor_dashboard')
+@section('vendor')
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <div class="page-content">
 
   <!--breadcrumb-->
   <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-    <div class="breadcrumb-title pe-3">Add New Product</div>
+    <div class="breadcrumb-title pe-3">Add Vendor Product</div>
     <div class="ps-3">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0 p-0">
           <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
           </li>
-          <li class="breadcrumb-item active" aria-current="page">Add New Product</li>
+          <li class="breadcrumb-item active" aria-current="page">Add Vendor Product</li>
         </ol>
       </nav>
     </div>
-
   </div>
   <!--end breadcrumb-->
 
@@ -72,9 +72,7 @@
                 <div class="form-group mb-3">
                   <label for="inputProductTitle" class="form-label">Multiple Image</label>
                   <input class="form-control" name="multi_img[]" type="file" id="multiImg" multiple="">
-
                   <div class="row" id="preview_img"></div>
-
                 </div>
 
               </div>
@@ -128,17 +126,9 @@
                   </div>
 
                   <div class="col-12">
-                    <label for="inputCollection" class="form-label">Select Vendor</label>
-                    <select name="vendor_id" class="form-select" id="inputCollection">
-                      <option></option>
-                      @foreach($activeVendor as $vendor)
-                      <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                      @endforeach
-                    </select>
-                  </div>
 
-                  <div class="col-12">
                     <div class="row g-3">
+
                       <div class="col-md-6">
                         <div class="form-check">
                           <input class="form-check-input" name="hot_deals" type="checkbox" value="1" id="flexCheckDefault">
@@ -278,7 +268,6 @@
       if (window.File && window.FileReader && window.FileList && window.Blob) //check File API supported browser
       {
         var data = $(this)[0].files; //this file data
-
         $.each(data, function(index, file) { //loop though each file
           if (/(\.|\/)(gif|jpe?g|png|webp)$/i.test(file.type)) { //check supported file type
             var fRead = new FileReader(); //new filereader
@@ -292,7 +281,6 @@
             fRead.readAsDataURL(file); //URL representing the file's data.
           }
         });
-
       } else {
         alert("Your browser doesn't support File API!"); //if File API is absent
       }
@@ -306,7 +294,7 @@
       var category_id = $(this).val();
       if (category_id) {
         $.ajax({
-          url: "{{ url('/subcategory/ajax') }}/" + category_id,
+          url: "{{ url('/vendor/subcategory/ajax') }}/" + category_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
@@ -323,6 +311,5 @@
     });
   });
 </script>
-
 
 @endsection
