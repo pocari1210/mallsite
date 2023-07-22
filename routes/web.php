@@ -248,6 +248,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Banner：一覧ページのルート
     Route::get('/all/banner', 'AllBanner')
       ->name('all.banner');
+
+    // Banner：追加ページのルート
+    Route::get('/add/banner', 'AddBanner')
+      ->name('add.banner');
+
+    // Banner：保存処理のルート
+    Route::post('/store/banner', 'StoreBanner')
+      ->name('store.banner');
   });
 }); // Admin End Middleware 
 

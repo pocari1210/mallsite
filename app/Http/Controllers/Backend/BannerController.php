@@ -18,4 +18,32 @@ class BannerController extends Controller
       compact('banner')
     );
   } // End Method 
+
+  // 新規作成のコントローラー
+  public function AddBanner()
+  {
+    return view('backend.banner.banner_add');
+  } // End Method 
+
+  // 保存処理のコントローラー
+  public function StoreBanner(Request $request)
+  {
+    $image = $request->file('banner_image');
+    $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+    InterventionImage::make($image)->resize(768, 450)->save('upload/banner/' . $name_gen);
+    $save_url = 'upload/banner/' . $name_gen;
+
+    Banner::insert([
+      'banner_title' => $request->banner_title,
+      'banner_url' => $request->banner_url,
+      'banner_image' => $save_url,
+    ]);
+
+    $notification = array(
+      'message' => 'Banner Inserted Successfully',
+      'alert-type' => 'info'
+    );
+
+    return redirect()->route('all.banner')->with($notification);
+  } // End Method 
 }
