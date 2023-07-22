@@ -1,52 +1,44 @@
-<?php
 
-namespace App\Http\Controllers\backend;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Category;
-use App\Models\SubCategory;
-use App\Models\MultiImg;
-use App\Models\Brand;
-use App\Models\Product;
-use App\Models\User;
-use InterventionImage;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
-class VendorProductController extends Controller
-{
-  public function VendorAllProduct()
-  {
-    $id = Auth::user()->id;
-    $products = Product::where('vendor_id', $id)
-      ->latest()->get();
+◆ルートの編集◆
 
-    return view(
-      'vendor.backend.product.vendor_product_all',
-      compact('products')
-    );
-  } // End Method 
+ディレクトリ
+\routes\web.php
 
-  // 追加ページ遷移のコントローラー
-  public function VendorAddProduct()
-  {
-    $brands = Brand::latest()->get();
-    $categories = Category::latest()->get();
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
-    return view(
-      'vendor.backend.product.vendor_product_add',
-      compact('brands', 'categories')
-    );
-  } // End Method 
+  // Vendor Add Product All Route 
+  Route::controller(VendorProductController::class)->group(function () {
 
-  public function VendorGetSubCategory($category_id)
-  {
-    $subcat = SubCategory::where('category_id', $category_id)
-      ->orderBy('subcategory_name', 'ASC')->get();
+    // VendorProduct:保存処理のルート
+    Route::post('/vendor/store/product', 'VendorStoreProduct')
+      ->name('vendor.store.product');
 
-    return json_encode($subcat);
-  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\backend\product\vendor_product_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <h5 class="card-title">Add New Product</h5>
+  <hr />
+
+  <form id="myForm" method="post" action="{{ route('vendor.store.product') }}" enctype="multipart/form-data">
+    @csrf
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
   // 保存処理のコントローラー
   public function VendorStoreProduct(Request $request)
@@ -111,4 +103,13 @@ class VendorProductController extends Controller
 
     return redirect()->route('vendor.all.product')->with($notification);
   } // End Method 
-}
+
+
+★コード解説★
+\app\Http\Controllers\Backend\ProductController.phpの
+StoreProductメソッドを参考に記述を行う
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+追加ページから入力した内容が保存できればOK
