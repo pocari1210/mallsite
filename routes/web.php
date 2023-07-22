@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\VendorProductController;
 
 
 /*
@@ -240,6 +241,14 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
   // Vendor:パスワード変更処理のルート
   Route::post('/vendor/update/password', [VendorController::class, 'VendorUpdatePassword'])
     ->name('vendor.update.password');
+
+  // Vendor Add Product All Route 
+  Route::controller(VendorProductController::class)->group(function () {
+
+    // VendorProduct:一覧表示のルート
+    Route::get('/vendor/all/product', 'VendorAllProduct')
+      ->name('vendor.all.product');
+  });
 });
 
 // Vendor:ログイン処理のルート
