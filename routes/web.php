@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\VendorProductController;
+use App\Http\Controllers\Backend\SliderController;
 
 
 /*
@@ -210,8 +211,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Productの削除処理
     Route::get('/delete/product/{id}', 'ProductDelete')
       ->name('delete.product');
+
+    // Slider All Route 
+    Route::controller(SliderController::class)->group(function () {
+
+      // Slider：一覧表示のルート
+      Route::get('/all/slider', 'AllSlider')
+        ->name('all.slider');
+    });
   });
-}); // End Middleware 
+}); // Admin End Middleware 
 
 // Admin:ログイン処理のルート
 Route::get('/admin/login', [AdminController::class, 'AdminLogin'])
