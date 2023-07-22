@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\VendorProductController;
 use App\Http\Controllers\Backend\SliderController;
+use App\Http\Controllers\Backend\BannerController;
 
 
 /*
@@ -239,6 +240,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Slider：削除処理のルート
     Route::get('/delete/slider/{id}', 'DeleteSlider')
       ->name('delete.slider');
+  });
+
+  // Banner All Route 
+  Route::controller(BannerController::class)->group(function () {
+
+    // Banner：一覧ページのルート
+    Route::get('/all/banner', 'AllBanner')
+      ->name('all.banner');
   });
 }); // Admin End Middleware 
 
