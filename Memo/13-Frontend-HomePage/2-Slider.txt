@@ -1,3 +1,12 @@
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_slider.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
 @php
 $slider = App\Models\Slider::orderBy('slider_title','ASC')->get();
 @endphp
@@ -21,8 +30,9 @@ $slider = App\Models\Slider::orderBy('slider_title','ASC')->get();
           </div>
         </div>
         @endforeach
-      </div>
-      <div class="slider-arrow hero-slider-1-arrow"></div>
-    </div>
-  </div>
-</section>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+adminのdashboardから登録されたSliderが疎通されていたらOK
+
