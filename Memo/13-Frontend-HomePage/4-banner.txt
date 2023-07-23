@@ -1,3 +1,13 @@
+
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_banner.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
 @php
 $banner = App\Models\Banner::orderBy('banner_title','ASC')->limit(3)->get();
 @endphp
@@ -20,6 +30,6 @@ $banner = App\Models\Banner::orderBy('banner_title','ASC')->limit(3)->get();
       </div>
       @endforeach
 
-    </div>
-  </div>
-</section>
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
