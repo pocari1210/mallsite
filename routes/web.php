@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\VendorProductController;
 use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Frontend\IndexController;
 
 
 /*
@@ -386,6 +387,9 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/user/update/password', [UserController::class, 'UserUpdatePassword'])
     ->name('user.update.password');
 }); // Gorup Milldeware End
+
+/// Frontend Product Details All Route 
+Route::get('/product/details/{id}/{slug}', [IndexController::class, 'ProductDetails']);
 
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
