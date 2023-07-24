@@ -1,0 +1,52 @@
+
+2-詳細ページ編集
+
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\Product.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Product extends Model
+{
+  use HasFactory;
+
+  public function subcategory()
+  {
+    return $this->belongsTo(SubCategory::class, 'subcategory_id', 'id');
+  }
+
+  public function brand()
+  {
+    return $this->belongsTo(Brand::class, 'brand_id', 'id');
+  }
+
+★コード解説★
+
+SubCategoryとBrandをテーブル結合する
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\product\product_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Productのカテゴリやーや在庫数、Vendorの名前が
+登録された情報として疎通されていたらOK
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+

@@ -81,7 +81,6 @@
                 <div class="product-price primary-color float-left">
                   <span class="current-price text-brand">${{ $product->selling_price }}</span>
                 </div>
-
                 @else
 
                 <div class="product-price primary-color float-left">
@@ -107,8 +106,6 @@
                 <strong class="mr-10" style="width:50px;">Size : </strong>
                 <select class="form-control unicase-form-control" id="size">
                   <option selected="" disabled="">--Choose Size--</option>
-
-                  <!-- ucwordsで文字列の先頭を大文字にする -->
                   @foreach($product_size as $size)
                   <option value="{{ $size }}">{{ ucwords($size)  }}</option>
                   @endforeach
@@ -145,16 +142,30 @@
                   <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                 </div>
               </div>
+
+              @if($product->vendor_id == NULL)
+              <h6> Sold By <a href="#"> <span class="text-danger"> Owner </span> </a></h6>
+              @else
+              <h6> Sold By <a href="#"> <span class="text-danger"> {{ $product['vendor']['name'] }} </span></a></h6>
+              @endif
+
+              <hr>
+
               <div class="font-xs">
                 <ul class="mr-50 float-start">
-                  <li class="mb-5">Type: <span class="text-brand">Organic</span></li>
-                  <li class="mb-5">MFG:<span class="text-brand"> Jun 4.2022</span></li>
-                  <li>LIFE: <span class="text-brand">70 days</span></li>
+                  <li class="mb-5">Brand: <span class="text-brand">{{ $product['brand']['brand_name'] }}</span></li>
+
+                  <li class="mb-5">Category:<span class="text-brand"> {{ $product['category']['category_name'] }}</span></li>
+
+                  <li>SubCategory: <span class="text-brand">{{ $product['subcategory']['subcategory_name'] }}</span></li>
                 </ul>
+
                 <ul class="float-start">
-                  <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                  <li class="mb-5">Tags: <a href="#" rel="tag">Snack</a>, <a href="#" rel="tag">Organic</a>, <a href="#" rel="tag">Brown</a></li>
-                  <li>Stock:<span class="in-stock text-brand ml-5">8 Items In Stock</span></li>
+                  <li class="mb-5">Product Code: <a href="#">{{ $product->product_code }}</a></li>
+
+                  <li class="mb-5">Tags: <a href="#" rel="tag"> {{ $product->product_tags }}</a></li>
+
+                  <li>Stock:<span class="in-stock text-brand ml-5">({{ $product->product_qty }}) Items In Stock</span></li>
                 </ul>
               </div>
             </div>
@@ -608,6 +619,5 @@
     </div>
   </div>
 </div>
-
 
 @endsection
