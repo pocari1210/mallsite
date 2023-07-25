@@ -397,6 +397,10 @@ Route::get('/product/details/{id}/{slug}', [IndexController::class, 'ProductDeta
 Route::get('/vendor/details/{id}', [IndexController::class, 'VendorDetails'])
   ->name('vendor.details');
 
+// Vendorの一覧表示のルート
+Route::get('/vendor/all', [IndexController::class, 'VendorAll'])
+  ->name('vendor.all');
+
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

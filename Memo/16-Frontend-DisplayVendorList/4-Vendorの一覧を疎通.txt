@@ -1,0 +1,57 @@
+
+
+4-Vendorの一覧を疎通
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Vendorの一覧表示のルート
+Route::get('/vendor/all', [IndexController::class, 'VendorAll'])
+  ->name('vendor.all');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_vendor_list.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <h3 class="">All Our Vendor List </h3>
+
+  ↓↓routeの追加↓↓
+  <a class="show-all" href="{{ route('vendor.all') }}">
+    All Vendors
+    <i class="fi-rs-angle-right"></i>
+  </a>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorAll()
+  {
+    $vendors = User::where('status', 'active')
+      ->where('role', 'vendor')->orderBy('id', 'DESC')->get();
+
+    return view(
+      'frontend.vendor.vendor_all',
+      compact('vendors')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+home_vendor_list.blade.phpのAll Vendorを押し、
+Vendorの一覧が表示できたらOK
