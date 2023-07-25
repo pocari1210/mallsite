@@ -1,0 +1,78 @@
+
+
+3-Hot DealsとSpecial Offer
+
+◆コントローラーの編集◆
+
+ディレクトリ
+
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    $hot_deals = Product::where('hot_deals', 1)->where('discount_price', '!=', NULL)->orderBy('id', 'DESC')->limit(3)->get();
+
+    $special_offer = Product::where('special_offer', 1)->orderBy('id', 'DESC')->limit(3)->get();
+
+    return view(
+      'frontend.index',
+      compact(
+        'skip_category_0',
+        'skip_product_0',
+        'skip_category_2',
+        'skip_product_2',
+        'skip_category_7',
+        'skip_product_7',
+        'hot_deals',
+        'special_offer'
+      )
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+C:\xampp\htdocs\mallsite\cms\resources\views\frontend\index.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+        <h4 class="section-title style-1 mb-30 animated animated"> Hot Deals </h4>
+        <div class="product-list-small animated animated">
+
+          @foreach($hot_deals as $item)
+          <article class="row align-items-center hover-up">
+            <figure class="col-md-4 mb-0">
+              <a href="{{ url('product/details/'.$product->id.'/'.$product->product_slug) }}"><img src="{{ asset( $item->product_thambnail ) }}" alt="" /></a>
+            </figure>
+            <div class="col-md-8 mb-0">
+              <h6>
+                <a href="{{ url('product/details/'.$product->id.'/'.$product->product_slug) }}"> {{ $item->product_name }} </a>
+              </h6>
+              <div class="product-rate-cover">
+                <div class="product-rate d-inline-block">
+                  <div class="product-rating" style="width: 90%"></div>
+                </div>
+                <span class="font-small ml-5 text-muted"> (4.0)</span>
+              </div>
+              @if($item->discount_price == NULL)
+              <div class="product-price">
+                <span>${{ $item->selling_price }}</span>
+              </div>
+
+              @else
+              <div class="product-price">
+                <span>${{ $item->discount_price }}</span>
+                <span class="old-price">${{ $item->selling_price }}</span>
+              </div>
+              @endif
+            </div>
+          </article>
+          @endforeach
+
+        </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Productの登録で、Hot DealsまたはSpecial Offerにチェックをいれたものが、
+Frontendに疎通されていたらOK
