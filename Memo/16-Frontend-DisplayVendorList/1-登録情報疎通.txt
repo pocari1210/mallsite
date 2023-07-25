@@ -1,3 +1,14 @@
+
+
+1-登録情報疎通
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_vendor_list.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
 @php
 $vendors = App\Models\User::where('status','active')->where('role','vendor')->orderBy('id','DESC')->limit(4)->get();
 @endphp
@@ -59,3 +70,11 @@ $vendors = App\Models\User::where('status','active')->where('role','vendor')->or
 
   </div>
 </div>
+
+★コード解説★
+All Our Vendor Listに登録されたVendor情報が疎通されたらOK
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
