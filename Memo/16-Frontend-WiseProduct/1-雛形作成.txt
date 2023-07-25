@@ -1,0 +1,86 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// CatWiseProductのルート
+Route::get('/product/category/{id}/{slug}', [IndexController::class, 'CatWiseProduct']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($categories as $category)
+  <li>
+
+    ↓↓routeの追記↓↓
+    <a href="{{ url('product/category/'.$category->id.'/'.$category->category_slug) }}">{{ $category->category_name }}
+      <i class="fi-rs-angle-down"></i>
+    </a>
+
+    @php
+    $subcategories = App\Models\SubCategory::where('category_id',$category->id)->orderBy('subcategory_name','ASC')->get();
+    @endphp
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function CatWiseProduct(Request $request, $id, $slug)
+  {
+    $products = Product::where('status', 1)->where('category_id', $id)->orderBy('id', 'DESC')->get();
+    $categories = Category::orderBy('category_name', 'ASC')->get();
+    $breadcat = Category::where('id', $id)->first();
+
+    return view(
+      'frontend.product.category_view',
+      compact('products', 'categories', 'breadcat')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+headerのメインのナビゲーションをクリックし、
+詳細ページに遷移されたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆main.css◆
+
+ディレクトリ
+\public\frontend\assets\css\main.css
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+.product-cart-wrap .product-img-action-wrap .product-action-1 {
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #BCE3C9;
+
+    お気に入りストなどのボタンの項目の幅を調整
+    width: 60%;
+}
