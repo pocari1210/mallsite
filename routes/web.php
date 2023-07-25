@@ -366,9 +366,11 @@ Route::post('/vendor/register', [VendorController::class, 'VendorRegister'])
   ->name('vendor.register');
 
 // Frontend:トップページのルート
-Route::get('/', function () {
-  return view('frontend.index');
-});
+Route::get('/', [IndexController::class, 'Index']);
+
+// Route::get('/', function () {
+//   return view('frontend.index');
+// });
 
 // ★User権限のルート★
 Route::middleware(['auth'])->group(function () {
