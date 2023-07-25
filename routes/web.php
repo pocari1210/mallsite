@@ -393,6 +393,10 @@ Route::middleware(['auth'])->group(function () {
 /// Frontend Product Details All Route 
 Route::get('/product/details/{id}/{slug}', [IndexController::class, 'ProductDetails']);
 
+// Vendorの詳細ページのルート
+Route::get('/vendor/details/{id}', [IndexController::class, 'VendorDetails'])
+  ->name('vendor.details');
+
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
