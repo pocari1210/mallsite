@@ -1,0 +1,95 @@
+
+2-リンクの設定
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a class="active" href="{{ url('/') }}">Home </a>
+  </li>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\frontend\home\home_features_category.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="carausel-10-columns" id="carausel-10-columns">
+    @foreach($categories as $category)
+    <div class="card-2 bg-9 wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
+      <figure class="img-hover-scale overflow-hidden">
+        <a href="{{ url('product/category/'.$category->id.'/'.$category->category_slug) }}"><img src="{{ asset($category->category_image ) }}" alt="" /></a>
+      </figure>
+
+      ↓↓routeの追記↓↓
+      <h6><a href="{{ url('product/category/'.$category->id.'/'.$category->category_slug) }}">{{ $category->category_name }}</a></h6>
+
+★コード解説★
+Featured Categoriesの項目からリストを選択し、
+詳細ページに遷移されたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    $newProduct = Product::orderBy('id', 'DESC')->limit(3)->get();
+
+    return view(
+      'frontend.product.category_view',
+      compact('products', 'categories', 'breadcat', 'newProduct')
+    );
+  } // End Method 
+
+
+★コード解説★
+$newProductで新商品を3つ表示させている
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\frontend\product\category_view.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+      <!-- Product sidebar Widget -->
+      <div class="sidebar-widget product-sidebar mb-30 p-30 bg-grey border-radius-10">
+        <h5 class="section-title style-1 mb-30">New products</h5>
+
+        @foreach($newProduct as $product)
+        <div class="single-post clearfix">
+          <div class="image">
+            <img src="{{ asset( $product->product_thambnail ) }}" alt="#" />
+          </div>
+          <div class="content pt-10">
+            <p><a href="{{ url('product/details/'.$product->id.'/'.$product->product_slug) }}">{{ $product->product_name }}</a></p>
+
+            @if($product->discount_price == NULL)
+            <p class="price mb-0 mt-5">${{ $product->selling_price }}</p>
+            @else
+            <p class="price mb-0 mt-5">${{ $product->discount_price }}</p>
+            @endif
+
+            <div class="product-rate">
+              <div class="product-rating" style="width: 90%"></div>
+            </div>
+          </div>
+        </div>
+        @endforeach
+
+★コード解説★
+詳細ページ左側のNew Productに新商品3つ陳列されていたらOK
