@@ -1,17 +1,17 @@
 @extends('frontend.master_dashboard')
 @section('main')
-
 <div class="page-header mt-30 mb-50">
   <div class="container">
     <div class="archive-header">
       <div class="row align-items-center">
         <div class="col-xl-3">
-          <h5 class="mb-15">{{ $breadcat->category_name }}</h5>
+          <h5 class="mb-15">{{ $breadsubcat->subcategory_name }}</h5>
           <div class="breadcrumb">
             <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
-            <span></span> {{ $breadcat->category_name }}
+            <span></span> {{ $breadsubcat->subcategory_name }}
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -87,18 +87,17 @@
               @endphp
 
               <div class="product-badges product-badges-position product-badges-mrg">
-
                 @if($product->discount_price == NULL)
                 <span class="new">New</span>
                 @else
                 <span class="hot"> {{ round($discount) }} %</span>
                 @endif
-
               </div>
+
             </div>
             <div class="product-content-wrap">
               <div class="product-category">
-                <a href="shop-grid-right.html">{{ $product['category']['category_name'] }}</a>
+                <a href="shop-grid-right.html">{{ $product['subcategory']['subcategory_name'] }}</a>
               </div>
               <h2><a href="{{ url('product/details/'.$product->id.'/'.$product->product_slug) }}"> {{ $product->product_name }} </a></h2>
               <div class="product-rate-cover">
@@ -112,7 +111,6 @@
                 <span class="font-small text-muted">By <a href="vendor-details-1.html">Owner</a></span>
                 @else
                 <span class="font-small text-muted">By <a href="vendor-details-1.html">{{ $product['vendor']['name'] }}</a></span>
-
                 @endif
 
               </div>
@@ -170,7 +168,6 @@
         <ul>
 
           @foreach($categories as $category)
-
           @php
           $products = App\Models\Product::where('category_id',$category->id)->get();
           @endphp
@@ -212,8 +209,5 @@
     </div>
   </div>
 </div>
-
-
-
 
 @endsection

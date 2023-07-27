@@ -404,6 +404,9 @@ Route::get('/vendor/all', [IndexController::class, 'VendorAll'])
 // CatWiseProductのルート
 Route::get('/product/category/{id}/{slug}', [IndexController::class, 'CatWiseProduct']);
 
+// SubCatWiseProductのルート
+Route::get('/product/subcategory/{id}/{slug}', [IndexController::class, 'SubCatWiseProduct']);
+
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
