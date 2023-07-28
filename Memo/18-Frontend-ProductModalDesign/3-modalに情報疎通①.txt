@@ -1,0 +1,93 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Product View Modal With Ajax
+Route::get('/product/view/modal/{id}', [IndexController::class, 'ProductViewAjax']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ベーステンプレート◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    /// Start product view with Modal 
+
+    function productView(id) {
+      // alert(id)
+      $.ajax({
+        type: 'GET',
+        url: '/product/view/modal/' + id,
+        dataType: 'json',
+        success: function(data) {
+          console.log(data)
+        }
+      })
+    }
+  </script>
+
+★コード解説★
+urlは、routeに記載のURLの項目を確認する
+
+dataTypeがjsonとなっているのは
+コントローラーにてjson形式で記述を行っている為
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_new_product.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="product-action-1">
+    <a aria-label="Add To Wishlist" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+    <a aria-label="Compare" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+
+    Quick viewボタンを押した後のボタンの処理を追加
+    <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" id="{{ $product->id }}" onclick="productView(this.id)">
+      <i class="fi-rs-eye"></i>
+    </a>
+  </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ProductViewAjax($id)
+  {
+    $product = Product::with('category', 'brand')->findOrFail($id);
+    $color = $product->product_color;
+    $product_color = explode(',', $color);
+
+    $size = $product->product_size;
+    $product_size = explode(',', $size);
+
+    return response()->json(array(
+      'product' => $product,
+      'color' => $product_color,
+      'size' => $product_size,
+    ));
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+開発ツールのconsoleに表示されていたらOK

@@ -1,0 +1,66 @@
+
+
+5-modalに情報疎通③
+
+◆テンプレートベース◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+          /// Start Stock Option
+          if (data.product.product_qty > 0) {
+            $('#aviable').text('');
+            $('#stockout').text('');
+            $('#aviable').text('aviable');
+          } else {
+            $('#aviable').text('');
+            $('#stockout').text('');
+            $('#stockout').text('stockout');
+          }
+
+          ///End Start Stock Option
+
+          ///Size 
+          $('select[name="size"]').empty();
+          $.each(data.size, function(key, value) {
+            $('select[name="size"]').append('<option value="' + value + ' ">' + value + '  </option')
+            if (data.size == "") {
+              $('#sizeArea').hide();
+            } else {
+              $('#sizeArea').show();
+            }
+          }) // end size
+
+          ///Color 
+          $('select[name="color"]').empty();
+          $.each(data.color, function(key, value) {
+            $('select[name="color"]').append('<option value="' + value + ' ">' + value + '  </option')
+            if (data.color == "") {
+              $('#colorArea').hide();
+            } else {
+              $('#colorArea').show();
+            }
+          }) // end size
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\quickview.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li class="mb-5">Product Code : <span class="text-brand" id="pcode"> </span></li>
+    <li class="mb-5">Stock:<span class="badge badge-pill badge-success" id="aviable" style="background:green; color: white;"> </span>
+      <span class="badge badge-pill badge-danger" id="stockout" style="background:red; color: white;"> </span>
+    </li>
+  </ul>
+
+★コード解説★
+販売中と品切れ中の表示の切り替えを記述
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
