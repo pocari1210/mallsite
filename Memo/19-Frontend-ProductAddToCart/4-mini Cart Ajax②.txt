@@ -8,47 +8,18 @@ mini Cart Ajax②
 
 ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
-  <script type="text/javascript">
-    function miniCart() {
-      $.ajax({
-        type: 'GET',
-        url: '/product/mini/cart',
-        dataType: 'json',
-        success: function(response) {
-          //console.log(response)
+<script type="text/javascript">
+  function miniCart() {
+    $.ajax({
+      type: 'GET',
+      url: '/product/mini/cart',
+      dataType: 'json',
+      success: function(response) {
+        //console.log(response)
 
-          var miniCart = ""
-          $.each(response.carts, function(key, value) {
-            miniCart += ` <ul>
-            <li>
-                <div class="shopping-cart-img">
-                    <a href="shop-product-right.html">
-                    <img alt="Nest" src="/${value.options.image} " style="width:50px;height:50px;" />
-                    </a>
-                </div>
-                <div class="shopping-cart-title" style="margin: -73px 74px 14px; width" 146px;>
-                    <h4>
-                      <a href="shop-product-right.html"> ${value.name} </a>
-                    </h4>
-                    <h4>
-                      <span>${value.qty} × </span>${value.price}
-                    </h4>
-                </div>
-                <div class="shopping-cart-delete" style="margin: -85px 1px 0px;">
-                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                </div>
-            </li> 
-        </ul>
-        <hr><br>  
-              `
-          });
-          $('#miniCart').html(miniCart);
-        }
-      })
-    }
-
-    miniCart();
-  </script>
+        ↓↓合計金額と商品の個数追加
+        $('span[id="cartSubTotal"]').text(response.cartTotal);
+        $('#cartQty').text(response.cartQty);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,15 +29,21 @@ mini Cart Ajax②
 \resources\views\frontend\body\header.blade.php
 
 ・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+  <div class="header-action-icon-2">
+    <a class="mini-cart-icon" href="shop-cart.html">
+      <img alt="Nest" src="{{ asset('frontend/assets/imgs/theme/icons/icon-cart.svg') }}" />
+      <span class="pro-count blue" id="cartQty"></span>
+    </a>
 
-  <a href="shop-cart.html"><span class="lable">Cart</span></a>
-  <div class="cart-dropdown-wrap cart-dropdown-hm2">
-
-    <!--   // mini cart start with ajax -->
-    <div id="miniCart">
+  <div class="shopping-cart-footer">
+    <div class="shopping-cart-total">
+      <h4>Total <span id="cartSubTotal"></span></h4>
     </div>
-    <!--   // End mini cart start with ajax -->
+
+★コード解説★
+JSをよみこませるため、id属性追記
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-headerのCartを選択し、Add To Cartで追加ProductのデータがはいっていればOK
+headerのCartを選択し、Add To Cartで小計とProductの個数の合計がはいっていればOK
