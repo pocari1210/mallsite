@@ -1,0 +1,118 @@
+
+下記コマンドでコントローラー作成
+php artisan make:controller User/WishlistController
+
+下記コマンドでmodelとtable作成
+php artisan make:model Wishlist -m
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\Wishlist.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Wishlist extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集◆
+
+ディレクトリ
+\database\migrations\2023_07_29_112712_create_wishlists_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('wishlists', function (Blueprint $table) {
+      $table->id();
+      $table->unsignedBigInteger('user_id');
+      $table->unsignedBigInteger('product_id');
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ベーステンプレート◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <!--  /// Start Wishlist Add -->
+  <script type="text/javascript">
+    function addToWishList(product_id) {
+      $.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: "/add-to-wishlist/" + product_id,
+        success: function(data) {
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+  </script>
+
+  <!--  /// End Wishlist Add -->
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_new_product.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <a aria-label="Add To Wishlist" class="action-btn" id="{{ $product->id }}" onclick="addToWishList(this.id)">
+    <i class="fi-rs-heart"></i>
+  </a>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
