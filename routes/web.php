@@ -438,6 +438,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
       ->name('wishlist');
 
     Route::get('/get-wishlist-product', 'GetWishlistProduct');
+
+    // WishList削除のルート
+    Route::get('/wishlist-remove/{id}', 'WishlistRemove');
   });
 }); // end group middleware
 
