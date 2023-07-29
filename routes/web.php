@@ -446,7 +446,15 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // WishList削除のルート
     Route::get('/wishlist-remove/{id}', 'WishlistRemove');
   });
-}); // end group middleware
+
+  // Compare All Route 
+  Route::controller(CompareController::class)->group(function () {
+
+    // Compareの一覧表示のルート
+    Route::get('/compare', 'AllCompare')
+      ->name('compare');
+  });
+}); // end Usergroup middleware
 
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
