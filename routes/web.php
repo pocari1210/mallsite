@@ -427,6 +427,18 @@ Route::post('/dcart/data/store/{id}', [CartController::class, 'AddToCartDetails'
 /// Add to Wishlist 
 Route::post('/add-to-wishlist/{product_id}', [WishlistController::class, 'AddToWishList']);
 
+/// User All Route
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+  // Wishlist All Route 
+  Route::controller(WishlistController::class)->group(function () {
+
+    // WishList:一覧表示のルート
+    Route::get('/wishlist', 'AllWishlist')
+      ->name('wishlist');
+  });
+}); // end group middleware
+
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
