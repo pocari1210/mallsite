@@ -414,6 +414,9 @@ Route::get('/product/view/modal/{id}', [IndexController::class, 'ProductViewAjax
 /// Add to cart store data
 Route::post('/cart/data/store/{id}', [CartController::class, 'AddToCart']);
 
+// Get Data from mini Cart
+Route::get('/product/mini/cart', [CartController::class, 'AddMiniCart']);
+
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

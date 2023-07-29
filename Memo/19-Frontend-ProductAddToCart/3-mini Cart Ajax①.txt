@@ -1,0 +1,62 @@
+
+3-mini Cart Ajax①
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Get Data from mini Cart
+Route::get('/product/mini/cart', [CartController::class, 'AddMiniCart']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <script type="text/javascript">
+    function miniCart() {
+      $.ajax({
+        type: 'GET',
+        url: '/product/mini/cart',
+        dataType: 'json',
+        success: function(response) {
+          console.log(response)
+        }
+      })
+    }
+  </script>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AddMiniCart()
+  {
+    $carts = Cart::content();
+    $cartQty = Cart::count();
+    $cartTotal = Cart::total();
+
+    return response()->json(array(
+      'carts' => $carts,
+      'cartQty' => $cartQty,
+      'cartTotal' => $cartTotal
+    ));
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+http://127.0.0.1:8000/product/mini/cartで検索した時に、
+Add To Cartを押したProductが表示できていればOK
