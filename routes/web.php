@@ -456,6 +456,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // GetCompareProductメソッドのajax通信のルート
     Route::get('/get-compare-product', 'GetCompareProduct');
+
+    // compareの削除処理のルート
+    Route::get('/compare-remove/{id}', 'CompareRemove');
   });
 }); // end Usergroup middleware
 
