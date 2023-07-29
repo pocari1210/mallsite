@@ -75,7 +75,7 @@
   <script type="text/javascript">
     $.ajaxSetup({
       headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('centent')
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     })
 
@@ -96,6 +96,9 @@
           $('#pcategory').text(data.product.category.category_name);
           $('#pbrand').text(data.product.brand.brand_name);
           $('#pimage').attr('src', '/' + data.product.product_thambnail);
+
+          $('#product_id').val(id);
+          $('#qty').val(1);
 
           // Product Price 
           if (data.product.discount_price == null) {
@@ -123,7 +126,7 @@
           ///Size 
           $('select[name="size"]').empty();
           $.each(data.size, function(key, value) {
-            $('select[name="size"]').append('<option value="' + value + ' ">' + value + '  </option')
+            $('select[name="size"]').append('<option value="' + value + ' ">' + value + '  </option>')
             if (data.size == "") {
               $('#sizeArea').hide();
             } else {
@@ -134,7 +137,7 @@
           ///Color 
           $('select[name="color"]').empty();
           $.each(data.color, function(key, value) {
-            $('select[name="color"]').append('<option value="' + value + ' ">' + value + '  </option')
+            $('select[name="color"]').append('<option value="' + value + ' ">' + value + '  </option>')
             if (data.color == "") {
               $('#colorArea').hide();
             } else {
@@ -144,6 +147,35 @@
         }
       })
     }
+
+    /// Start Add To Cart Prodcut 
+
+    function addToCart() {
+      var product_name = $('#pname').text();
+      var id = $('#product_id').val();
+      var color = $('#color option:selected').text();
+      var size = $('#size option:selected').text();
+      var quantity = $('#qty').val();
+
+      $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+          color: color,
+          size: size,
+          quantity: quantity,
+          product_name: product_name
+        },
+        url: "/cart/data/store/" + id,
+
+        success: function(data) {
+          $('#closeModal').click();
+          console.log(data)
+        }
+      })
+    }
+
+    /// End Add To Cart Prodcut 
   </script>
 
 </body>
