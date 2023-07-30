@@ -467,6 +467,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
       ->name('mycart');
 
     Route::get('/get-cart-product', 'GetCartProduct');
+    Route::get('/cart-remove/{rowId}', 'CartRemove');
   });
 }); // end Usergroup middleware
 
