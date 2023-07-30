@@ -460,6 +460,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // compareの削除処理のルート
     Route::get('/compare-remove/{id}', 'CompareRemove');
   });
+
+  // Cart All Route 
+  Route::controller(CartController::class)->group(function () {
+    Route::get('/mycart', 'MyCart')
+      ->name('mycart');
+  });
 }); // end Usergroup middleware
 
 Route::middleware('auth')->group(function () {
