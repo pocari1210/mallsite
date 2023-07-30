@@ -658,9 +658,9 @@
                     <div class="detail-qty border radius">
                     <a type="submit" class="qty-down" id="${value.rowId}" onclick="cartDecrement(this.id)"><i class="fi-rs-angle-small-down"></i></a>
                     
-                    <input type="text" name="quantity" class="qty-val" value="${value.qty}" min="1">
-                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                    </div>
+  <input type="text" name="quantity" class="qty-val" value="${value.qty}" min="1">
+    <a type="submit" class="qty-up" id="${value.rowId}" onclick="cartIncrement(this.id)"><i class="fi-rs-angle-small-up"></i></a>
+  </div>
                 </div>
             </td>
             <td class="price" data-title="Price">
@@ -717,6 +717,18 @@
     // Cart Remove End 
 
     // Cart INCREMENT 
+
+    function cartIncrement(rowId) {
+      $.ajax({
+        type: 'GET',
+        url: "/cart-increment/" + rowId,
+        dataType: 'json',
+        success: function(data) {
+          cart();
+          miniCart();
+        }
+      });
+    }
     // Cart INCREMENT End 
     // Cart Decrement Start
     function cartDecrement(rowId) {
