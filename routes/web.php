@@ -275,12 +275,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
       ->name('delete.banner');
   });
 
-  // Banner All Route 
+  // Coupon All Route 
   Route::controller(CouponController::class)->group(function () {
 
     // クーポンの一覧表示のルート
     Route::get('/all/coupon', 'AllCoupon')
       ->name('all.coupon');
+
+    // クーポンの追加のルート
+    Route::get('/add/coupon', 'AddCoupon')
+      ->name('add.coupon');
+
+    // クーポンの保存処理のルート
+    Route::post('/store/coupon', 'StoreCoupon')
+      ->name('store.coupon');
   });
 }); // Admin End Middleware 
 
