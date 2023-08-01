@@ -289,6 +289,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // クーポンの保存処理のルート
     Route::post('/store/coupon', 'StoreCoupon')
       ->name('store.coupon');
+
+    // クーポンの編集のルート
+    Route::get('/edit/coupon/{id}', 'EditCoupon')
+      ->name('edit.coupon');
+
+    // クーポンの更新処理のルート
+    Route::post('/update/coupon', 'UpdateCoupon')
+      ->name('update.coupon');
+
+    // クーポンの削除処理のルート
+    Route::get('/delete/coupon/{id}', 'DeleteCoupon')
+      ->name('delete.coupon');
   });
 }); // Admin End Middleware 
 

@@ -39,4 +39,44 @@ class CouponController extends Controller
 
     return redirect()->route('all.coupon')->with($notification);
   } // End Method 
+
+  // Couponの編集ページ遷移のコントローラー
+  public function EditCoupon($id)
+  {
+    $coupon = Coupon::findOrFail($id);
+    return view('backend.coupon.edit_coupon', compact('coupon'));
+  } // End Method 
+
+  // Couponの更新処理のコントローラー
+  public function UpdateCoupon(Request $request)
+  {
+    $coupon_id = $request->id;
+
+    Coupon::findOrFail($coupon_id)->update([
+      'coupon_name' => strtoupper($request->coupon_name),
+      'coupon_discount' => $request->coupon_discount,
+      'coupon_validity' => $request->coupon_validity,
+      'created_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Coupon Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.coupon')->with($notification);
+  } // End Method 
+
+  // Couponの削除処理のコントローラー
+  public function DeleteCoupon($id)
+  {
+    Coupon::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Coupon Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
 }

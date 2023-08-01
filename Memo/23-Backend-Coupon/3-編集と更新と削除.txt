@@ -1,0 +1,99 @@
+
+3-編集と更新と削除
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Coupon All Route 
+  Route::controller(CouponController::class)->group(function () {
+
+    // クーポンの編集のルート
+    Route::get('/edit/coupon/{id}', 'EditCoupon')
+      ->name('edit.coupon');
+
+    // クーポンの更新処理のルート
+    Route::post('/update/coupon', 'UpdateCoupon')
+      ->name('update.coupon');
+
+    // クーポンの削除処理のルート
+    Route::get('/delete/coupon/{id}', 'DeleteCoupon')
+      ->name('delete.coupon');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\coupon\coupon_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('edit.coupon',$item->id) }}" class="btn btn-info">Edit</a>
+    <a href="{{ route('delete.coupon',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\CouponController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Couponの編集ページ遷移のコントローラー
+  public function EditCoupon($id)
+  {
+    $coupon = Coupon::findOrFail($id);
+    return view('backend.coupon.edit_coupon', compact('coupon'));
+  } // End Method 
+
+  // Couponの更新処理のコントローラー
+  public function UpdateCoupon(Request $request)
+  {
+    $coupon_id = $request->id;
+
+    Coupon::findOrFail($coupon_id)->update([
+      'coupon_name' => strtoupper($request->coupon_name),
+      'coupon_discount' => $request->coupon_discount,
+      'coupon_validity' => $request->coupon_validity,
+      'created_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Coupon Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.coupon')->with($notification);
+  } // End Method 
+
+  // Couponの削除処理のコントローラー
+  public function DeleteCoupon($id)
+  {
+    Coupon::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Coupon Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\coupon\edit_coupon.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+編集ページから更新処理が行え、削除ボタンで削除処理が行えたらOK
