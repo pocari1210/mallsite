@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\VendorProductController;
 use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -272,6 +273,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Banner：削除処理のルート
     Route::get('/delete/banner/{id}', 'DeleteBanner')
       ->name('delete.banner');
+  });
+
+  // Banner All Route 
+  Route::controller(CouponController::class)->group(function () {
+
+    // クーポンの一覧表示のルート
+    Route::get('/all/coupon', 'AllCoupon')
+      ->name('all.coupon');
   });
 }); // Admin End Middleware 
 
