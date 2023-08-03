@@ -375,6 +375,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/store/state', 'StoreState')
       ->name('store.state');
 
+    // Stateの編集のルート
+    Route::get('/edit/state/{id}', 'EditState')
+      ->name('edit.state');
+
+    // Stateの更新処理のルート
+    Route::post('/update/state', 'UpdateState')
+      ->name('update.state');
+
+    // Stateの削除処理のルート
+    Route::get('/delete/state/{id}', 'DeleteState')
+      ->name('delete.state');
+
     Route::get('/district/ajax/{division_id}', 'GetDistrict');
   });
 }); // Admin End Middleware 
