@@ -359,6 +359,24 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/delete/district/{id}', 'DeleteDistrict')
       ->name('delete.district');
   });
+
+  // Shipping State All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Stateの一覧のルート
+    Route::get('/all/state', 'AllState')
+      ->name('all.state');
+
+    // Stateの追加ページ遷移のルート
+    Route::get('/add/state', 'AddState')
+      ->name('add.state');
+
+    // Stateの保存処理のルート
+    Route::post('/store/state', 'StoreState')
+      ->name('store.state');
+
+    Route::get('/district/ajax/{division_id}', 'GetDistrict');
+  });
 }); // Admin End Middleware 
 
 // Admin:ログイン処理のルート

@@ -169,4 +169,53 @@ class ShippingAreaController extends Controller
 
     return redirect()->back()->with($notification);
   } // End Method 
+
+  /////////////// State CRUD ///////////////
+
+
+  public function AllState()
+  {
+    $state = ShipState::latest()->get();
+
+    return view(
+      'backend.ship.state.state_all',
+      compact('state')
+    );
+  } // End Method 
+
+  public function AddState()
+  {
+    $division = ShipDivision::orderBy('division_name', 'ASC')->get();
+    $district = ShipDistricts::orderBy('district_name', 'ASC')->get();
+
+    return view(
+      'backend.ship.state.state_add',
+      compact('division', 'district')
+    );
+  } // End Method 
+
+  public function StoreState(Request $request)
+  {
+
+    ShipState::insert([
+      'division_id' => $request->division_id,
+      'district_id' => $request->district_id,
+      'state_name' => $request->state_name,
+    ]);
+
+    $notification = array(
+      'message' => 'ShipState Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.state')->with($notification);
+  } // End Method 
+
+  public function GetDistrict($division_id)
+  {
+    $dist = ShipDistricts::where('division_id', $division_id)
+      ->orderBy('district_name', 'ASC')->get();
+
+    return json_encode($dist);
+  } // End Method 
 }
