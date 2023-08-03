@@ -43,4 +43,46 @@ class ShippingAreaController extends Controller
 
     return redirect()->route('all.division')->with($notification);
   } // End Method 
+
+  // Divisionの編集ページ遷移のコントローラー
+  public function EditDivision($id)
+  {
+    $division = ShipDivision::findOrFail($id);
+
+    return view(
+      'backend.ship.division.division_edit',
+      compact('division')
+    );
+  } // End Method 
+
+  // Divisionの更新処理のコントローラー
+  public function UpdateDivision(Request $request)
+  {
+    $division_id = $request->id;
+
+    ShipDivision::findOrFail($division_id)->update([
+      'division_name' => $request->division_name,
+    ]);
+
+    $notification = array(
+      'message' => 'ShipDivision Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.division')->with($notification);
+  } // End Method 
+
+  // Divisionの削除処理のコントローラー
+  public function DeleteDivision($id)
+  {
+
+    ShipDivision::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'ShipDivision Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
 }

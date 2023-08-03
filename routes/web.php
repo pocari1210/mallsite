@@ -318,6 +318,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Divisionの保存処理のルート
     Route::post('/store/division', 'StoreDivision')
       ->name('store.division');
+
+    // Divisionの更新ページ遷移のルート
+    Route::get('/edit/division/{id}', 'EditDivision')
+      ->name('edit.division');
+
+    // Divisionの更新処理のルート
+    Route::post('/update/division', 'UpdateDivision')
+      ->name('update.division');
+
+    // Divisionの削除処理のルート
+    Route::get('/delete/division/{id}', 'DeleteDivision')
+      ->name('delete.division');
   });
 }); // Admin End Middleware 
 
