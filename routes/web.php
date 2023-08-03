@@ -331,6 +331,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/delete/division/{id}', 'DeleteDivision')
       ->name('delete.division');
   });
+
+  // Shipping District All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Districtの一覧のルート
+    Route::get('/all/district', 'AllDistrict')
+      ->name('all.district');
+
+    // Districtの追加ページ遷移のルート
+    Route::get('/add/district', 'AddDistrict')
+      ->name('add.district');
+
+    // Districtの保存処理のルート
+    Route::post('/store/district', 'StoreDistrict')
+      ->name('store.district');
+  });
 }); // Admin End Middleware 
 
 // Admin:ログイン処理のルート
