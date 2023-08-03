@@ -346,6 +346,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Districtの保存処理のルート
     Route::post('/store/district', 'StoreDistrict')
       ->name('store.district');
+
+    // Districtの編集ページ遷移のルート
+    Route::get('/edit/district/{id}', 'EditDistrict')
+      ->name('edit.district');
+
+    // Districtの更新処理のルート
+    Route::post('/update/district', 'UpdateDistrict')
+      ->name('update.district');
+
+    // Districtの削除処理のルート
+    Route::get('/delete/district/{id}', 'DeleteDistrict')
+      ->name('delete.district');
   });
 }); // Admin End Middleware 
 
