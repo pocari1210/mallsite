@@ -1,0 +1,139 @@
+
+下記コマンドで、コントローラー作成
+php artisan make:controller Backend/ShippingAreaController
+
+下記コマンドで、tableとモデルを作成
+php artisan make:model ShipDistricts -m
+php artisan make:model ShipDivision -m
+php artisan make:model ShipState -m
+
+◆Modelの編集①◆
+
+ディレクトリ
+\app\Models\ShipDistricts.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class ShipDistricts extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Modelの編集②◆
+
+ディレクトリ
+\app\Models\ShipDivision.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class ShipDivision extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Modelの編集③◆
+
+ディレクトリ
+\app\Models\ShipState.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class ShipState extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集①◆
+
+ディレクトリ
+\database\migrations\2023_08_03_101421_create_ship_districts_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('ship_districts', function (Blueprint $table) {
+      $table->id();
+      $table->unsignedBigInteger('division_id');
+      $table->string('district_name');
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集②◆
+
+ディレクトリ
+\database\migrations\2023_08_03_101432_create_ship_divisions_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('ship_divisions', function (Blueprint $table) {
+      $table->id();
+      $table->string('division_name');
+      $table->timestamps();
+    });
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集③◆
+
+ディレクトリ
+\database\migrations\2023_08_03_101445_create_ship_states_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('ship_states', function (Blueprint $table) {
+      $table->id();
+      $table->unsignedBigInteger('division_id');
+      $table->unsignedBigInteger('district_id');
+      $table->string('state_name');
+      $table->timestamps();
+    });
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Shipping Area </div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('all.coupon') }}"><i class="bx bx-right-arrow-alt"></i>All Division</a>
+        </li>
+        <li> <a href="{{ route('add.coupon') }}"><i class="bx bx-right-arrow-alt"></i>All District</a>
+        </li>
+        <li> <a href="{{ route('add.coupon') }}"><i class="bx bx-right-arrow-alt"></i>All State</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
