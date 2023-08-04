@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Product;
+use App\Models\Coupon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Session;
 
@@ -147,5 +149,27 @@ class CartController extends Controller
     Cart::update($rowId, $row->qty - 1);
 
     return response()->json('Decrement');
+  } // End Method
+
+  public function CouponApply(Request $request)
+  {
+    $coupon = Coupon::where('coupon_name', $request->coupon_name)
+      ->where('coupon_validity', '>=', Carbon::now()->format('Y-m-d'))->first();
+
+    if ($coupon) {
+      Session::put('coupon', [
+        'coupon_name' => $coupon->coupon_name,
+        'coupon_discount' => $coupon->coupon_discount,
+        'discount_amount' => round(Cart::total() * $coupon->coupon_discount / 100),
+        'total_amount' => round(Cart::total() - Cart::total() * $coupon->coupon_discount / 100)
+      ]);
+
+      return response()->json(array(
+        'validity' => true,
+        'success' => 'Coupon Applied Successfully'
+      ));
+    } else {
+      return response()->json(['error' => 'Invalid Coupon']);
+    }
   } // End Method
 }
