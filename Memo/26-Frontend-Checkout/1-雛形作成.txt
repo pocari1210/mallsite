@@ -1,0 +1,118 @@
+
+1-雛形作成
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Checkout Page Route 
+Route::get('/checkout', [CartController::class, 'CheckoutCreate'])
+  ->name('checkout');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ベーステンプレート◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <!-- toastr -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+
+  <!-- toastr -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <script>
+    @if(Session::has('message'))
+    var type = "{{ Session::get('alert-type','info') }}"
+    switch (type) {
+      case 'info':
+        toastr.info(" {{ Session::get('message') }} ");
+        break;
+      case 'success':
+        toastr.success(" {{ Session::get('message') }} ");
+        break;
+      case 'warning':
+        toastr.warning(" {{ Session::get('message') }} ");
+        break;
+      case 'error':
+        toastr.error(" {{ Session::get('message') }} ");
+        break;
+    }
+    @endif
+  </script>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\mycart\view_mycart.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <a href="{{ route('checkout') }}" class="btn mb-20 w-100">
+    Proceed To CheckOut<i class="fi-rs-sign-out ml-15"></i>
+  </a>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Auth;
+
+  public function CheckoutCreate()
+  {
+
+    if (Auth::check()) {
+
+      if (Cart::total() > 0) {
+
+        $carts = Cart::content();
+        $cartQty = Cart::count();
+        $cartTotal = Cart::total();
+
+        return view(
+          'frontend.checkout.checkout_view',
+          compact('carts', 'cartQty', 'cartTotal')
+        );
+      } else {
+
+        $notification = array(
+          'message' => 'Shopping At list One Product',
+          'alert-type' => 'error'
+        );
+
+        return redirect()->to('/')->with($notification);
+      }
+    } else {
+
+      $notification = array(
+        'message' => 'You Need to Login First',
+        'alert-type' => 'error'
+      );
+
+      return redirect()->route('login')->with($notification);
+    }
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
