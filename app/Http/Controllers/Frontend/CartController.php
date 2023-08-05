@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Coupon;
+use App\Models\ShipDivision;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Session;
 use Auth;
@@ -234,10 +235,11 @@ class CartController extends Controller
         $carts = Cart::content();
         $cartQty = Cart::count();
         $cartTotal = Cart::total();
+        $divisions = ShipDivision::orderBy('division_name', 'ASC')->get();
 
         return view(
           'frontend.checkout.checkout_view',
-          compact('carts', 'cartQty', 'cartTotal')
+          compact('carts', 'cartQty', 'cartTotal', 'divisions')
         );
       } else {
 
