@@ -138,6 +138,7 @@
           $('#pcategory').text(data.product.category.category_name);
           $('#pbrand').text(data.product.brand.brand_name);
           $('#pimage').attr('src', '/' + data.product.product_thambnail);
+          $('#pvendor_id').text(data.product.vendor_id);
 
           $('#product_id').val(id);
           $('#qty').val(1);
@@ -208,6 +209,7 @@
 
       var product_name = $('#pname').text();
       var id = $('#product_id').val();
+      var vendor_id = $('#pvendor_id').text();
       var color = $('#color option:selected').text();
       var size = $('#size option:selected').text();
       var quantity = $('#qty').val();
@@ -218,7 +220,8 @@
           color: color,
           size: size,
           quantity: quantity,
-          product_name: product_name
+          product_name: product_name,
+          vendor_id: vendor_id
         },
         url: "/cart/data/store/" + id,
         success: function(data) {
@@ -265,6 +268,7 @@
 
       var product_name = $('#dpname').text();
       var id = $('#dproduct_id').val();
+      var vendor = $('#vproduct_id').val();
       var color = $('#dcolor option:selected').text();
       var size = $('#dsize option:selected').text();
       var quantity = $('#dqty').val();
@@ -275,7 +279,8 @@
           color: color,
           size: size,
           quantity: quantity,
-          product_name: product_name
+          product_name: product_name,
+          vendor: vendor
         },
         url: "/dcart/data/store/" + id,
         success: function(data) {

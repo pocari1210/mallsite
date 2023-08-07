@@ -1,0 +1,73 @@
+
+5-CartページにVendor追加
+
+
+◆Viewの修正◆
+
+ディレクトリ
+\resources\views\frontend\body\quickview.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="col-md-6">
+    <div class="font-xs">
+      <ul>
+        <li class="mb-5">Brand: <span class="text-brand" id="pbrand"> </span></li>
+        <li class="mb-5">Category:<span class="text-brand" id="pcategory"> </span></li>
+        <li class="mb-5">Vendor:<span class="text-brand" id="pvendor_id"> </span></li>
+      </ul>
+    </div>
+  </div> <!-- // End col  -->
+
+★コード解説★
+ProductのModalを開き、Vendorの項目が表示されていたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Viewの修正◆
+
+ディレクトリ
+\resources\views\frontend\product\product_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="product-extra-link2">
+    <input type="hidden" id="dproduct_id" value="{{ $product->id }}">
+
+    ↓↓追記↓↓
+    <input type="hidden" id="vproduct_id" value="{{ $product->vendor_id }}">
+    <button type="submit" class="button button-add-to-cart" onclick="addToCartDetails()"><i class="fi-rs-shopping-cart"></i>Add to cart</button>
+    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+    <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+  </div>
+
+★コード解説★
+Productの詳細ページでaddToCartDetails()を実行した際、
+どのvendorの情報か把握するために、追記を行う
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テンプレートベース修正◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+AddToCartとAddToCartDetailsのoptionに
+下記を追加
+
+'vendor' => $request->vendor,
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
