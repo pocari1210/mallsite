@@ -209,7 +209,7 @@
 
       var product_name = $('#pname').text();
       var id = $('#product_id').val();
-      var vendor_id = $('#pvendor_id').text();
+      var vendor = $('#pvendor_id').text();
       var color = $('#color option:selected').text();
       var size = $('#size option:selected').text();
       var quantity = $('#qty').val();
@@ -221,7 +221,7 @@
           size: size,
           quantity: quantity,
           product_name: product_name,
-          vendor_id: vendor_id
+          vendor: vendor
         },
         url: "/cart/data/store/" + id,
         success: function(data) {

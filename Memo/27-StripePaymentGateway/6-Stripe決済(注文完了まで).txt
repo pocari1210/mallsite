@@ -1,0 +1,96 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\payment\stripe.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+          <form action="{{ route('stripe.order') }}" method="post" id="payment-form">
+            @csrf
+            <div class="form-row">
+              <label for="card-element">
+                Credit or debit card
+
+		↓↓追記↓↓
+                <input type="hidden" name="name" value="{{ $data['shipping_name'] }}">
+                <input type="hidden" name="email" value="{{ $data['shipping_email'] }}">
+                <input type="hidden" name="phone" value="{{ $data['shipping_phone'] }}">
+                <input type="hidden" name="post_code" value="{{ $data['post_code'] }}">
+                <input type="hidden" name="division_id" value="{{ $data['division_id'] }}">
+                <input type="hidden" name="district_id" value="{{ $data['district_id'] }}">
+                <input type="hidden" name="state_id" value="{{ $data['state_id'] }}">
+                <input type="hidden" name="address" value="{{ $data['shipping_address'] }}">
+                <input type="hidden" name="notes" value="{{ $data['notes'] }}">
+              </label>
+
+★コード解説★
+checkoutページで入力した情報を、stripeページに引き継いでいる
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\StripeController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\Order;
+use App\Models\OrderItem;
+use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
+use Auth;
+
+
+  public function StripeOrder(Request $request)
+  {
+
+    $carts = Cart::content();
+    foreach ($carts as $cart) {
+
+      OrderItem::insert([
+        'order_id' => $order_id,
+        'product_id' => $cart->id,
+        'vendor_id' => $cart->options->vendor,
+        'color' => $cart->options->color,
+        'size' => $cart->options->size,
+        'qty' => $cart->qty,
+        'price' => $cart->price,
+        'created_at' => Carbon::now(),
+
+      ]);
+    } // End Foreach
+
+    if (Session::has('coupon')) {
+      Session::forget('coupon');
+    }
+
+    Cart::destroy();
+
+    $notification = array(
+      'message' => 'Your Order Place Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('dashboard')->with($notification);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+OrderItemに決済が完了したProductが挿入されていたらOK
