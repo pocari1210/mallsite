@@ -1,0 +1,71 @@
+
+
+3-Stripe決済
+
+下記URLより公開可能キーとシークレットキーを取得
+https://dashboard.stripe.com/test/apikeys
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\payment\stripe.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<script type="text/javascript">
+  // Create a Stripe client.
+  var stripe = Stripe('pk_test_51KdKmKIqU18BrtXMhCGUt8I1ZRSiedYo04pmgthM0bwHJ7egTUns9jFbJcE0rXnWeAbipF4FMYGs6hreNRZq8HWf00lT2OHIv3');
+
+★コード解説★
+Stripeに公開可能キーを記述している
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\StripeController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function StripeOrder(Request $request)
+  {
+
+    // setApiKeyにシークレットキーを入力している
+    \Stripe\Stripe::setApiKey('sk_test_51KdKmKIqU18BrtXMvtRilySQHfRBnlwHKMRbep955ovxk8dR6ThlevT2tlN3JcuJzqprYuX6HHytWXCXUMXtM9OG00nHpWVOJJ');
+
+    $token = $_POST['stripeToken'];
+
+    $charge = \Stripe\Charge::create([
+      'amount' => 999 * 100,
+      'currency' => 'usd',
+      'description' => 'Test Shop',
+      'source' => $token,
+      'metadata' => ['order_id' => '6735'],
+    ]);
+
+    dd($charge);
+  } // End Method 
+
+★コード解説★
+決済ページに進み、$chargeの中身が確認がとれたらOK
+Stripeのダッシュボードページの支払いページにて、
+説明のカラムに'Test Shop'とはいっていたらOK
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
