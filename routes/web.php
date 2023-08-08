@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\ShippingAreaController;
+use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -390,6 +391,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
       ->name('delete.state');
 
     Route::get('/district/ajax/{division_id}', 'GetDistrict');
+  });
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    // Adminの注文のペンディング画面のルート
+    Route::get('/pending/order', 'PendingOrder')
+      ->name('pending.order');
   });
 }); // Admin End Middleware 
 
