@@ -612,8 +612,13 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
   // Stripe All Route 
   Route::controller(StripeController::class)->group(function () {
+    // Stripe決済のルート
     Route::post('/stripe/order', 'StripeOrder')
       ->name('stripe.order');
+
+    // 代金引換決済のルート
+    Route::post('/cash/order', 'CashOrder')
+      ->name('cash.order');
   });
 }); // end Usergroup middleware
 
