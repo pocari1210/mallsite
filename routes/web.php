@@ -480,7 +480,12 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 
     Route::get('/vendor/subcategory/ajax/{category_id}', 'VendorGetSubCategory');
   });
-});
+
+  Route::controller(VendorOrderController::class)->group(function () {
+    Route::get('/vendor/order', 'VendorOrder')
+      ->name('vendor.order');
+  });
+}); // end Vendor Group middleware
 
 // Vendor:ログイン処理のルート
 Route::get('/vendor/login', [VendorController::class, 'VendorLogin'])

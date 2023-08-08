@@ -1,0 +1,113 @@
+
+2-Product注文履歴(Vendor)
+
+下記コマンドでコントローラー作成
+php artisan make:controller Backend/VendorOrderController
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\OrderItem.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class OrderItem extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function order()
+  {
+    return $this->belongsTo(Order::class, 'order_id', 'id');
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Vendor権限のルート★
+Route::middleware(['auth', 'role:vendor'])->group(function () {
+
+  Route::controller(VendorOrderController::class)->group(function () {
+    Route::get('/vendor/order', 'VendorOrder')
+      ->name('vendor.order');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">All Order</div>
+  </a>
+  <ul>
+    <li>
+      <a href="{{ route('vendor.order') }}">
+        <i class="bx bx-right-arrow-alt"></i>
+        Vendor Order</a>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorOrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorOrder()
+  {
+
+    $id = Auth::user()->id;
+    $orderitem = OrderItem::with('order')
+      ->where('vendor_id', $id)->orderBy('id', 'DESC')->get();
+
+    return view(
+      'vendor.backend.orders.pending_orders',
+      compact('orderitem')
+    );
+  } // End Method 
+
+
+\app\Models\OrderItem.phpで作成した関数をwithメソッドで用いている
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\vendor\backend\orders\pending_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <tbody>
+    @foreach($orderitem as $key => $item)
+    <tr>
+      <td> {{ $key+1 }} </td>
+      <td>{{ $item['order']['order_date'] }}</td>
+      <td>{{ $item['order']['invoice_no'] }}</td>
+      <td>${{ $item['order']['amount'] }}</td>
+      <td>{{ $item['order']['payment_method'] }}</td>
+      <td> <span class="badge rounded-pill bg-success"> {{ $item['order']['status'] }}</span></td>
+
+      <td>
+        <a href=" " class="btn btn-info" title="Details"><i class="fa fa-eye"></i> </a>
+      </td>
+    </tr>
+    @endforeach
