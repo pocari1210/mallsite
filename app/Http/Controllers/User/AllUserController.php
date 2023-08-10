@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AllUserController extends Controller
 {
@@ -53,5 +54,21 @@ class AllUserController extends Controller
       'frontend.order.order_details',
       compact('order', 'orderItem')
     );
+  } // End Method 
+
+  public function UserOrderInvoice($order_id)
+  {
+
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->where('user_id', Auth::id())->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    $pdf = Pdf::loadView('frontend.order.order_invoice', compact('order', 'orderItem'))
+      ->setPaper('a4')->setOption([
+        'tempDir' => public_path(),
+        'chroot' => public_path(),
+      ]);
+    return $pdf->download('invoice.pdf');
   } // End Method 
 }
