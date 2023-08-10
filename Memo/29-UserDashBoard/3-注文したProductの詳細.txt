@@ -1,0 +1,124 @@
+
+3-注文したProductの詳細
+
+◆モデルの編集①◆
+
+ディレクトリ
+\app\Models\Order.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Order extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function division()
+  {
+    return $this->belongsTo(ShipDivision::class, 'division_id', 'id');
+  }
+
+  public function district()
+  {
+    return $this->belongsTo(ShipDistricts::class, 'district_id', 'id');
+  }
+
+  public function state()
+  {
+    return $this->belongsTo(ShipState::class, 'state_id', 'id');
+  }
+  public function user()
+  {
+    return $this->belongsTo(User::class, 'user_id', 'id');
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆モデルの編集②◆
+
+ディレクトリ
+\app\Models\OrderItem.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class OrderItem extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function order()
+  {
+    return $this->belongsTo(Order::class, 'order_id', 'id');
+  }
+
+  public function product()
+  {
+    return $this->belongsTo(Product::class, 'product_id', 'id');
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // User Dashboard All Route 
+  Route::controller(AllUserController::class)->group(function () {
+
+    Route::get('/user/order_details/{order_id}', 'UserOrderDetails');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\userdashboard\user_order_page.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+
+    ↓↓遷移先url追記↓↓
+    <a href="{{ url('user/order_details/'.$order->id) }}" class="btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
+    <a href="#" class="btn-sm btn-danger"><i class="fa fa-download"></i> Invoice</a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\AllUserController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function UserOrderDetails($order_id)
+  {
+
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->where('user_id', Auth::id())->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    return view(
+      'frontend.order.order_details',
+      compact('order', 'orderItem')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\order\order_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+購入した商品の履歴の詳細ページが疎通できたらOK

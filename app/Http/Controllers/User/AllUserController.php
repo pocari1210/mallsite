@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Hash;
 
 class AllUserController extends Controller
@@ -28,7 +29,6 @@ class AllUserController extends Controller
     return view('frontend.userdashboard.user_change_password');
   } // End Method 
 
-
   public function UserOrderPage()
   {
     $id = Auth::user()->id;
@@ -38,6 +38,20 @@ class AllUserController extends Controller
     return view(
       'frontend.userdashboard.user_order_page',
       compact('orders')
+    );
+  } // End Method 
+
+  public function UserOrderDetails($order_id)
+  {
+
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->where('user_id', Auth::id())->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    return view(
+      'frontend.order.order_details',
+      compact('order', 'orderItem')
     );
   } // End Method 
 }

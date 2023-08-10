@@ -646,6 +646,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/user/order/page', 'UserOrderPage')
       ->name('user.order.page');
+
+    Route::get('/user/order_details/{order_id}', 'UserOrderDetails');
   });
 }); // end Usergroup middleware
 
