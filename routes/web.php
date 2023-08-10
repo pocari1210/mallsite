@@ -400,6 +400,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Adminの注文のペンディング画面のルート
     Route::get('/pending/order', 'PendingOrder')
       ->name('pending.order');
+
+    // Adminの注文の返品処理画面のルート
+    Route::get('/admin/order/details/{order_id}', 'AdminOrderDetails')
+      ->name('admin.order.details');
   });
 }); // Admin End Middleware 
 

@@ -1,0 +1,81 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Admin権限のルート★
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    // Adminの注文の返品処理画面のルート
+    Route::get('/admin/order/details/{order_id}', 'AdminOrderDetails')
+      ->name('admin.order.details');
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\orders\pending_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($orders as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+    <td>{{ $item->order_date }}</td>
+    <td>{{ $item->invoice_no }}</td>
+    <td>${{ $item->amount }}</td>
+    <td>{{ $item->payment_method }}</td>
+    <td> <span class="badge rounded-pill bg-success"> {{ $item->status }}</span></td>
+
+    <td>
+
+      ↓↓routeの編集↓↓
+      <a href="{{ route('admin.order.details',$item->id) }}" class="btn btn-info" title="Details"><i class="fa fa-eye"></i> </a>
+    </td>
+  </tr>
+  @endforeach
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\OrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AdminOrderDetails($order_id)
+  {
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.orders.admin_order_details',
+      compact('order', 'orderItem')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\orders\admin_order_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Admin Order Detailsが疎通されたらOK
