@@ -404,6 +404,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Adminの注文の返品処理画面のルート
     Route::get('/admin/order/details/{order_id}', 'AdminOrderDetails')
       ->name('admin.order.details');
+
+    Route::get('/admin/confirmed/order', 'AdminConfirmedOrder')
+      ->name('admin.confirmed.order');
+
+    Route::get('/admin/processing/order', 'AdminProcessingOrder')
+      ->name('admin.processing.order');
+
+    Route::get('/admin/delivered/order', 'AdminDeliveredOrder')
+      ->name('admin.delivered.order');
   });
 }); // Admin End Middleware 
 

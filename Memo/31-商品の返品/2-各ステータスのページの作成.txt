@@ -1,0 +1,105 @@
+
+2-各ステータスのページの作成
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    Route::get('/admin/confirmed/order', 'AdminConfirmedOrder')
+      ->name('admin.confirmed.order');
+
+    Route::get('/admin/processing/order', 'AdminProcessingOrder')
+      ->name('admin.processing.order');
+
+    Route::get('/admin/delivered/order', 'AdminDeliveredOrder')
+      ->name('admin.delivered.order');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Order Manage </div>
+  </a>
+  <ul>
+    <li> <a href="{{ route('pending.order') }}"><i class="bx bx-right-arrow-alt"></i>Pending Order</a>
+    </li>
+
+    ↓↓routeの追記↓↓
+    <li> <a href="{{ route('admin.confirmed.order') }}"><i class="bx bx-right-arrow-alt"></i>Confirmed Order</a>
+    </li>
+    <li> <a href="{{ route('admin.processing.order') }}"><i class="bx bx-right-arrow-alt"></i>Processing Order</a>
+    </li>
+    <li> <a href="{{ route('admin.delivered.order') }}"><i class="bx bx-right-arrow-alt"></i>Delivered Order</a>
+    </li>
+    ↑↑routeの追記↑↑
+
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\OrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+  public function AdminConfirmedOrder()
+  {
+    $orders = Order::where('status', 'confirm')
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.orders.confirmed_orders',
+      compact('orders')
+    );
+  } // End Method 
+
+  public function AdminProcessingOrder()
+  {
+    $orders = Order::where('status', 'processing')
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.orders.processing_orders',
+      compact('orders')
+    );
+  } // End Method 
+
+  public function AdminDeliveredOrder()
+  {
+    $orders = Order::where('status', 'deliverd')
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.orders.delivered_orders',
+      compact('orders')
+    );
+  } // End Method   
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\orders\confirmed_orders.blade.php
+\resources\views\backend\orders\delivered_orders.blade.php
+\cms\resources\views\backend\orders\processing_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+各ステータスの一覧ページの疎通が確認とれたらOK
