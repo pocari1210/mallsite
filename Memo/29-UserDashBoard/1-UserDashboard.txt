@@ -1,4 +1,6 @@
 
+1-UserDashboard
+
 下記コマンドでコントローラー作成
 php artisan make:controller User/AllUserController
 
@@ -18,6 +20,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
   Route::controller(AllUserController::class)->group(function () {
     Route::get('/user/account/page', 'UserAccount')
       ->name('user.account.page');
+
+    Route::get('/user/change/password', 'UserChangePassword')
+      ->name('user.change.password');
+
+    Route::get('/user/order/page', 'UserOrderPage')
+      ->name('user.order.page');
   });
 
 
@@ -67,3 +75,24 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 UserのダッシュボードページのAccount detailボタンを押し、
 ページが遷移されたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆サイドバーメニュー◆
+
+ディレクトリ
+\resources\views\frontend\body\dashboard_sidebar_menu.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+@php
+$route = Route::current()->getName();
+@endphp
+
+      <li class="nav-item">
+        <a class="nav-link {{ ($route == 'user.account.page')? 'active':  '' }}" href="{{ route('user.account.page') }}"><i class="fi-rs-user mr-10"></i>Account details</a>
+      </li>
+
+★コード解説★
+
+選択しているナビゲーションをactiveの状態にする
