@@ -22,6 +22,7 @@ use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\User\CompareController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\StripeController;
+use App\Http\Controllers\User\AllUserController;
 
 
 /*
@@ -633,6 +634,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // 代金引換決済のルート
     Route::post('/cash/order', 'CashOrder')
       ->name('cash.order');
+  });
+
+  // User Dashboard All Route 
+  Route::controller(AllUserController::class)->group(function () {
+    Route::get('/user/account/page', 'UserAccount')
+      ->name('user.account.page');
   });
 }); // end Usergroup middleware
 
