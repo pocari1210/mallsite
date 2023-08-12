@@ -413,6 +413,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/delivered/order', 'AdminDeliveredOrder')
       ->name('admin.delivered.order');
+
+    Route::get('/pending/confirm/{order_id}', 'PendingToConfirm')
+      ->name('pending-confirm');
   });
 }); // Admin End Middleware 
 

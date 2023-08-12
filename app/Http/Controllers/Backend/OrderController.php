@@ -69,4 +69,16 @@ class OrderController extends Controller
       compact('orders')
     );
   } // End Method   
+
+  public function PendingToConfirm($order_id)
+  {
+    Order::findOrFail($order_id)->update(['status' => 'confirm']);
+
+    $notification = array(
+      'message' => 'Order Confirm Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('admin.confirmed.order')->with($notification);
+  } // End Method 
 }
