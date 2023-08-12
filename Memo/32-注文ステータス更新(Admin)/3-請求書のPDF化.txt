@@ -1,0 +1,78 @@
+
+
+3-請求書のPDF化
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    Route::get('/admin/invoice/download/{order_id}', 'AdminInvoiceDownload')
+      ->name('admin.invoice.download');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\orders\confirmed_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+@foreach($orders as $key => $item)
+<tr>
+  <td> {{ $key+1 }} </td>
+  <td>{{ $item->order_date }}</td>
+  <td>{{ $item->invoice_no }}</td>
+  <td>${{ $item->amount }}</td>
+  <td>{{ $item->payment_method }}</td>
+  <td> <span class="badge rounded-pill bg-success"> {{ $item->status }}</span></td>
+
+  <td>
+    <a href="{{ route('admin.order.details',$item->id) }}" class="btn btn-info" title="Details"><i class="fa fa-eye"></i> </a>
+
+    ↓↓請求書のPDFのダウンロードボタン作成↓↓
+    <a href="{{ route('admin.invoice.download',$item->id) }}" class="btn btn-danger" title="Invoice Pdf"><i class="fa fa-download"></i> </a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\OrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Barryvdh\DomPDF\Facade\Pdf;
+
+  public function AdminInvoiceDownload($order_id)
+  {
+
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    $pdf = Pdf::loadView('backend.orders.admin_order_invoice', compact('order', 'orderItem'))->setPaper('a4')->setOption([
+      'tempDir' => public_path(),
+      'chroot' => public_path(),
+    ]);
+    return $pdf->download('invoice.pdf');
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\orders\admin_order_invoice.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+PDFのダウンロードができたらOK

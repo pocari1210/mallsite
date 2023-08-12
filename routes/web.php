@@ -424,6 +424,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // ProcessからDeliveredにステータス変更のルート
     Route::get('/processing/delivered/{order_id}', 'ProcessToDelivered')
       ->name('processing-delivered');
+
+    Route::get('/admin/invoice/download/{order_id}', 'AdminInvoiceDownload')
+      ->name('admin.invoice.download');
   });
 }); // Admin End Middleware 
 
