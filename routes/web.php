@@ -416,6 +416,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/pending/confirm/{order_id}', 'PendingToConfirm')
       ->name('pending-confirm');
+
+    // ConfirmからProcessにステータス変更のルート
+    Route::get('/confirm/processing/{order_id}', 'ConfirmToProcess')
+      ->name('confirm-processing');
+
+    // ProcessからDeliveredにステータス変更のルート
+    Route::get('/processing/delivered/{order_id}', 'ProcessToDelivered')
+      ->name('processing-delivered');
   });
 }); // Admin End Middleware 
 
