@@ -438,6 +438,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/return/request/approved/{order_id}', 'ReturnRequestApproved')
       ->name('return.request.approved');
+
+    Route::get('/complete/return/request', 'CompleteReturnRequest')
+      ->name('complete.return.request');
   });
 }); // Admin End Middleware 
 
