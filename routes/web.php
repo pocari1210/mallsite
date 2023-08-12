@@ -681,6 +681,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Prodoctの返品処理のルート
     Route::post('/return/order/{order_id}', 'ReturnOrder')
       ->name('return.order');
+
+    // Productの返品リストページ遷移のルート
+    Route::get('/return/order/page', 'ReturnOrderPage')
+      ->name('return.order.page');
   });
 }); // end Usergroup middleware
 
