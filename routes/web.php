@@ -528,9 +528,13 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     Route::get('/vendor/order', 'VendorOrder')
       ->name('vendor.order');
 
-    // VendorのProductの返品リストのルート
+    // VendorのProductの一覧リストのルート
     Route::get('/vendor/return/order', 'VendorReturnOrder')
       ->name('vendor.return.order');
+
+    // VendorのProductの返品リストのルート
+    Route::get('/vendor/complete/return/order', 'VendorCompleteReturnOrder')
+      ->name('vendor.complete.return.order');
   });
 }); // end Vendor Group middleware
 
