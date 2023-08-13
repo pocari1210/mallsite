@@ -20,6 +20,7 @@ use App\Http\Controllers\Backend\ReturnController;
 use App\Http\Controllers\Backend\VendorOrderController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\ActiveUserController;
+use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -481,6 +482,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Vendorの一覧リストのルート
     Route::get('/all/vendor', 'AllVendor')
       ->name('all-vendor');
+  });
+
+  // Blog All Route
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/admin/blog/category', 'AllBlogCateogry')
+      ->name('admin.blog.category');
   });
 }); // Admin End Middleware 
 

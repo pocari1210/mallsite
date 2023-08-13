@@ -1,0 +1,128 @@
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller Backend/BlogController
+
+下記コマンドでモデルとテーブルファイルを新規作成
+php artisan make:model BlogCategory -m
+php artisan make:model BlogPost -m
+
+
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\BlogCategory.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class BlogCategory extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\BlogPost.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class BlogPost extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テーブルの編集◆
+
+ディレクトリ
+\database\migrations\2023_08_13_113322_create_blog_categories_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('blog_categories', function (Blueprint $table) {
+      $table->id();
+      $table->string('blog_category_name');
+      $table->string('blog_category_slug');
+      $table->timestamps();
+    });
+  }
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テーブルの編集◆
+
+ディレクトリ
+\database\migrations\2023_08_13_113403_create_blog_posts_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('blog_posts', function (Blueprint $table) {
+      $table->id();
+      $table->integer('category_id');
+      $table->string('post_title');
+      $table->string('post_slug');
+      $table->string('post_image');
+      $table->text('post_short_description');
+      $table->text('post_long_description');
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Blog All Route
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/admin/blog/category', 'AllBlogCateogry')
+      ->name('admin.blog.category');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Blog Manage</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('admin.blog.category') }}"><i class="bx bx-right-arrow-alt"></i>All Blog Categroy</a>
+        </li>
+        <li> <a href="{{ route('all-vendor') }}"><i class="bx bx-right-arrow-alt"></i>All Blog Post</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
