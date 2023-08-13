@@ -19,6 +19,7 @@ use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\ReturnController;
 use App\Http\Controllers\Backend\VendorOrderController;
 use App\Http\Controllers\Backend\ReportController;
+use App\Http\Controllers\Backend\ActiveUserController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -468,6 +469,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/search/by/user', 'SearchByUser')
       ->name('search-by-user');
+  });
+
+  // Active user and vendor All Route 
+  Route::controller(ActiveUserController::class)->group(function () {
+
+    // Userの一覧リストのルート
+    Route::get('/all/user', 'AllUser')
+      ->name('all-user');
+
+    // Vendorの一覧リストのルート
+    Route::get('/all/vendor', 'AllVendor')
+      ->name('all-vendor');
   });
 }); // Admin End Middleware 
 
