@@ -450,6 +450,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/report/view', 'ReportView')
       ->name('report.view');
+
+    // 購入履歴検索(日付)のルート
+    Route::post('/search/by/date', 'SearchByDate')
+      ->name('search-by-date');
   });
 }); // Admin End Middleware 
 
