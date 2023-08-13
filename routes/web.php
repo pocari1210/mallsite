@@ -497,6 +497,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Blogのカテゴリーの保存処理のルート
     Route::post('/admin/store/blog/category', 'StoreBlogCateogry')
       ->name('store.blog.category');
+
+    // Blogのカテゴリー編集ページ遷移のルート
+    Route::get('/admin/edit/blog/category/{id}', 'EditBlogCateogry')
+      ->name('edit.blog.category');
+
+    // Blogのカテゴリーの更新処理のルート
+    Route::post('/admin/update/blog/category', 'UpdateBlogCateogry')
+      ->name('update.blog.category');
+
+    // Blogのカテゴリーの削除処理のルート
+    Route::get('/admin/delete/blog/category/{id}', 'DeleteBlogCateogry')
+      ->name('delete.blog.category');
   });
 }); // Admin End Middleware 
 
