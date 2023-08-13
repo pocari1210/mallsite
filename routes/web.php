@@ -454,6 +454,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // 購入履歴検索(日付)のルート
     Route::post('/search/by/date', 'SearchByDate')
       ->name('search-by-date');
+
+    // 購入履歴検索(月単位)のルート
+    Route::post('/search/by/month', 'SearchByMonth')
+      ->name('search-by-month');
+
+    // 購入履歴検索(年単位)のルート
+    Route::post('/search/by/year', 'SearchByYear')
+      ->name('search-by-year');
   });
 }); // Admin End Middleware 
 
