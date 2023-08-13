@@ -1,0 +1,97 @@
+
+
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\BlogPost.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class BlogPost extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function blogcategory()
+  {
+    return $this->belongsTo(BlogCategory::class, 'category_id', 'id');
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    // BlogPostの保存処理のルート
+    Route::post('/admin/store/blog/post', 'StoreBlogPost')
+      ->name('store.blog.post');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\blog\post\blogpost_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+  
+@foreach($blogpost as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+
+    ↓↓修正↓↓
+    <td>{{ $item['blogcategory']['blog_category_name'] }}</td>
+    <td> <img src="{{ asset($item->post_image) }}" style="width: 70px; height:40px;"> </td>
+    <td>{{ $item->post_title }}</td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BlogController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function StoreBlogPost(Request $request)
+  {
+
+    $image = $request->file('post_image');
+    $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+    InterventionImage::make($image)->resize(1103, 906)->save('upload/blog/' . $name_gen);
+    $save_url = 'upload/blog/' . $name_gen;
+
+    BlogPost::insert([
+      'category_id' => $request->category_id,
+      'post_title' => $request->post_title,
+      'post_slug' => strtolower(str_replace(' ', '-', $request->post_title)),
+      'post_short_description' => $request->post_short_description,
+      'post_long_description' => $request->post_long_description,
+      'post_image' => $save_url,
+      'created_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Blog Post Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('admin.blog.post')->with($notification);
+  } // End Method 
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

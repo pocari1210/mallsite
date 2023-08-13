@@ -514,11 +514,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   // Blog Post All Route 
   Route::controller(BlogController::class)->group(function () {
 
+    // BlogPostの一覧ページのルート
     Route::get('/admin/blog/post', 'AllBlogPost')
       ->name('admin.blog.post');
 
+    // BlogPostの追加ページ遷移のルート
     Route::get('/admin/add/blog/post', 'AddBlogPost')
       ->name('add.blog.post');
+
+    // BlogPostの保存処理のルート
+    Route::post('/admin/store/blog/post', 'StoreBlogPost')
+      ->name('store.blog.post');
   });
 }); // Admin End Middleware 
 
