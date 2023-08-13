@@ -525,6 +525,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // BlogPostの保存処理のルート
     Route::post('/admin/store/blog/post', 'StoreBlogPost')
       ->name('store.blog.post');
+
+    // BlogPostの編集ページ遷移のルート
+    Route::get('/admin/edit/blog/post/{id}', 'EditBlogPost')
+      ->name('edit.blog.post');
+
+    // BlogPostの更新処理のルート
+    Route::post('/admin/update/blog/post', 'UpdateBlogPost')
+      ->name('update.blog.post');
+
+    // BlogPostの削除処理のルート
+    Route::get('/admin/delete/blog/post/{id}', 'DeleteBlogPost')
+      ->name('delete.blog.post');
   });
 }); // Admin End Middleware 
 
