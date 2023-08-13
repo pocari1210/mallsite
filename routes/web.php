@@ -17,6 +17,7 @@ use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\ShippingAreaController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\ReturnController;
+use App\Http\Controllers\Backend\VendorOrderController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -526,6 +527,10 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
   Route::controller(VendorOrderController::class)->group(function () {
     Route::get('/vendor/order', 'VendorOrder')
       ->name('vendor.order');
+
+    // VendorのProductの返品リストのルート
+    Route::get('/vendor/return/order', 'VendorReturnOrder')
+      ->name('vendor.return.order');
   });
 }); // end Vendor Group middleware
 

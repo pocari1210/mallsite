@@ -1,0 +1,67 @@
+
+1-注文リスト一覧
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::controller(VendorOrderController::class)->group(function () {
+
+    // VendorのProductの返品リストのルート
+    Route::get('/vendor/return/order', 'VendorReturnOrder')
+      ->name('vendor.return.order');
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <ul>
+    <li>
+      <a href="{{ route('vendor.order') }}"><i class="bx bx-right-arrow-alt"></i>Vendor Order</a>
+    </li>
+
+    ↓↓routeの追記↓↓
+    <li>
+      <a href="{{ route('vendor.return.order') }}"><i class="bx bx-right-arrow-alt"></i>Return Order</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorOrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorReturnOrder()
+  {
+    $id = Auth::user()->id;
+    $orderitem = OrderItem::with('order')
+      ->where('vendor_id', $id)->orderBy('id', 'DESC')->get();
+
+    return view(
+      'vendor.backend.orders.return_orders',
+      compact('orderitem')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\orders\return_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
