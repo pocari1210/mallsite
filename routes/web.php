@@ -462,6 +462,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // 購入履歴検索(年単位)のルート
     Route::post('/search/by/year', 'SearchByYear')
       ->name('search-by-year');
+
+    Route::get('/order/by/user', 'OrderByUser')
+      ->name('order.by.user');
+
+    Route::post('/search/by/user', 'SearchByUser')
+      ->name('search-by-user');
   });
 }); // Admin End Middleware 
 
