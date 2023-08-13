@@ -812,6 +812,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/blog', 'AllBlog')
       ->name('home.blog');
+
+    // Blogの詳細ページ疎通のルート
+    Route::get('/post/details/{id}/{slug}', 'BlogDetails');
   });
 }); // end Usergroup middleware
 

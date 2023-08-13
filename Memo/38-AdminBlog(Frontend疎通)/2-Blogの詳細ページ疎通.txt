@@ -1,0 +1,55 @@
+
+2-Blogの詳細ページ疎通
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Frontend Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    // Blogの詳細ページ疎通のルート
+    Route::get('/post/details/{id}/{slug}', 'BlogDetails');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\blog\home_blog.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <h3 class="post-title mb-20">
+    <a href="{{ url('post/details/'.$post->id.'/'.$post->post_slug) }}">{{ $post->post_title }}</a>
+  </h3>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BlogController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function BlogDetails($id, $slug)
+  {
+    $blogcategoryies = BlogCategory::latest()->get();
+    $blogdetails = BlogPost::findOrFail($id);
+    $breadcat = BlogCategory::where('id', $id)->get();
+
+    return view(
+      'frontend.blog.blog_details',
+      compact('blogcategoryies', 'blogdetails', 'breadcat')
+    );
+  } // End Method   
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
