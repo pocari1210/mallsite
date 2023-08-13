@@ -314,6 +314,7 @@
                     <div class="col-lg-8">
                       <h4 class="mb-30">Customer questions & answers</h4>
                       <div class="comment-list">
+
                         <div class="single-comment justify-content-between d-flex mb-30">
                           <div class="user justify-content-between d-flex">
                             <div class="thumb text-center">
@@ -333,46 +334,9 @@
                             </div>
                           </div>
                         </div>
-                        <div class="single-comment justify-content-between d-flex mb-30 ml-30">
-                          <div class="user justify-content-between d-flex">
-                            <div class="thumb text-center">
-                              <img src="assets/imgs/blog/author-3.png" alt="" />
-                              <a href="#" class="font-heading text-brand">Brenna</a>
-                            </div>
-                            <div class="desc">
-                              <div class="d-flex justify-content-between mb-10">
-                                <div class="d-flex align-items-center">
-                                  <span class="font-xs text-muted">December 4, 2022 at 3:12 pm </span>
-                                </div>
-                                <div class="product-rate d-inline-block">
-                                  <div class="product-rating" style="width: 80%"></div>
-                                </div>
-                              </div>
-                              <p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, suscipit exercitationem accusantium obcaecati quos voluptate nesciunt facilis itaque modi commodi dignissimos sequi repudiandae minus ab deleniti totam officia id incidunt? <a href="#" class="reply">Reply</a></p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="single-comment justify-content-between d-flex">
-                          <div class="user justify-content-between d-flex">
-                            <div class="thumb text-center">
-                              <img src="assets/imgs/blog/author-4.png" alt="" />
-                              <a href="#" class="font-heading text-brand">Gemma</a>
-                            </div>
-                            <div class="desc">
-                              <div class="d-flex justify-content-between mb-10">
-                                <div class="d-flex align-items-center">
-                                  <span class="font-xs text-muted">December 4, 2022 at 3:12 pm </span>
-                                </div>
-                                <div class="product-rate d-inline-block">
-                                  <div class="product-rating" style="width: 80%"></div>
-                                </div>
-                              </div>
-                              <p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, suscipit exercitationem accusantium obcaecati quos voluptate nesciunt facilis itaque modi commodi dignissimos sequi repudiandae minus ab deleniti totam officia id incidunt? <a href="#" class="reply">Reply</a></p>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
+
                     <div class="col-lg-4">
                       <h4 class="mb-30">Customer reviews</h4>
                       <div class="d-flex mb-30">
@@ -405,32 +369,49 @@
                     </div>
                   </div>
                 </div>
+
                 <!--comment form-->
                 <div class="comment-form">
                   <h4 class="mb-15">Add a review</h4>
-                  <div class="product-rate d-inline-block mb-30"></div>
+
+                  @guest
+                  <p> <b>For Add Product Review. You Need To Login First <a href="{{ route('login')}}">Login Here </a> </b></p>
+
+                  @else
+
+
                   <div class="row">
                     <div class="col-lg-8 col-md-12">
                       <form class="form-contact comment_form" action="#" id="commentForm">
                         <div class="row">
+
+                          <table class="table" style=" width: 60%;">
+                            <thead>
+                              <tr>
+                                <th class="cell-level">&nbsp;</th>
+                                <th>1 star</th>
+                                <th>2 star</th>
+                                <th>3 star</th>
+                                <th>4 star</th>
+                                <th>5 star</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              <tr>
+                                <td class="cell-level">Quality</td>
+                                <td><input type="radio" name="quality" class="radio-sm" value="1"></td>
+                                <td><input type="radio" name="quality" class="radio-sm" value="2"></td>
+                                <td><input type="radio" name="quality" class="radio-sm" value="3"></td>
+                                <td><input type="radio" name="quality" class="radio-sm" value="4"></td>
+                                <td><input type="radio" name="quality" class="radio-sm" value="5"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+
                           <div class="col-12">
                             <div class="form-group">
                               <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea>
-                            </div>
-                          </div>
-                          <div class="col-sm-6">
-                            <div class="form-group">
-                              <input class="form-control" name="name" id="name" type="text" placeholder="Name" />
-                            </div>
-                          </div>
-                          <div class="col-sm-6">
-                            <div class="form-group">
-                              <input class="form-control" name="email" id="email" type="email" placeholder="Email" />
-                            </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="form-group">
-                              <input class="form-control" name="website" id="website" type="text" placeholder="Website" />
                             </div>
                           </div>
                         </div>
@@ -440,6 +421,7 @@
                       </form>
                     </div>
                   </div>
+                  @endguest
                 </div>
               </div>
             </div>
@@ -462,9 +444,9 @@
                       </a>
                     </div>
                     <div class="product-action-1">
-                      <a aria-label="Add To Wishlist" class="action-btn" id="{{ $product->id }}" onclick="addToWishList(this.id)"><i class="fi-rs-heart"></i></a>
-                      <a aria-label="Compare" class="action-btn" id="{{ $product->id }}" onclick="addToCompare(this.id)"><i class="fi-rs-shuffle"></i></a>
-                      <a aria-label="Quick view" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" id="{{ $product->id }}" onclick="productView(this.id)"><i class="fi-rs-eye"></i></a>
+                      <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-search"></i></a>
+                      <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
+                      <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
                     </div>
 
                     @php
@@ -513,6 +495,5 @@
     </div>
   </div>
 </div>
-
 
 @endsection
