@@ -1,0 +1,63 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  Route::controller(VendorOrderController::class)->group(function () {
+
+    Route::get('/vendor/order/details/{order_id}', 'VendorOrderDetails')
+      ->name('vendor.order.details');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\backend\orders\return_orders.blade.php
+\resources\views\vendor\backend\orders\pending_orders.blade.php
+\resources\views\vendor\backend\orders\complete_return_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('vendor.order.details',$item->order->id) }}" class="btn btn-info" title="Details">
+      <i class="fa fa-eye"></i>
+    </a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorOrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorOrderDetails($order_id)
+  {
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    return view(
+      'vendor.backend.orders.vendor_order_details',
+      compact('order', 'orderItem')
+    );
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+order_itemsテーブルのvendor_idをvendorのidに設定し、
+疎通が確認とれたらOK
+
+

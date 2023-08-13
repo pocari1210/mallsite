@@ -127,6 +127,7 @@ class StripeController extends Controller
       'order_month' => Carbon::now()->format('F'),
       'order_year' => Carbon::now()->format('Y'),
       'status' => 'pending',
+      'return_order' => 0,
       'created_at' => Carbon::now(),
 
     ]);

@@ -535,6 +535,9 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     // VendorのProductの返品リストのルート
     Route::get('/vendor/complete/return/order', 'VendorCompleteReturnOrder')
       ->name('vendor.complete.return.order');
+
+    Route::get('/vendor/order/details/{order_id}', 'VendorOrderDetails')
+      ->name('vendor.order.details');
   });
 }); // end Vendor Group middleware
 
