@@ -510,6 +510,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/delete/blog/category/{id}', 'DeleteBlogCateogry')
       ->name('delete.blog.category');
   });
+
+  // Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/admin/blog/post', 'AllBlogPost')
+      ->name('admin.blog.post');
+
+    Route::get('/admin/add/blog/post', 'AddBlogPost')
+      ->name('add.blog.post');
+  });
 }); // Admin End Middleware 
 
 // Admin:ログイン処理のルート

@@ -1,0 +1,77 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/admin/blog/post', 'AllBlogPost')
+      ->name('admin.blog.post');
+
+    Route::get('/admin/add/blog/post', 'AddBlogPost')
+      ->name('add.blog.post');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Blog Manage</div>
+  </a>
+  <ul>
+    <li> <a href="{{ route('admin.blog.category') }}"><i class="bx bx-right-arrow-alt"></i>All Blog Categroy</a>
+    </li>
+
+    ↓↓routeの編集↓↓
+    <li> <a href="{{ route('admin.blog.post') }}"><i class="bx bx-right-arrow-alt"></i>All Blog Post</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BlogController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  //////////////////// Blog Post Methods //////////////////
+
+  public function AllBlogPost()
+  {
+
+    $blogpost = BlogPost::latest()->get();
+    return view('backend.blog.post.blogpost_all', compact('blogpost'));
+  } // End Method 
+
+
+  public function AddBlogPost()
+  {
+    $blogcategory = BlogCategory::latest()->get();
+    return view('backend.blog.post.blogpost_add', compact('blogcategory'));
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\blog\post\blogpost_all.blade.php
+\resources\views\backend\blog\post\blogpost_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
