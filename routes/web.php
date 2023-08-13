@@ -815,6 +815,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // Blogの詳細ページ疎通のルート
     Route::get('/post/details/{id}/{slug}', 'BlogDetails');
+
+    Route::get('/post/category/{id}/{slug}', 'BlogPostCategory');
   });
 }); // end Usergroup middleware
 

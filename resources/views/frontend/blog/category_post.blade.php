@@ -6,10 +6,17 @@
     <div class="archive-header">
       <div class="row align-items-center">
         <div class="col-xl-3">
-          <h1 class="mb-15">Blog & News</h1>
+          <h3 class="mb-15">
+            @foreach($breadcat as $cat)
+            {{ $cat->blog_category_name }}
+            @endforeach
+          </h3>
           <div class="breadcrumb">
             <a href="index.html" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
-            <span></span> Blog & News
+            <span></span>
+            @foreach($breadcat as $cat)
+            {{ $cat->blog_category_name }}
+            @endforeach
           </div>
         </div>
 
@@ -69,7 +76,7 @@
 
           @foreach($blogpost as $post)
           <article class="wow fadeIn animated hover-up mb-30 animated">
-            <div class="post-thumb" style="background-image: url({{ asset($post->post_image) }})">
+            <div class="post-thumb" style="background-image: url({{ asset($post->post_image)  }})">
               <div class="entry-meta">
                 <a class="entry-meta meta-2" href="blog-category-grid.html"><i class="fi-rs-play-alt"></i></a>
               </div>
