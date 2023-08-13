@@ -489,6 +489,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/blog/category', 'AllBlogCateogry')
       ->name('admin.blog.category');
+
+    // Blogのカテゴリー追加ページ遷移のルート
+    Route::get('/admin/add/blog/category', 'AddBlogCateogry')
+      ->name('add.blog.categroy');
+
+    // Blogのカテゴリーの保存処理のルート
+    Route::post('/admin/store/blog/category', 'StoreBlogCateogry')
+      ->name('store.blog.category');
   });
 }); // Admin End Middleware 
 

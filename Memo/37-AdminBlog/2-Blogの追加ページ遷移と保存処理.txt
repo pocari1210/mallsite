@@ -1,0 +1,78 @@
+
+
+2-Blogの追加ページ遷移と保存処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Blog All Route
+  Route::controller(BlogController::class)->group(function () {
+
+    // Blogのカテゴリー追加ページ遷移のルート
+    Route::get('/admin/add/blog/category', 'AddBlogCateogry')
+      ->name('add.blog.categroy');
+
+    // Blogのカテゴリーの保存処理のルート
+    Route::post('/admin/store/blog/category', 'StoreBlogCateogry')
+      ->name('store.blog.category');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+resources/views/backend/blog/category/blogcategroy_all.blade.php
+resources/views/backend/blog/category/blogcategroy_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BlogController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class BlogController extends Controller
+{
+  public function AllBlogCateogry()
+  {
+
+    $blogcategoryies = BlogCategory::latest()->get();
+    return view('backend.blog.category.blogcategroy_all', compact('blogcategoryies'));
+  } // End Method 
+
+  public function AddBlogCateogry()
+  {
+    return view('backend.blog.category.blogcategroy_add');
+  } // End Method 
+
+  public function StoreBlogCateogry(Request $request)
+  {
+
+    BlogCategory::insert([
+      'blog_category_name' => $request->blog_category_name,
+      'blog_category_slug' => strtolower(str_replace(' ', '-', $request->blog_category_name)),
+      'created_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Blog Category Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('admin.blog.category')->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+BlogCategoryの追加ページから保存処理を行うことができたらOK
