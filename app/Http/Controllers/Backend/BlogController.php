@@ -201,4 +201,17 @@ class BlogController extends Controller
 
     return redirect()->back()->with($notification);
   } // End Method   
+
+  //////////////////// Frontend Blog All Method //////////////
+
+  public function AllBlog()
+  {
+    $blogcategoryies = BlogCategory::latest()->get();
+    $blogpost = BlogPost::latest()->get();
+
+    return view(
+      'frontend.blog.home_blog',
+      compact('blogcategoryies', 'blogpost')
+    );
+  } // End Method   
 }

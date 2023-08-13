@@ -807,6 +807,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/return/order/page', 'ReturnOrderPage')
       ->name('return.order.page');
   });
+  // Frontend Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/blog', 'AllBlog')
+      ->name('home.blog');
+  });
 }); // end Usergroup middleware
 
 Route::middleware('auth')->group(function () {
