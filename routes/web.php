@@ -28,6 +28,7 @@ use App\Http\Controllers\User\CompareController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\StripeController;
 use App\Http\Controllers\User\AllUserController;
+use App\Http\Controllers\User\ReviewController;
 
 
 /*
@@ -732,6 +733,13 @@ Route::controller(CartController::class)->group(function () {
   Route::get('/cart-remove/{rowId}', 'CartRemove');
   Route::get('/cart-increment/{rowId}', 'CartIncrement');
   Route::get('/cart-decrement/{rowId}', 'CartDecrement');
+});
+
+// Frontend Blog Post All Route 
+Route::controller(ReviewController::class)->group(function () {
+
+  Route::post('/store/review', 'StoreReview')
+    ->name('store.review');
 });
 
 /// User All Route
