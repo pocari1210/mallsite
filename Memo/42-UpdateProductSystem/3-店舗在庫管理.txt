@@ -1,0 +1,100 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Product All Route 
+  Route::controller(ProductController::class)->group(function () {
+
+    // For Product Stock
+    Route::get('/product/stock', 'ProductStock')
+      ->name('product.stock');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Stock Manage</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('product.stock') }}"><i class="bx bx-right-arrow-alt"></i>Product Stock</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\OrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ProcessToDelivered($order_id)
+  {
+
+    $product = OrderItem::where('order_id', $order_id)->get();
+
+    foreach ($product as $item) {
+      Product::where('id', $item->product_id)
+        ->update(['product_qty' => DB::raw('product_qty-' . $item->qty)]);
+    }
+
+
+
+参考サイト
+https://laraweb.net/knowledge/2347/
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ProductStock()
+  {
+    $products = Product::latest()->get();
+
+    return view(
+      'backend.product.product_stock',
+      compact('products')
+    );
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\product\product_stock.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+ステータスdeliverdにした際、在庫数が減っていればOK
+
+
+
+
+

@@ -229,6 +229,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Productの削除処理
     Route::get('/delete/product/{id}', 'ProductDelete')
       ->name('delete.product');
+
+    // For Product Stock
+    Route::get('/product/stock', 'ProductStock')
+      ->name('product.stock');
   });
 
   // Slider All Route 
