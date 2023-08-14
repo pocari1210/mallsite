@@ -1,0 +1,121 @@
+
+
+
+下記コマンドでmodelとtable新規作成
+php artisan make:model Seo -m
+
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\Seo.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Seo extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Tableの編集◆
+
+ディレクトリ
+\database\migrations\2023_08_14_061815_create_seos_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('seos', function (Blueprint $table) {
+      $table->id();
+      $table->string('meta_title')->nullable();
+      $table->string('meta_author')->nullable();
+      $table->string('meta_keyword')->nullable();
+      $table->text('meta_description')->nullable();
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Site Setting All Route 
+  Route::controller(SiteSettingController::class)->group(function () {
+
+    Route::get('/seo/setting', 'SeoSetting')
+      ->name('seo.setting');
+
+    Route::post('/seo/setting/update', 'SeoSettingUpdate')
+      ->name('seo.setting.update');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <ul>
+    <li> <a href="{{ route('site.setting') }}"><i class="bx bx-right-arrow-alt"></i>Site Setting</a>
+    </li>
+    <li> <a href="{{ route('seo.setting') }}"><i class="bx bx-right-arrow-alt"></i>Seo Setting</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\SiteSettingController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function SeoSetting()
+  {
+    $seo = Seo::find(1);
+
+    return view(
+      'backend.seo.seo_update',
+      compact('seo')
+    );
+  } // End Method 
+
+  public function SeoSettingUpdate(Request $request)
+  {
+    $seo_id = $request->id;
+
+    Seo::findOrFail($seo_id)->update([
+      'meta_title' => $request->meta_title,
+      'meta_author' => $request->meta_author,
+      'meta_keyword' => $request->meta_keyword,
+      'meta_description' => $request->meta_description,
+    ]);
+
+    $notification = array(
+      'message' => 'Seo Setting Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
