@@ -545,6 +545,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/pending/review', 'PendingReview')
       ->name('pending.review');
+
+    Route::get('/review/approve/{id}', 'ReviewApprove')
+      ->name('review.approve');
   });
 }); // Admin End Middleware 
 

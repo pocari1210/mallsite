@@ -1,0 +1,55 @@
+
+6-Approveボタン
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin Reviw All Route 
+  Route::controller(ReviewController::class)->group(function () {
+
+    Route::get('/review/approve/{id}', 'ReviewApprove')
+      ->name('review.approve');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\review\pending_review.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('review.approve',$item->id) }}" class="btn btn-danger">Approve</a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\ReviewController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ReviewApprove($id)
+  {
+
+    Review::where('id', $id)->update(['status' => 1]);
+
+    $notification = array(
+      'message' => 'Review Approved Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Approveボタンを押し、ステータスが0から1に変更する
