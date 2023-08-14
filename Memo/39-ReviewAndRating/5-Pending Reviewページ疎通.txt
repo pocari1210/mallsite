@@ -1,0 +1,158 @@
+
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\Review.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Review extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function product()
+  {
+    return $this->belongsTo(Product::class, 'product_id', 'id');
+  }
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Admin Reviw All Route 
+  Route::controller(ReviewController::class)->group(function () {
+
+    Route::get('/pending/review', 'PendingReview')
+      ->name('pending.review');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Review Manage</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('pending.review') }}"><i class="bx bx-right-arrow-alt"></i>Pending Review</a>
+        </li>
+        <li> <a href="{{ route('admin.blog.post') }}"><i class="bx bx-right-arrow-alt"></i>Publish Review</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\ReviewController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function PendingReview()
+  {
+    $review = Review::where('status', 0)
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.review.pending_review',
+      compact('review')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\review\pending_review.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+            @foreach($review as $key => $item)
+            <tr>
+              <td> {{ $key+1 }} </td>
+              <td>{{ $item->comment }}</td>
+              <td>{{ $item['user']['name'] }}</td>
+              <td>{{ $item['product']['product_name'] }}</td>
+              <td>
+                @if($item->rating == NULL)
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                @elseif($item->rating == 1)
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                @elseif($item->rating == 3)
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                @elseif($item->rating == 3)
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                @elseif($item->rating == 4)
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-secondary"></i>
+                @elseif($item->rating == 5)
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+                <i class="bx bxs-star text-warning"></i>
+
+                @endif
+              </td>
+              <td>
+                @if($item->status == 0)
+                <span class="badge rounded-pill bg-warning">Pending</span>
+                @elseif($item->status == 1)
+                <span class="badge rounded-pill bg-warning">Publish</span>
+                @endif
+              </td>
+
+              <td>
+                <a href="{{ route('edit.category',$item->id) }}" class="btn btn-danger">Approve</a>
+              </td>
+            </tr>
+            @endforeach
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Pending Reviewが疎通できたらOK
+
