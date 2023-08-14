@@ -1,0 +1,175 @@
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller Backend/SiteSettingController
+
+下記コマンドでModelとtableを新規作成
+php artisan make:model SiteSetting -m
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\SiteSetting.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class SiteSetting extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆tableの編集◆
+
+ディレクトリ
+\database\migrations\2023_08_14_054513_create_site_settings_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('site_settings', function (Blueprint $table) {
+      $table->id();
+      $table->string('logo')->nullable();
+      $table->string('support_phone')->nullable();
+      $table->string('phone_one')->nullable();
+      $table->string('email')->nullable();
+      $table->text('company_address')->nullable();
+      $table->string('facebook')->nullable();
+      $table->string('twitter')->nullable();
+      $table->string('youtube')->nullable();
+      $table->string('copyright')->nullable();
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Admin権限のルート★
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Site Setting All Route 
+  Route::controller(SiteSettingController::class)->group(function () {
+
+    Route::get('/site/setting', 'SiteSetting')
+      ->name('site.setting');
+      
+    Route::post('/site/setting/update', 'SiteSettingUpdate')
+      ->name('site.setting.update');
+  });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Setting Manage</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('site.setting') }}"><i class="bx bx-right-arrow-alt"></i>Site Setting</a>
+        </li>
+        <li> <a href="{{ route('publish.review') }}"><i class="bx bx-right-arrow-alt"></i>Publish Review</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\SiteSettingController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class SiteSettingController extends Controller
+{
+  public function SiteSetting()
+  {
+
+    $setting = SiteSetting::find(1);
+    return view('backend.setting.setting_update', compact('setting'));
+  } // End Method 
+
+
+  public function SiteSettingUpdate(Request $request)
+  {
+
+    $setting_id = $request->id;
+
+    if ($request->file('logo')) {
+
+      $image = $request->file('logo');
+      $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+      InterventionImage::make($image)->resize(180, 56)->save('upload/logo/' . $name_gen);
+      $save_url = 'upload/logo/' . $name_gen;
+
+      SiteSetting::findOrFail($setting_id)->update([
+        'support_phone' => $request->support_phone,
+        'phone_one' => $request->phone_one,
+        'email' => $request->email,
+        'company_address' => $request->company_address,
+        'facebook' => $request->facebook,
+        'twitter' => $request->twitter,
+        'youtube' => $request->youtube,
+        'copyright' => $request->copyright,
+        'logo' => $save_url,
+      ]);
+
+      $notification = array(
+        'message' => 'Site Setting Updated with image Successfully',
+        'alert-type' => 'success'
+      );
+
+      return redirect()->back()->with($notification);
+    } else {
+
+      SiteSetting::findOrFail($setting_id)->update([
+        'support_phone' => $request->support_phone,
+        'phone_one' => $request->phone_one,
+        'email' => $request->email,
+        'company_address' => $request->company_address,
+        'facebook' => $request->facebook,
+        'twitter' => $request->twitter,
+        'youtube' => $request->youtube,
+        'copyright' => $request->copyright,
+      ]);
+
+      $notification = array(
+        'message' => 'Site Setting Updated without image Successfully',
+        'alert-type' => 'success'
+      );
+
+      return redirect()->back()->with($notification);
+    } // end else
+
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\setting\setting_update.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+adminのdashboardでSiteSettingのページに疎通されたらOK

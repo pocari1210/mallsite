@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\VendorOrderController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\ActiveUserController;
 use App\Http\Controllers\Backend\BlogController;
+use App\Http\Controllers\Backend\SiteSettingController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -538,6 +539,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // BlogPostの削除処理のルート
     Route::get('/admin/delete/blog/post/{id}', 'DeleteBlogPost')
       ->name('delete.blog.post');
+  });
+
+  // Site Setting All Route 
+  Route::controller(SiteSettingController::class)->group(function () {
+
+    Route::get('/site/setting', 'SiteSetting')
+      ->name('site.setting');
+
+    Route::post('/site/setting/update', 'SiteSettingUpdate')
+      ->name('site.setting.update');
   });
 
   // Admin Reviw All Route 

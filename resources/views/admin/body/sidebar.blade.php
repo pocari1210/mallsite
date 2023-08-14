@@ -262,32 +262,15 @@
     </li>
 
     <li>
-      <a class="has-arrow" href="javascript:;">
-        <div class="parent-icon"><i class="bx bx-repeat"></i>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
         </div>
-        <div class="menu-title">Content</div>
+        <div class="menu-title">Setting Manage</div>
       </a>
       <ul>
-        <li> <a href="content-grid-system.html"><i class="bx bx-right-arrow-alt"></i>Grid System</a>
+        <li> <a href="{{ route('site.setting') }}"><i class="bx bx-right-arrow-alt"></i>Site Setting</a>
         </li>
-        <li> <a href="content-typography.html"><i class="bx bx-right-arrow-alt"></i>Typography</a>
-        </li>
-        <li> <a href="content-text-utilities.html"><i class="bx bx-right-arrow-alt"></i>Text Utilities</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a class="has-arrow" href="javascript:;">
-        <div class="parent-icon"> <i class="bx bx-donate-blood"></i>
-        </div>
-        <div class="menu-title">Icons</div>
-      </a>
-      <ul>
-        <li> <a href="icons-line-icons.html"><i class="bx bx-right-arrow-alt"></i>Line Icons</a>
-        </li>
-        <li> <a href="icons-boxicons.html"><i class="bx bx-right-arrow-alt"></i>Boxicons</a>
-        </li>
-        <li> <a href="icons-feather-icons.html"><i class="bx bx-right-arrow-alt"></i>Feather Icons</a>
+        <li> <a href="{{ route('publish.review') }}"><i class="bx bx-right-arrow-alt"></i>Publish Review</a>
         </li>
       </ul>
     </li>
