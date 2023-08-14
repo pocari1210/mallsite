@@ -548,6 +548,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/review/approve/{id}', 'ReviewApprove')
       ->name('review.approve');
+
+    Route::get('/publish/review', 'PublishReview')
+      ->name('publish.review');
+
+    Route::get('/review/delete/{id}', 'ReviewDelete')
+      ->name('review.delete');
   });
 }); // Admin End Middleware 
 
