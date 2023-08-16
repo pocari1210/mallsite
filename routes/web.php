@@ -578,7 +578,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
       ->name('review.delete');
   });
 
-  // Role Permission All Route 
+  // Permission All Route 
   Route::controller(RoleController::class)->group(function () {
 
     // permissonの一覧表示のルート
@@ -604,6 +604,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // permissonの削除処理のルート
     Route::get('/delete/permission/{id}', 'DeletePermission')
       ->name('delete.permission');
+  });
+
+  // Roles All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    Route::get('/all/roles', 'AllRoles')
+      ->name('all.roles');
+
+    Route::get('/add/roles', 'AddRoles')
+      ->name('add.roles');
+
+    Route::post('/store/roles', 'StoreRoles')
+      ->name('store.roles');
   });
 }); // Admin End Middleware 
 
