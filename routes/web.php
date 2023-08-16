@@ -22,6 +22,7 @@ use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\ActiveUserController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\SiteSettingController;
+use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -575,6 +576,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/review/delete/{id}', 'ReviewDelete')
       ->name('review.delete');
+  });
+
+  // Role Permission All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    // permissonの一覧表示のルート
+    Route::get('/all/permission', 'AllPermission')
+      ->name('all.permission');
   });
 }); // Admin End Middleware 
 

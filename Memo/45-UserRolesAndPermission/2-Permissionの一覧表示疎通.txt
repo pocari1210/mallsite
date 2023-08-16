@@ -1,0 +1,75 @@
+
+下記コマンドでコントローラーファイル新規作成
+php artisan make:controller Backend/RoleController.php
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Admin権限のルート★
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Role Permission All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    // permissonの一覧表示のルート
+    Route::get('/all/permission', 'AllPermission')
+      ->name('all.permission');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li class="menu-label">Roles And Permission</li>
+    <li>
+      <a class="has-arrow" href="javascript:;">
+        <div class="parent-icon"><i class="bx bx-line-chart"></i>
+        </div>
+        <div class="menu-title">Role & Permission</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('all.permission') }}"><i class="bx bx-right-arrow-alt"></i>All Permission</a>
+        </li>
+        <li> <a href="charts-chartjs.html"><i class="bx bx-right-arrow-alt"></i>Add Permission</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\RoleController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AllPermission()
+  {
+    $permissions = Permission::all();
+
+    return view(
+      'backend.pages.permission.all_permission',
+      compact('permissions')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\pages\permission\all_permission.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+All Permissionページが疎通されればOK
