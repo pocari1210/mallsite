@@ -584,6 +584,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // permissonの一覧表示のルート
     Route::get('/all/permission', 'AllPermission')
       ->name('all.permission');
+
+    // permissonの追加ページ遷移のルート
+    Route::get('/add/permission', 'AddPermission')
+      ->name('add.permission');
+
+    // permissonの保存処理のルート
+    Route::post('/store/permission', 'StorePermission')
+      ->name('store.permission');
   });
 }); // Admin End Middleware 
 
