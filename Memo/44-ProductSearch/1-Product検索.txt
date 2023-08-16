@@ -72,6 +72,9 @@ Route::controller(IndexController::class)->group(function () {
     );
   } // End Method 
 
+★参考サイト★
+https://implist.dev/entries/b8182afade68527b085fd2795753dd94
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

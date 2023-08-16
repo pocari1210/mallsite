@@ -117,9 +117,7 @@ $seo = App\Models\Seo::find(1);
     @endif
   </script>
 
-
-
-
+  <script src="{{ asset('frontend/assets/js/script.js') }}"></script>
 
   <script type="text/javascript">
     $.ajaxSetup({
