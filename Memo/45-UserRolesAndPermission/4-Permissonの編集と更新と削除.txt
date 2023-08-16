@@ -1,0 +1,125 @@
+
+4-Permissonの編集と更新と削除
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Role Permission All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    // permissonの編集ページ遷移のルート
+    Route::get('/edit/permission/{id}', 'EditPermission')
+      ->name('edit.permission');
+
+    // permissonの更新処理のルート
+    Route::post('/update/permission', 'UpdatePermission')
+      ->name('update.permission');
+
+    // permissonの削除処理のルート
+    Route::get('/delete/permission/{id}', 'DeletePermission')
+      ->name('delete.permission');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\pages\permission\all_permission.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('edit.permission',$item->id) }}" class="btn btn-info">Edit</a>
+    <a href="{{ route('delete.permission',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\RoleController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function EditPermission($id)
+  {
+
+    $permission = Permission::findOrFail($id);
+    return view('backend.pages.permission.edit_permission', compact('permission'));
+  } // End Method 
+
+  public function UpdatePermission(Request $request)
+  {
+    $per_id = $request->id;
+
+
+    Permission::findOrFail($per_id)->update([
+      'name' => $request->name,
+      'group_name' => $request->group_name,
+
+    ]);
+
+    $notification = array(
+      'message' => 'Permission Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.permission')->with($notification);
+  } // End Method 
+
+  public function DeletePermission($id)
+  {
+
+    Permission::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Permission Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\pages\permission\edit_permission.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Group Name</h6>
+                  </div>
+                  <div class="form-group col-sm-9 text-secondary">
+                    <select name="group_name" class="form-select mb-3" aria-label="Default select example">
+                      <option selected="">Open this select Group</option>
+                      <option value="brand" {{ $permission->group_name == 'brand' ? 'selected': ''}}>Brand</option>
+                      <option value="category" {{ $permission->group_name == 'category' ? 'selected': ''}}>Category</option>
+                      <option value="subcategory" {{ $permission->group_name == 'subcategory' ? 'selected': ''}}>Subcategory</option>
+                      <option value="product" {{ $permission->group_name == 'product' ? 'selected': ''}}>Product</option>
+                      <option value="slider" {{ $permission->group_name == 'slider' ? 'selected': ''}}>Slider</option>
+                      <option value="ads" {{ $permission->group_name == 'ads' ? 'selected': ''}}>Ads</option>
+                      <option value="coupon" {{ $permission->group_name == 'coupon' ? 'selected': ''}}>Coupon</option>
+                      <option value="area" {{ $permission->group_name == 'area' ? 'selected': ''}}>Area</option>
+                      <option value="vendor" {{ $permission->group_name == 'vendor' ? 'selected': ''}}>Vendor</option>
+                      <option value="order" {{ $permission->group_name == 'order' ? 'selected': ''}}>Order</option>
+                      <option value="return" {{ $permission->group_name == 'return' ? 'selected': ''}}>Return</option>
+                      <option value="report" {{ $permission->group_name == 'report' ? 'selected': ''}}>Report</option>
+                      <option value="user" {{ $permission->group_name == 'user' ? 'selected': ''}}>User Management</option>
+                      <option value="review" {{ $permission->group_name == 'review' ? 'selected': ''}}>Review</option>
+                      <option value="setting" {{ $permission->group_name == 'setting' ? 'selected': ''}}>Setting</option>
+                      <option value="blog" {{ $permission->group_name == 'blog' ? 'selected': ''}}>Blog</option>
+                      <option value="role" {{ $permission->group_name == 'role' ? 'selected': ''}}>Role</option>
+                      <option value="admin" {{ $permission->group_name == 'admin' ? 'selected': ''}}>Admin</option>
+                      <option value="stock" {{ $permission->group_name == 'stock' ? 'selected': ''}}>Stock</option>
+                    </select>
+                  </div>
+                </div>

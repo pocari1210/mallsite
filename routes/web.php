@@ -592,6 +592,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // permissonの保存処理のルート
     Route::post('/store/permission', 'StorePermission')
       ->name('store.permission');
+
+    // permissonの編集ページ遷移のルート
+    Route::get('/edit/permission/{id}', 'EditPermission')
+      ->name('edit.permission');
+
+    // permissonの更新処理のルート
+    Route::post('/update/permission', 'UpdatePermission')
+      ->name('update.permission');
+
+    // permissonの削除処理のルート
+    Route::get('/delete/permission/{id}', 'DeletePermission')
+      ->name('delete.permission');
   });
 }); // Admin End Middleware 
 
