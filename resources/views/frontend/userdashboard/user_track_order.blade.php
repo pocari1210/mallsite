@@ -29,7 +29,7 @@
                   </div>
                   <div class="card-body">
 
-                    <form method="post" action="{{ route('user.update.password') }}">
+                    <form method="post" action="{{ route('order.tracking') }}">
                       @csrf
 
                       <div class="row">
