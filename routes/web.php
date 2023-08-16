@@ -857,6 +857,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Productの返品リストページ遷移のルート
     Route::get('/return/order/page', 'ReturnOrderPage')
       ->name('return.order.page');
+
+    // Order Tracking 
+    Route::get('/user/track/order', 'UserTrackOrder')
+      ->name('user.track.order');
   });
   // Frontend Blog Post All Route 
   Route::controller(BlogController::class)->group(function () {
