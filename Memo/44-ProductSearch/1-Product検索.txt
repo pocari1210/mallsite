@@ -1,0 +1,85 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::controller(IndexController::class)->group(function () {
+
+  // Productの検索のルート
+  Route::post('/search', 'ProductSearch')
+    ->name('product.search');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  ↓↓route先を追記↓↓
+  <form action="{{ route('product.search') }}" method="post">
+    @csrf
+    <select class="select-active">
+      <option>All Categories</option>
+      <option>Milks and Dairies</option>
+      <option>Wines & Alcohol</option>
+      <option>Clothing & Beauty</option>
+      <option>Pet Foods & Toy</option>
+      <option>Fast food</option>
+      <option>Baking material</option>
+      <option>Vegetables</option>
+      <option>Fresh Seafood</option>
+      <option>Noodles & Rice</option>
+      <option>Ice cream</option>
+    </select>
+
+　　↓↓type属性をname属性に変更↓↓
+    <input name="search" placeholder="Search for items..." />
+  </form>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ProductSearch(Request $request)
+  {
+    $request->validate(['search' => "required"]);
+
+    $item = $request->search;
+    $categories = Category::orderBy('category_name', 'ASC')->get();
+
+    // product_nameを部分一致で検索できるよう設定
+    $products = Product::where('product_name', 'LIKE', "%$item%")->get();
+    $newProduct = Product::orderBy('id', 'DESC')->limit(3)->get();
+
+    return view(
+      'frontend.product.search',
+      compact('products', 'item', 'categories', 'newProduct')
+    );
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\product\search.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Productの検索が行えたらOK

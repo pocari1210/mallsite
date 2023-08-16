@@ -785,6 +785,13 @@ Route::controller(ReviewController::class)->group(function () {
     ->name('store.review');
 });
 
+Route::controller(IndexController::class)->group(function () {
+
+  // Productの検索のルート
+  Route::post('/search', 'ProductSearch')
+    ->name('product.search');
+});
+
 /// User All Route
 Route::middleware(['auth', 'role:user'])->group(function () {
 
