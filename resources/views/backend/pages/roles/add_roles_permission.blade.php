@@ -29,7 +29,7 @@
           <div class="card">
             <div class="card-body">
 
-              <form id="myForm" method="post" action="{{ route('store.roles') }}">
+              <form id="myForm" method="post" action="{{ route('role.permission.store') }}">
                 @csrf
 
                 <div class="row mb-3">
@@ -37,13 +37,21 @@
                     <h6 class="mb-0">Roles Name</h6>
                   </div>
                   <div class="form-group col-sm-9 text-secondary">
-                    <select class="form-select mb-3" aria-label="Default select example">
+
+                    <!-- role_has_permissionsのrole_idカラムの名称を
+                          name情報に記入し、合わせている -->
+                    <select name="role_id" class="form-select mb-3" aria-label="Default select example">
                       <option selected="">Open this select menu</option>
                       @foreach($roles as $role)
                       <option value="{{ $role->id }}">{{ $role->name }}</option>
                       @endforeach
                     </select>
                   </div>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultAll">
+                  <label class="form-check-label" for="flexCheckDefaultAll">Permission All</label>
                 </div>
 
                 <hr>
@@ -59,11 +67,19 @@
 
                   <div class="col-9">
 
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">Default checkbox</label>
-                    </div>
+                    @php
+                    $permissions = App\Models\User::getpermissionByGroupName($group->group_name);
+                    @endphp
 
+                    @foreach($permissions as $permission)
+                    <div class="form-check">
+
+                      <!-- 複数のデータをDBに挿入できるように、permission[]とする -->
+                      <input class="form-check-input" name="permission[]" type="checkbox" value="{{$permission->id}}" id="flexCheckDefault{{$permission->id}}">
+                      <label class="form-check-label" for="flexCheckDefault{{$permission->id}}">{{ $permission->name }}</label>
+                    </div>
+                    @endforeach
+                    <br>
                   </div>
 
                 </div><!--  // end row  -->
@@ -86,5 +102,18 @@
     </div>
   </div>
 </div>
+
+
+<!-- Permission Allの項目にチェックを入れたら、
+全てのroleとpermissionにチェックがつくJS -->
+<script type="text/javascript">
+  $('#flexCheckDefaultAll').click(function() {
+    if ($(this).is(':checked')) {
+      $('input[type = checkbox]').prop('checked', true);
+    } else {
+      $('input[type = checkbox]').prop('checked', false);
+    }
+  });
+</script>
 
 @endsection

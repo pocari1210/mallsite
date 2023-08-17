@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use DB;
 use App\Models\User;
 
 class RoleController extends Controller
@@ -163,4 +164,32 @@ class RoleController extends Controller
       compact('roles', 'permissions', 'permission_groups')
     );
   } // End Method 
+
+  public function RolePermissionStore(Request $request)
+  {
+
+    // 配列のデータを取得している(name="permission[]")
+    $data = array();
+    $permissions = $request->permission;
+
+    foreach ($permissions as $key => $item) {
+
+      // formからきたselectタグのrole_idの情報を挿入
+      $data['role_id'] = $request->role_id;
+
+      // formからきたcheckboxタグのpermission[]の情報を挿入
+      $data['permission_id'] = $item;
+
+      // role_has_permissionsテーブルに
+      // $data(role_idとpermission_idを挿入)
+      DB::table('role_has_permissions')->insert($data);
+    }
+
+    $notification = array(
+      'message' => 'Role Permission Added Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.roles')->with($notification);
+  } // End Method   
 }

@@ -1,0 +1,95 @@
+
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\User.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public static function getpermissionByGroupName($group_name)
+  {
+    $permissions = DB::table('permissions')
+      ->select('name', 'id')
+      ->where('group_name', $group_name)
+      ->get();
+    return $permissions;
+  } // End Method 
+
+★コード解説★
+getpermissionByGroupNameメソッドは
+後述するadd_roles_permission.blade.phpのgroup_nameを
+パラメーターとして受け取っている
+
+@php
+$permissions = App\Models\User::getpermissionByGroupName($group->group_name);
+@endphp
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// add role permission 
+
+    Route::post('/role/permission/store', 'RolePermissionStore')
+      ->name('role.permission.store');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\pages\roles\add_roles_permission.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\RoleController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+  
+public function RolePermissionStore(Request $request)
+  {
+
+    // 配列のデータを取得している(name="permission[]")
+    $data = array();
+    $permissions = $request->permission;
+
+    foreach ($permissions as $key => $item) {
+
+      // formからきたselectタグのrole_idの情報を挿入
+      $data['role_id'] = $request->role_id;
+
+      // formからきたcheckboxタグのpermission[]の情報を挿入
+      $data['permission_id'] = $item;
+
+      // role_has_permissionsテーブルに
+      // $data(role_idとpermission_idを挿入)
+      DB::table('role_has_permissions')->insert($data);
+    }
+
+    $notification = array(
+      'message' => 'Role Permission Added Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.roles')->with($notification);
+  } // End Method   
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+role_has_permissionsテーブルにデータが入っていたらOK

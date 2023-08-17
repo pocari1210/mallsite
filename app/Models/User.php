@@ -57,4 +57,20 @@ class User extends Authenticatable
 
     return $permission_groups;
   } // End Method 
+
+  public static function getpermissionByGroupName($group_name)
+  {
+    $permissions =
+
+      // permissionsテーブルを指定
+      DB::table('permissions')
+
+      // nameカラムとidカラムを指定
+      ->select('name', 'id')
+
+      // group_nameカラムを$group_nameで条件指定
+      ->where('group_name', $group_name)
+      ->get();
+    return $permissions;
+  } // End Method 
 }
