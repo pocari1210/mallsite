@@ -191,5 +191,28 @@ class RoleController extends Controller
     );
 
     return redirect()->route('all.roles')->with($notification);
-  } // End Method   
+  } // End Method  
+
+  public function AllRolesPermission()
+  {
+
+    $roles = Role::all();
+    return view(
+      'backend.pages.roles.all_roles_permission',
+      compact('roles')
+    );
+  } // End Method 
+
+  public function AdminRolesEdit($id)
+  {
+
+    $role = Role::findOrFail($id);
+    $permissions = Permission::all();
+    $permission_groups = User::getpermissionGroups();
+
+    return view(
+      'backend.pages.roles.role_permission_edit',
+      compact('role', 'permissions', 'permission_groups')
+    );
+  } // End Method 
 }

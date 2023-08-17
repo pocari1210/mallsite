@@ -73,4 +73,21 @@ class User extends Authenticatable
       ->get();
     return $permissions;
   } // End Method 
+
+
+  // 編集ページ(views\backend\pages\roles\role_permission_edit.blade.php)を
+  // 開いた際、登録されている情報にチェックをいれた状態にする
+  public static function roleHasPermissions($role, $permissions)
+  {
+    $hasPermission = true;
+    foreach ($permissions as $permission) {
+
+      // $roleに付与されたpermissionをhasPermissionToで指定
+      if (!$role->hasPermissionTo($permission->name)) {
+        $hasPermission = false;
+        return $hasPermission;
+      }
+      return $hasPermission;
+    }
+  } // End Method 
 }
