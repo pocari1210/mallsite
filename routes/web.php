@@ -643,6 +643,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/edit/roles/{id}', 'AdminRolesEdit')
       ->name('admin.edit.roles');
+
+    Route::post('/admin/roles/update/{id}', 'AdminRolesUpdate')
+      ->name('admin.roles.update');
   });
 }); // Admin End Middleware 
 
