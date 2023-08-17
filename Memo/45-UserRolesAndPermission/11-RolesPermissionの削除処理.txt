@@ -1,0 +1,59 @@
+
+11-RolesPermissionの削除処理
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Roles All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    // add role permission 
+
+    Route::get('/admin/delete/roles/{id}', 'AdminRolesDelete')
+      ->name('admin.delete.roles');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\RoleController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+  public function AdminRolesDelete($id)
+  {
+
+    $role = Role::findOrFail($id);
+    if (!is_null($role)) {
+      $role->delete();
+    }
+
+    $notification = array(
+      'message' => 'Role Permission Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+削除処理が行えたらOK
