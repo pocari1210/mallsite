@@ -1,0 +1,76 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Admin権限のルート★
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Admin User All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    Route::get('/all/admin', 'AllAdmin')
+      ->name('all.admin');
+  });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a class="has-arrow" href="javascript:;">
+        <div class="parent-icon"><i class="bx bx-line-chart"></i>
+        </div>
+        <div class="menu-title">Admin Manage </div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('all.admin') }}"><i class="bx bx-right-arrow-alt"></i>All Admin</a>
+        </li>
+        <li> <a href="{{ route('all.roles') }}"><i class="bx bx-right-arrow-alt"></i>Add Admin</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  ///////////// Admin All Method //////////////
+
+  public function AllAdmin()
+  {
+    $alladminuser = User::where('role', 'admin')
+      ->latest()->get();
+
+    return view(
+      'backend.admin.all_admin',
+      compact('alladminuser')
+    );
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Admin権限を持ったユーザーの一覧をひらければOK
