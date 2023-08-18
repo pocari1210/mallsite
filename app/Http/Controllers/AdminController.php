@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Models\User;
 
 class AdminController extends Controller
@@ -184,5 +186,41 @@ class AdminController extends Controller
       'backend.admin.all_admin',
       compact('alladminuser')
     );
+  } // End Mehtod 
+
+  public function AddAdmin()
+  {
+    $roles = Role::all();
+
+    return view(
+      'backend.admin.add_admin',
+      compact('roles')
+    );
+  } // End Mehtod 
+
+  public function AdminUserStore(Request $request)
+  {
+
+    $user = new User();
+    $user->username = $request->username;
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
+    $user->address = $request->address;
+    $user->password = Hash::make($request->password);
+    $user->role = 'admin';
+    $user->status = 'active';
+    $user->save();
+
+    if ($request->roles) {
+      $user->assignRole($request->roles);
+    }
+
+    $notification = array(
+      'message' => 'New Admin User Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.admin')->with($notification);
   } // End Mehtod 
 }
