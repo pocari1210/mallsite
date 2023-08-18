@@ -1,0 +1,60 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin User All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    Route::get('/delete/admin/role/{id}', 'DeleteAdminRole')
+      ->name('delete.admin.role');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\admin\all_admin.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('edit.admin.role',$item->id) }}" class="btn btn-info">Edit</a>
+
+    ↓↓routeの追記↓↓
+    <a href="{{ route('delete.admin.role',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function DeleteAdminRole($id)
+  {
+
+    $user = User::findOrFail($id);
+    if (!is_null($user)) {
+      $user->delete();
+    }
+
+    $notification = array(
+      'message' => 'Admin User Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
