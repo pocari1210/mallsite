@@ -662,6 +662,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/admin/user/store', 'AdminUserStore')
       ->name('admin.user.store');
+
+    Route::get('/edit/admin/role/{id}', 'EditAdminRole')
+      ->name('edit.admin.role');
+
+    Route::post('/admin/user/update/{id}', 'AdminUserUpdate')
+      ->name('admin.user.update');
   });
 }); // Admin End Middleware 
 

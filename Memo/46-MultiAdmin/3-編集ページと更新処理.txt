@@ -1,0 +1,90 @@
+
+3-編集ページと更新処理
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin User All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    Route::get('/edit/admin/role/{id}', 'EditAdminRole')
+      ->name('edit.admin.role');
+
+    Route::post('/admin/user/update/{id}', 'AdminUserUpdate')
+      ->name('admin.user.update');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\admin\all_admin.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+  
+  <td>
+
+    ↓↓routeの編集↓↓
+    <a href="{{ route('edit.admin.role',$item->id) }}" class="btn btn-info">Edit</a>
+    <a href="{{ route('delete.category',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+  </td>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function EditAdminRole($id)
+  {
+
+    $user = User::findOrFail($id);
+    $roles = Role::all();
+    return view('backend.admin.edit_admin', compact('user', 'roles'));
+  } // End Mehtod 
+
+  public function AdminUserUpdate(Request $request, $id)
+  {
+
+    $user = User::findOrFail($id);
+    $user->username = $request->username;
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
+    $user->address = $request->address;
+    $user->role = 'admin';
+    $user->status = 'active';
+    $user->save();
+
+    $user->roles()->detach();
+
+    if ($request->roles) {
+      $user->assignRole($request->roles);
+    }
+
+    $notification = array(
+      'message' => 'New Admin User Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.admin')->with($notification);
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\admin\all_admin.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
