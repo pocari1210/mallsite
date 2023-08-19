@@ -1,0 +1,61 @@
+
+下記コマンドでコントローラ-ファイルを作成
+php artisan make:controller Frontend/IndexController
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\Frontend\IndexController;
+
+/// Frontend Product Details All Route 
+Route::get('/product/details/{id}/{slug}', [IndexController::class, 'ProductDetails']);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_new_product.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="product-img product-img-zoom">
+
+    ↓↓遷移先編集↓↓
+    <a href="{{ url('product/details/'.$product->id.'/'.$product->product_slug) }}">
+      <img class="default-img" src="{{ asset( $product->product_thambnail ) }}" alt="" />
+    </a>
+  </div>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ProductDetails($id, $slug)
+  {
+    $product = Product::findOrFail($id);
+
+    $color = $product->product_color;
+    $product_color = explode(',', $color);
+
+    $size = $product->product_size;
+    $product_size = explode(',', $size);
+
+    return view(
+      'frontend.product.product_details',
+      compact('product', 'product_color', 'product_size')
+    );
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,109 @@
+
+
+2-追加ページと保存処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Slider All Route 
+  Route::controller(SliderController::class)->group(function () {
+
+    // Slider：追加ページのルート
+    Route::get('/add/slider', 'AddSlider')
+      ->name('add.slider');
+
+    // Slider：保存処理のルート
+    Route::post('/store/slider', 'StoreSlider')
+      ->name('store.slider');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元1)◆
+
+ディレクトリ
+\resources\views\backend\slider\slider_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="ms-auto">
+    <div class="btn-group">
+
+      ↓↓routeの追記↓↓
+      <a href="{{ route('add.slider') }}" class="btn btn-primary">Add Slider</a>
+    </div>
+  </div>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元2)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Slider Manage</div>
+  </a>
+  <ul>
+    <li> <a href="{{ route('all.slider') }}"><i class="bx bx-right-arrow-alt"></i>All Slider</a>
+    </li>
+
+    ↓↓routeの編集↓↓
+    <li> <a href="{{ route('add.slider') }}"><i class="bx bx-right-arrow-alt"></i>Add Slider</a>
+    </li>
+  </ul>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\SliderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 追加ページ疎通のコントローラー
+  public function AddSlider()
+  {
+    return view('backend.slider.slider_add');
+  } // End Method 
+
+  // 保存処理のコントローラー
+  public function StoreSlider(Request $request)
+  {
+    $image = $request->file('slider_image');
+    $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+    InterventionImage::make($image)->resize(2376, 807)->save('upload/slider/' . $name_gen);
+    $save_url = 'upload/slider/' . $name_gen;
+
+    Slider::insert([
+      'slider_title' => $request->slider_title,
+      'short_title' => $request->short_title,
+      'slider_image' => $save_url,
+    ]);
+
+    $notification = array(
+      'message' => 'Slider Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.slider')->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+追加ページからテキストを入力し、保存処理が行えたらOK

@@ -11,6 +11,11 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\VendorProductController;
+use App\Http\Controllers\Backend\SliderController;
+use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Frontend\IndexController;
+use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\User\WishlistController;
 
 
 /*
@@ -211,7 +216,63 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/delete/product/{id}', 'ProductDelete')
       ->name('delete.product');
   });
-}); // End Middleware 
+
+  // Slider All Route 
+  Route::controller(SliderController::class)->group(function () {
+
+    // Slider：一覧表示のルート
+    Route::get('/all/slider', 'AllSlider')
+      ->name('all.slider');
+
+    // Slider：追加ページのルート
+    Route::get('/add/slider', 'AddSlider')
+      ->name('add.slider');
+
+    // Slider：保存処理のルート
+    Route::post('/store/slider', 'StoreSlider')
+      ->name('store.slider');
+
+    // Slider：編集ページのルート
+    Route::get('/edit/slider/{id}', 'EditSlider')
+      ->name('edit.slider');
+
+    // Slider：更新処理のルート
+    Route::post('/update/slider', 'UpdateSlider')
+      ->name('update.slider');
+
+    // Slider：削除処理のルート
+    Route::get('/delete/slider/{id}', 'DeleteSlider')
+      ->name('delete.slider');
+  });
+
+  // Banner All Route 
+  Route::controller(BannerController::class)->group(function () {
+
+    // Banner：一覧ページのルート
+    Route::get('/all/banner', 'AllBanner')
+      ->name('all.banner');
+
+    // Banner：追加ページのルート
+    Route::get('/add/banner', 'AddBanner')
+      ->name('add.banner');
+
+    // Banner：保存処理のルート
+    Route::post('/store/banner', 'StoreBanner')
+      ->name('store.banner');
+
+    // Banner：編集ページのルート
+    Route::get('/edit/banner/{id}', 'EditBanner')
+      ->name('edit.banner');
+
+    // Banner：更新処理のルート
+    Route::post('/update/banner', 'UpdateBanner')
+      ->name('update.banner');
+
+    // Banner：削除処理のルート
+    Route::get('/delete/banner/{id}', 'DeleteBanner')
+      ->name('delete.banner');
+  });
+}); // Admin End Middleware 
 
 // Admin:ログイン処理のルート
 Route::get('/admin/login', [AdminController::class, 'AdminLogin'])
@@ -307,9 +368,11 @@ Route::post('/vendor/register', [VendorController::class, 'VendorRegister'])
   ->name('vendor.register');
 
 // Frontend:トップページのルート
-Route::get('/', function () {
-  return view('frontend.index');
-});
+Route::get('/', [IndexController::class, 'Index']);
+
+// Route::get('/', function () {
+//   return view('frontend.index');
+// });
 
 // ★User権限のルート★
 Route::middleware(['auth'])->group(function () {
@@ -328,6 +391,58 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/user/update/password', [UserController::class, 'UserUpdatePassword'])
     ->name('user.update.password');
 }); // Gorup Milldeware End
+
+/// Frontend Product Details All Route 
+Route::get('/product/details/{id}/{slug}', [IndexController::class, 'ProductDetails']);
+
+// Vendorの詳細ページのルート
+Route::get('/vendor/details/{id}', [IndexController::class, 'VendorDetails'])
+  ->name('vendor.details');
+
+// Vendorの一覧表示のルート
+Route::get('/vendor/all', [IndexController::class, 'VendorAll'])
+  ->name('vendor.all');
+
+// CatWiseProductのルート
+Route::get('/product/category/{id}/{slug}', [IndexController::class, 'CatWiseProduct']);
+
+// SubCatWiseProductのルート
+Route::get('/product/subcategory/{id}/{slug}', [IndexController::class, 'SubCatWiseProduct']);
+
+// Product View Modal With Ajax
+Route::get('/product/view/modal/{id}', [IndexController::class, 'ProductViewAjax']);
+
+/// Add to cart store data
+Route::post('/cart/data/store/{id}', [CartController::class, 'AddToCart']);
+
+// Get Data from mini Cart
+Route::get('/product/mini/cart', [CartController::class, 'AddMiniCart']);
+
+// カート内の商品削除
+Route::get('/minicart/product/remove/{rowId}', [CartController::class, 'RemoveMiniCart']);
+
+/// Add to cart store data For Product Details Page 
+Route::post('/dcart/data/store/{id}', [CartController::class, 'AddToCartDetails']);
+
+/// Add to Wishlist 
+Route::post('/add-to-wishlist/{product_id}', [WishlistController::class, 'AddToWishList']);
+
+/// User All Route
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+  // Wishlist All Route 
+  Route::controller(WishlistController::class)->group(function () {
+
+    // WishList:一覧表示のルート
+    Route::get('/wishlist', 'AllWishlist')
+      ->name('wishlist');
+
+    Route::get('/get-wishlist-product', 'GetWishlistProduct');
+
+    // WishList削除のルート
+    Route::get('/wishlist-remove/{id}', 'WishlistRemove');
+  });
+}); // end group middleware
 
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

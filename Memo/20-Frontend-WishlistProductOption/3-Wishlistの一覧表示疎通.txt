@@ -1,0 +1,59 @@
+
+3-Wishlistの一覧表示
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// User All Route
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+  // Wishlist All Route 
+  Route::controller(WishlistController::class)->group(function () {
+
+    // WishList:一覧表示のルート
+    Route::get('/wishlist', 'AllWishlist')
+      ->name('wishlist');
+  });
+}); // end group middleware
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<a href="{{ route('wishlist') }}"><span class="lable">Wishlist</span></a>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\WishlistController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AllWishlist()
+  {
+    return view('frontend.wishlist.view_wishlist');
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\wishlist\view_wishlist.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+User権限でLoginし、WishListのページに遷移されたらOK

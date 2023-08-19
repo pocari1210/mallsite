@@ -1,0 +1,81 @@
+
+5-カート内の商品削除
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// カート内の商品削除
+Route::get('/minicart/product/remove/{rowId}', [CartController::class, 'RemoveMiniCart']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="shopping-cart-delete" style="margin: -85px 1px 0px;">
+  <a type="submit" id="${value.rowId}" onclick="miniCartRemove(this.id)">
+    <i class="fi-rs-cross-small"></i>
+  </a>
+  </div>
+
+    /// Mini Cart Remove Start 
+    function miniCartRemove(rowId) {
+      $.ajax({
+        type: 'GET',
+        url: '/minicart/product/remove/' + rowId,
+        dataType: 'json',
+        success: function(data) {
+          miniCart();
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+    /// Mini Cart Remove End  
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function RemoveMiniCart($rowId)
+  {
+    Cart::remove($rowId);
+    return response()->json(['success' => 'Product Remove From Cart']);
+  } // End Method
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

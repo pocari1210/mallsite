@@ -58,7 +58,7 @@ class CategoryController extends Controller
 
       $image = $request->file('category_image');
       $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-      Image::make($image)->resize(120, 120)->save('upload/category/' . $name_gen);
+      InterventionImage::make($image)->resize(120, 120)->save('upload/category/' . $name_gen);
       $save_url = 'upload/category/' . $name_gen;
 
       if (file_exists($old_img)) {

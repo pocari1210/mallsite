@@ -1,0 +1,66 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// Frontend Product Details All Route 
+// Vendorの詳細ページのルート
+Route::get('/vendor/details/{id}', [IndexController::class, 'VendorDetails'])
+  ->name('vendor.details');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_vendor_list.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="vendor-info mb-30">
+      <ul class="contact-infor text-muted">
+        <li><img src="{{ asset('frontend/assets/imgs/theme/icons/icon-contact.svg') }}" alt="" /><strong>Call Us:</strong><span>{{ $vendor->phone }}</span></li>
+      </ul>
+    </div>
+
+    ↓↓routeの追記↓↓
+    <a href="{{ route('vendor.details',$vendor->id) }}" class="btn btn-xs">Visit Store <i class="fi-rs-arrow-small-right"></i></a>
+  </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorDetails($id)
+  {
+    $vendor = User::findOrFail($id);
+    $vproduct = Product::where('vendor_id', $id)->get();
+
+    return view(
+      'frontend.vendor.vendor_details',
+      compact('vendor', 'vproduct')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\home\home_vendor_list.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+詳細ページが疎通できたらOK

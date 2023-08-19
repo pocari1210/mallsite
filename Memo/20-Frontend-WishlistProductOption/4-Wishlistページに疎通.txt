@@ -1,0 +1,107 @@
+
+Wishlistページに疎通.
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\Wishlist.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Wishlist extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function product()
+  {
+    return $this->belongsTo(Product::class, 'product_id', 'id');
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// User All Route
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+  // Wishlist All Route 
+  Route::controller(WishlistController::class)->group(function () {
+
+    Route::get('/get-wishlist-product', 'GetWishlistProduct');
+  });
+}); // end group middleware
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テンプレートベース◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <!--  /// Start Load Wishlist Data -->
+
+  <script type="text/javascript">
+    function wishlist() {
+      $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "/get-wishlist-product/",
+        success: function(response) {}
+      })
+    }
+  </script>
+
+  <!--  /// End Load Wishlist Data -->
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\WishlistController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function GetWishlistProduct()
+  {
+    $wishlist = Wishlist::with('product')
+      ->where('user_id', Auth::id())->latest()->get();
+    $wishQty = wishlist::count();
+
+    return response()->json(['wishlist' => $wishlist, 'wishQty' => $wishQty]);
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\wishlist\view_wishlist.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+      <th scope="col" colspan="2">Product</th>
+      <th scope="col">Price</th>
+      <th scope="col">Stock Status</th>
+      <th scope="col" class="end">Remove</th>
+    </tr>
+  </thead>
+
+  <tbody id="wishlist">
+  </tbody>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+WishListのページでProductのWishListボタンを押したものが
+疎通されていたらOK

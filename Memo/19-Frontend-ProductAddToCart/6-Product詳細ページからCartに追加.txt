@@ -1,0 +1,148 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// Add to cart store data For Product Details Page 
+Route::post('/dcart/data/store/{id}', [CartController::class, 'AddToCartDetails']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テンプレートベース◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    /// Start Details Page Add To Cart Product 
+    function addToCartDetails() {
+      var product_name = $('#dpname').text();
+      var id = $('#dproduct_id').val();
+      var color = $('#dcolor option:selected').text();
+      var size = $('#dsize option:selected').text();
+      var quantity = $('#dqty').val();
+      $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+          color: color,
+          size: size,
+          quantity: quantity,
+          product_name: product_name
+        },
+        url: "/dcart/data/store/" + id,
+        success: function(data) {
+          miniCart();
+
+          // console.log(data)
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+    /// End Details Page Add To Cart Product 
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\product\product_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="product-extra-link2">
+    <input type="hidden" id="dproduct_id" value="{{ $product->id }}">
+
+    ↓↓addToCartDetails()のボタンの処理追加↓↓
+    <button type="submit" class="button button-add-to-cart" onclick="addToCartDetails()"><i class="fi-rs-shopping-cart"></i>Add to cart</button>
+    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+    <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+  </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AddToCartDetails(Request $request, $id)
+  {
+    $product = Product::findOrFail($id);
+
+    if ($product->discount_price == NULL) {
+
+      Cart::add([
+
+        'id' => $id,
+        'name' => $request->product_name,
+        'qty' => $request->quantity,
+        'price' => $product->selling_price,
+        'weight' => 1,
+        'options' => [
+          'image' => $product->product_thambnail,
+          'color' => $request->color,
+          'size' => $request->size,
+        ],
+      ]);
+
+      return response()->json(['success' => 'Successfully Added on Your Cart']);
+    } else {
+
+      Cart::add([
+        'id' => $id,
+        'name' => $request->product_name,
+        'qty' => $request->quantity,
+        'price' => $product->discount_price,
+        'weight' => 1,
+        'options' => [
+          'image' => $product->product_thambnail,
+          'color' => $request->color,
+          'size' => $request->size,
+        ],
+      ]);
+
+      return response()->json(['success' => 'Successfully Added on Your Cart']);
+    }
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+product/detailsのAdd To Cartボタンを押し、商品の追加ができたらOK

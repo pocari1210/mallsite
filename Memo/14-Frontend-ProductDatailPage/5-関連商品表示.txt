@@ -1,0 +1,46 @@
+
+
+
+
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+C:\xampp\htdocs\mallsite\cms\resources\views\frontend\product\product_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\IndexController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ProductDetails($id, $slug)
+  {
+
+    $cat_id = $product->category_id;
+    $relatedProduct = Product::where('category_id', $cat_id)
+      ->where('id', '!=', $id)->orderBy('id', 'DESC')->limit(4)->get();
+
+    return view(
+      'frontend.product.product_details',
+      compact(
+        'product',
+        'product_color',
+        'product_size',
+        'multiImage',
+        'relatedProduct',
+      )
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Related productsが疎通されていたらOK

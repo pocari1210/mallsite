@@ -1,0 +1,154 @@
+
+1-Cartに商品を追加
+
+bumbummen99/shoppingcartをブラウザで検索し、インストールを行う
+
+インストールのコマンド
+composer require bumbummen99/shoppingcart
+
+\config\cart.phpファイル作成
+php artisan vendor:publish --provider="Gloudemans\Shoppingcart\ShoppingcartServiceProvider" --tag="config"
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller Frontend/CartController
+
+下記コマンドでModelとTable作成
+php artisan make:model Cart -m
+
+
+◆テンプレートファイル◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    function productView(id) {
+      // alert(id)
+      $.ajax({
+        type: 'GET',
+        url: '/product/view/modal/' + id,
+        dataType: 'json',
+        success: function(data) {
+
+	  ↓Cartに追加した際、どのproductの情報か識別できるようにする
+          $('#product_id').val(id);
+          $('#qty').val(1);
+
+
+    /// Start Add To Cart Prodcut 
+    function addToCart() {
+      var product_name = $('#pname').text();
+      var id = $('#product_id').val();
+      var color = $('#color option:selected').text();
+      var size = $('#size option:selected').text();
+      var quantity = $('#qty').val();
+
+      $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+          color: color,
+          size: size,
+          quantity: quantity,
+          product_name: product_name
+        },
+        url: "/cart/data/store/" + id,
+        success: function(data) {
+          console.log(data)
+        }
+      })
+    }
+    /// End Add To Cart Prodcut 
+  </script>
+
+★コード解説★
+$.ajaxでカートに追加した際の情報をdataにJSON形式で記述し、
+POST通信を行っている
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\Frontend\CartController;
+
+/// Add to cart store data
+Route::post('/cart/data/store/{id}', [CartController::class, 'AddToCart']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\quickview.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<div class="product-extra-link2">
+
+  ↓Cartに追加する際、どのProductが識別するためにhidden(非表示)で取得
+  <input type="hidden" id="product_id">
+  <button type="submit" class="button button-add-to-cart" onclick="addToCart()">
+  <i class="fi-rs-shopping-cart"></i>
+  Add to cart
+  </button>
+</div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class CartController extends Controller
+{
+  public function AddToCart(Request $request, $id)
+  {
+    $product = Product::findOrFail($id);
+
+    if ($product->discount_price == NULL) {
+
+      // bumbummen99のライブラリを活用
+      Cart::add([
+        'id' => $id,
+        'name' => $request->product_name,
+        'qty' => $request->quantity,
+        'price' => $product->selling_price,
+        'weight' => 1,
+        'options' => [
+          'image' => $product->product_thambnail,
+          'color' => $request->color,
+          'size' => $request->size,
+        ],
+      ]);
+
+      return response()->json(['success' => 'Successfully Added on Your Cart']);
+    } else {
+
+      Cart::add([
+        'id' => $id,
+        'name' => $request->product_name,
+        'qty' => $request->quantity,
+        'price' => $product->discount_price,
+        'weight' => 1,
+        'options' => [
+          'image' => $product->product_thambnail,
+          'color' => $request->color,
+          'size' => $request->size,
+        ],
+      ]);
+
+      return response()->json(['success' => 'Successfully Added on Your Cart']);
+    }
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

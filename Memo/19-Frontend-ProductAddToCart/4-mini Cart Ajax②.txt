@@ -1,0 +1,49 @@
+
+mini Cart Ajax②
+
+◆ベーステンプレート◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<script type="text/javascript">
+  function miniCart() {
+    $.ajax({
+      type: 'GET',
+      url: '/product/mini/cart',
+      dataType: 'json',
+      success: function(response) {
+        //console.log(response)
+
+        ↓↓合計金額と商品の個数追加
+        $('span[id="cartSubTotal"]').text(response.cartTotal);
+        $('#cartQty').text(response.cartQty);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆header◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+  <div class="header-action-icon-2">
+    <a class="mini-cart-icon" href="shop-cart.html">
+      <img alt="Nest" src="{{ asset('frontend/assets/imgs/theme/icons/icon-cart.svg') }}" />
+      <span class="pro-count blue" id="cartQty"></span>
+    </a>
+
+  <div class="shopping-cart-footer">
+    <div class="shopping-cart-total">
+      <h4>Total <span id="cartSubTotal"></span></h4>
+    </div>
+
+★コード解説★
+JSをよみこませるため、id属性追記
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+headerのCartを選択し、Add To Cartで小計とProductの個数の合計がはいっていればOK

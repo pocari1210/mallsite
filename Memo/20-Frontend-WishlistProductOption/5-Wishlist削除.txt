@@ -1,0 +1,117 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// User All Route
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+  // Wishlist All Route 
+  Route::controller(WishlistController::class)->group(function () {
+
+    // WishList削除のルート
+    Route::get('/wishlist-remove/{id}', 'WishlistRemove');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <a href="shop-wishlist.html">
+    <img class="svgInject" alt="Nest" src="{{ asset('frontend/assets/imgs/theme/icons/icon-heart.svg') }}" />
+
+    ↓↓id追記↓↓
+    <span class="pro-count blue" id="wishQty"> </span>
+  </a>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テンプレートベース◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <script type="text/javascript">
+    function wishlist() {
+      $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "/get-wishlist-product/",
+        success: function(response) {
+
+          ↓追記:Wishlistの件数が表示される
+          $('#wishQty').text(response.wishQty);
+
+    // Wishlist Remove Start 
+    function wishlistRemove(id) {
+      $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "/wishlist-remove/" + id,
+        success: function(data) {
+          wishlist();
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              icon: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              icon: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+    // Wishlist Remove End
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\WishlistController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function WishlistRemove($id)
+  {
+    Wishlist::where('user_id', Auth::id())
+      ->where('id', $id)->delete();
+
+    return response()->json(['success' => 'Successfully Product Remove']);
+  } // End Method
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
