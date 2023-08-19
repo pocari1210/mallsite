@@ -1,0 +1,94 @@
+
+
+下記コマンドでファイルを作成
+php artisan make:notification VendorApproveNotification
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+          <li class="nav-item dropdown dropdown-large">
+            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span class="alert-count">
+                @php
+                $ncount = Auth::user()->unreadNotifications()->count()
+                @endphp
+                {{ $ncount }}</span>
+              <i class='bx bx-bell'></i>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-end">
+              <a href="javascript:;">
+                <div class="msg-header">
+                  <p class="msg-header-title">Notifications</p>
+                  <p class="msg-header-clear ms-auto">Marks all as read</p>
+                </div>
+              </a>
+              <div class="header-notifications-list">
+
+                @php
+                $user = Auth::user();
+                @endphp
+
+                @forelse($user->notifications as $notification)
+                <a class="dropdown-item" href="javascript:;">
+                  <div class="d-flex align-items-center">
+                    <div class="notify bg-light-warning text-warning"><i class="bx bx-send"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="msg-name">Message <span class="msg-time float-end">{{ Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
+                        </span></h6>
+                      <p class="msg-info">{{ $notification->data['message'] }}</p>
+                    </div>
+                  </div>
+                </a>
+                @empty
+
+                @endforelse
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Notifications\VendorApproveNotification;
+use Illuminate\Support\Facades\Notification;
+
+  public function ActiveVendorApprove(Request $request)
+  {
+    $verdor_id = $request->id;
+    $user = User::findOrFail($verdor_id)->update([
+      'status' => 'active',
+    ]);
+
+    $notification = array(
+      'message' => 'Vendor Active Successfully',
+      'alert-type' => 'success'
+    );
+
+    ↓↓追記↓↓
+    $vuser = User::where('role', 'vendor')->get();
+    Notification::send($vuser, new VendorApproveNotification($request));
+    return redirect()->route('active.vendor')->with($notification);
+  } // End Mehtod 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
