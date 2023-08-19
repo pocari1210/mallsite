@@ -10,6 +10,9 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Auth;
+use App\Models\User;
+use App\Notifications\OrderComplete;
+use Illuminate\Support\Facades\Notification;
 
 class StripeController extends Controller
 {
@@ -99,6 +102,10 @@ class StripeController extends Controller
   public function CashOrder(Request $request)
   {
 
+    // roleカラムをadminで条件指定し、
+    // adminのdashboardに通知をさせる
+    $user = User::where('role', 'admin')->get();
+
     if (Session::has('coupon')) {
       $total_amount = Session::get('coupon')['total_amount'];
     } else {
@@ -155,6 +162,8 @@ class StripeController extends Controller
       'message' => 'Your Order Place Successfully',
       'alert-type' => 'success'
     );
+
+    Notification::send($user, new OrderComplete($request->name));
     return redirect()->route('dashboard')->with($notification);
   } // End Method 
 }
