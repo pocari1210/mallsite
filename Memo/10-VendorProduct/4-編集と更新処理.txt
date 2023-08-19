@@ -1,0 +1,123 @@
+
+4-編集と更新処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Vendor Add Product All Route 
+  Route::controller(VendorProductController::class)->group(function () {
+
+    // VendorProduct:編集ページのルート
+    Route::get('/vendor/edit/product/{id}', 'VendorEditProduct')
+      ->name('vendor.edit.product');
+
+    // VendorProduct:更新処理のルート
+    Route::post('/vendor/update/product', 'VendorUpdateProduct')
+      ->name('vendor.update.product');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\backend\product\vendor_product_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td> @if($item->status == 1)
+    <span class="badge rounded-pill bg-success">Active</span>
+    @else
+    <span class="badge rounded-pill bg-danger">InActive</span>
+    @endif
+  </td>
+
+  <td>
+
+    ↓↓routeの編集↓↓
+    <a href="{{ route('vendor.edit.product',$item->id) }}" class="btn btn-info" title="Edit Data"> <i class="fa fa-pencil"></i> </a>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 編集ページのコントローラー
+  public function VendorEditProduct($id)
+  {
+    $multiImgs = MultiImg::where('product_id', $id)->get();
+    $brands = Brand::latest()->get();
+    $categories = Category::latest()->get();
+    $subcategory = SubCategory::latest()->get();
+    $products = Product::findOrFail($id);
+    return view(
+      'vendor.backend.product.vendor_product_edit',
+      compact('brands', 'categories', 'products', 'subcategory', 'multiImgs')
+    );
+  } // End Method 
+
+  // 更新処理のコントローラー
+  public function VendorUpdateProduct(Request $request)
+  {
+    $product_id = $request->id;
+
+    Product::findOrFail($product_id)->update([
+
+      'brand_id' => $request->brand_id,
+      'category_id' => $request->category_id,
+      'subcategory_id' => $request->subcategory_id,
+      'product_name' => $request->product_name,
+      'product_slug' => strtolower(str_replace(' ', '-', $request->product_name)),
+
+      'product_code' => $request->product_code,
+      'product_qty' => $request->product_qty,
+      'product_tags' => $request->product_tags,
+      'product_size' => $request->product_size,
+      'product_color' => $request->product_color,
+
+      'selling_price' => $request->selling_price,
+      'discount_price' => $request->discount_price,
+      'short_descp' => $request->short_descp,
+      'long_descp' => $request->long_descp,
+
+      'hot_deals' => $request->hot_deals,
+      'featured' => $request->featured,
+      'special_offer' => $request->special_offer,
+      'special_deals' => $request->special_deals,
+
+      'status' => 1,
+      'created_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Vendor Product Updated Without Image Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('vendor.all.product')->with($notification);
+  } // End Method   
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\vendor\backend\product\vendor_product_edit.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+\resources\views\backend\product\product_edit.blade.phpを参考に、
+作成を行う
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+編集ページから更新を行うことができたらOK

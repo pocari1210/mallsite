@@ -1,0 +1,55 @@
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+@php
+$id = Auth::user()->id;
+$verdorId = App\Models\User::find($id);
+$status = $verdorId->status;
+@endphp
+
+★コード解説★
+DBからログインしているuserの情報を取得している
+
+@if($status === 'active')
+
+★コード解説★
+ステータスがactiveだった場合、サイドバーのメニューを表示する
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆index.blade.php◆
+
+ディレクトリ
+\resources\views\vendor\index.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+@php
+$id = Auth::user()->id;
+$verdorId = App\Models\User::find($id);
+$status = $verdorId->status;
+@endphp
+
+<div class="page-content">
+
+  @if($status === 'active')
+  <h4>Vendor Account is <span class="text-success">Active</span> </h4>
+  @else
+  <h4>Vendor Account is <span class="text-danger">InActive</span> </h4>
+  <p class="text-danger"><b> Plz wait admin will check and approve your account</b></p>
+  @endif
+
+★コード解説★
+@phpでログインしているuser情報を取得し、
+@ifでステータス毎に表示をきりかえている
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ステータス毎に表示内容が変更されていたらOK

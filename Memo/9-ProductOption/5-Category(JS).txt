@@ -1,0 +1,73 @@
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function GetSubCategory($category_id)
+  {
+    $subcat = SubCategory::where('category_id', $category_id)
+      ->orderBy('subcategory_name', 'ASC')->get();
+
+    return json_encode($subcat);
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\product\product_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<!-- CategoryのJS -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('select[name="category_id"]').on('change', function() {
+      var category_id = $(this).val();
+      if (category_id) {
+        $.ajax({
+          url: "{{ url('/subcategory/ajax') }}/" + category_id,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            $('select[name="subcategory_id"]').html('');
+            var d = $('select[name="subcategory_id"]').empty();
+            $.each(data, function(key, value) {
+              $('select[name="subcategory_id"]').append('<option value="' + value.id + '">' + value.subcategory_name + '</option>');
+            });
+          },
+        });
+      } else {
+        alert('danger');
+      }
+    });
+  });
+</script>
+
+★コード解説★
+カテゴリーを選択した際、カテゴリーに登録されているサブカテゴリーが
+サブカテゴリーのOptionで表示されるようになる
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function GetSubCategory($category_id)
+  {
+    $subcat = SubCategory::where('category_id', $category_id)
+      ->orderBy('subcategory_name', 'ASC')->get();
+
+    return json_encode($subcat);
+  } // End Method 
+

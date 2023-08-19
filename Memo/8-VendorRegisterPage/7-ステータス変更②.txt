@@ -1,0 +1,86 @@
+
+7-ステータス変更②
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    // ActiveVendor:詳細のルート
+    Route::get('/active/vendor/details/{id}', 'ActiveVendorDetails')
+      ->name('active.vendor.details');
+
+    // ActiveVendor:ステータス変更のルート
+    Route::post('/inactive/vendor/approve', 'InActiveVendorApprove')
+      ->name('inactive.vendor.approve');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\vendor\active_vendor.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($ActiveVendor as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+    <td> {{ $item->name }}</td>
+    <td> {{ $item->username }}</td>
+    <td> {{ $item->vendor_join }}</td>
+    <td> {{ $item->email }} </td>
+    <td> <span class="btn btn-success">{{ $item->status }}</span> </td>
+
+    ↓↓routeの編集↓↓
+    <td>
+      <a href="{{ route('active.vendor.details',$item->id) }}" class="btn btn-info">Vendor Details</a>
+    </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ActiveVendorDetails($id)
+  {
+    $activeVendorDetails = User::findOrFail($id);
+    return view(
+      'backend.vendor.active_vendor_details',
+      compact('activeVendorDetails')
+    );
+  } // End Mehtod 
+
+  public function InActiveVendorApprove(Request $request)
+  {
+    $verdor_id = $request->id;
+    $user = User::findOrFail($verdor_id)->update([
+      'status' => 'inactive',
+    ]);
+
+    $notification = array(
+      'message' => 'Vendor InActive Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('inactive.vendor')->with($notification);
+  } // End Mehtod 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\vendor\active_vendor_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Inactiveにステータスが変更されたらOK

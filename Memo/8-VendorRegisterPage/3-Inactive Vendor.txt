@@ -1,0 +1,71 @@
+
+3-Inactive Vendor
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    // InactiveVendor:一覧のルート
+    Route::get('/inactive/vendor', 'InactiveVendor')
+      ->name('inactive.vendor');
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a href="javascript:;" class="has-arrow">
+      <div class="parent-icon"><i class='bx bx-cart'></i>
+      </div>
+      <div class="menu-title">Vendor Manage </div>
+    </a>
+    <ul>
+      <li> <a href="{{ route('inactive.vendor') }}"><i class="bx bx-right-arrow-alt"></i>Inactive Vendor</a>
+      </li>
+      <li> <a href="ecommerce-products.html"><i class="bx bx-right-arrow-alt"></i>Active Vendor</a>
+      </li>
+    </ul>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // InactiveVendor：一覧表示のコントローラー
+  public function InactiveVendor()
+  {
+    $inActiveVendor = User::where('status', 'inactive')->where('role', 'vendor')->latest()->get();
+
+    return view(
+      'backend.vendor.inactive_vendor',
+      compact('inActiveVendor')
+    );
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\vendor\inactive_vendor.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+AdminのダッシュボードのサイドバーからInactive Vendorの一覧が表示されたらOK

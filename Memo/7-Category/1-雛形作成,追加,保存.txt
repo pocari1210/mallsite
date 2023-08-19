@@ -1,0 +1,160 @@
+
+1-雛形作成,追加,保存
+
+下記コマンドでコントローラーファイルを作成
+php artisan make:controller Backend/CategoryController
+
+下記コマンドで、モデルファイルとテーブルファイルを作成
+php artisan make:model Category -m
+
+
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\Category.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Category extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テーブルの編集◆
+
+ディレクトリ
+\database\migrations\2023_07_17_135302_create_categories_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('categories', function (Blueprint $table) {
+      $table->id();
+      $table->string('category_name');
+      $table->string('category_slug');
+      $table->string('category_image');
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Brand All Route 
+  Route::controller(BrandController::class)->group(function () {
+
+  // Category All Route 
+  Route::controller(CategoryController::class)->group(function () {
+
+    // Category:一覧のルート
+    Route::get('/all/category', 'AllCategory')
+      ->name('all.category');
+
+    // Category:追加処理のルート
+    Route::get('/add/category', 'AddCategory')
+      ->name('add.category');
+
+    // Category:保存処理のルート
+    Route::post('/store/category', 'StoreCategory')
+      ->name('store.category');
+  });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元1)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Category</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('all.category') }}"><i class="bx bx-right-arrow-alt"></i>All Category</a>
+        </li>
+        <li> <a href="{{ route('add.category') }}"><i class="bx bx-right-arrow-alt"></i>Add Category</a>
+        </li>
+      </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元1)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\CategoryController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use InterventionImage;
+use App\Models\Category;
+
+  public function AllCategory()
+  {
+    $categories = Category::latest()->get();
+    return view('backend.category.category_all', compact('categories'));
+  } // End Method 
+
+  public function AddCategory()
+  {
+    return view('backend.category.category_add');
+  } // End Method 
+
+  public function StoreCategory(Request $request)
+  {
+    $image = $request->file('category_image');
+    $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+    InterventionImage::make($image)->resize(120, 120)->save('upload/category/' . $name_gen);
+    $save_url = 'upload/category/' . $name_gen;
+
+    Category::insert([
+      'category_name' => $request->category_name,
+      'category_slug' => strtolower(str_replace(' ', '-', $request->category_name)),
+      'category_image' => $save_url,
+    ]);
+
+    $notification = array(
+      'message' => 'Category Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.category')->with($notification);
+  } // End Method 
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

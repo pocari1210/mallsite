@@ -1,0 +1,77 @@
+
+3-プロフィール更新
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Vendor権限のルート★
+Route::middleware(['auth', 'role:vendor'])->group(function () {
+
+  // Vendor:プロフィール詳細ページのルート
+  Route::get('/vendor/profile', [VendorController::class, 'VendorProfile'])
+    ->name('vendor.profile');
+
+  // Vendor:プロフィール情報更新のルート
+  Route::post('/vendor/profile/store', [VendorController::class, 'VendorProfileStore'])
+    ->name('vendor.profile.store');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a class="dropdown-item" href="{{ route('vendor.change.password') }}">
+      <i class="bx bx-cog"></i>
+      <span>Change Password</span>
+    </a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\VendorController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // パスワード変更ページのコントローラー
+  public function VendorChangePassword()
+  {
+    return view('vendor.vendor_change_password');
+  } // End Mehtod 
+
+  // パスワード更新処理のコントローラー
+  public function VendorUpdatePassword(Request $request)
+  {
+    // Validation 
+    $request->validate([
+      'old_password' => 'required',
+      'new_password' => 'required|confirmed',
+    ]);
+
+    // Match The Old Password
+    if (!Hash::check($request->old_password, auth::user()->password)) {
+      return back()->with("error", "Old Password Doesn't Match!!");
+    }
+
+    // Update The new password 
+    User::whereId(auth()->user()->id)->update([
+      'password' => Hash::make($request->new_password)
+
+    ]);
+    return back()->with("status", " Password Changed Successfully");
+  } // End Mehtod 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

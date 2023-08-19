@@ -1,0 +1,67 @@
+
+
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\User.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array<int, string>
+   */
+
+  ↓↓追記↓↓
+  protected $guarded = [];
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Factoryの編集(ダミーデータ)◆
+
+ディレクトリ
+\database\factories\UserFactory.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function definition()
+  {
+    return [
+      'name' => fake()->name(),
+      'email' => fake()->safeEmail(),
+      'email_verified_at' => now(),
+      'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+      'phone' => fake()->phoneNumber,
+      'address' => fake()->address,
+      'photo' => fake()->imageUrl('60', '60'),
+      'role' => fake()->randomElement(['admin', 'vendor', 'user']),
+      'status' => fake()->randomElement(['active', 'inactive']),
+      'remember_token' => Str::random(10),
+    ];
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆DatabaseSeederの編集◆
+
+ディレクトリ
+\database\seeders\DatabaseSeeder.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function run()
+  {
+    $this->call(UsersTableSeeder::class);
+
+    ↓↓追記↓↓
+    \App\Models\User::factory(8)->create();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+下記コマンドを入力し、DBにダミーデータがはいったらOK
+
+php artisan migrate:fresh --seed

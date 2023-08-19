@@ -1,0 +1,71 @@
+
+2-ログインとログアウト
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Vendor権限のルート★
+Route::middleware(['auth', 'role:vendor'])->group(function () {
+
+  // Vendor:ログアウト処理のルート
+  Route::get('/vendor/logout', [VendorController::class, 'VendorDestroy'])
+    ->name('vendor.logout');
+});
+
+// Vendor:ログイン処理のルート
+Route::get('/vendor/login', [VendorController::class, 'VendorLogin']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li><a class="dropdown-item" href="{{ route('vendor.logout') }}"><i class='bx bx-log-out-circle'></i><span>Logout</span></a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\VendorController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // ★ログイン処理のコントローラー★
+  public function VendorLogin()
+  {
+    return view('vendor.vendor_login');
+  } // End Mehtod 
+
+  // ★ログアウト処理のコントローラー★
+  public function VendorDestroy(Request $request)
+  {
+    Auth::guard('web')->logout();
+
+    $request->session()->invalidate();
+
+    $request->session()->regenerateToken();
+
+    return redirect('/vendor/login');
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\vendor\vendor_login.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Vendorのdashboardからログアウトして、vendorのログインの画面に遷移されたらOK

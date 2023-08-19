@@ -1,0 +1,92 @@
+
+1-雛形作成
+
+下記コマンドでコントローラーファイルを作成
+php artisan make:controller backend/VendorProductController
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// ★Vendor権限のルート★
+Route::middleware(['auth', 'role:vendor'])->group(function () {
+
+  // Vendor Add Product All Route 
+  Route::controller(VendorProductController::class)->group(function () {
+
+    // VendorProduct:一覧表示のルート
+    Route::get('/vendor/all/product', 'VendorAllProduct')
+      ->name('vendor.all.product');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆アイコン◆
+
+ディレクトリ
+\resources\views\vendor\vendor_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  ↓↓追記↓↓
+  <!-- font-awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" 
+   integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <title>Vendor Dashboard</title>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\vendor\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Product Manage </div>
+  </a>
+  <ul>
+
+    ↓↓routeの追記↓↓
+    <li> <a href="{{ route('vendor.all.product') }}"><i class="bx bx-right-arrow-alt"></i>All Product</a>
+    </li>
+    <li> <a href="dashboard-eCommerce.html"><i class="bx bx-right-arrow-alt"></i>Add Product</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function VendorAllProduct()
+  {
+    $id = Auth::user()->id;
+    $products = Product::where('vendor_id', $id)
+      ->latest()->get();
+
+    return view(
+      'vendor.backend.product.vendor_product_all',
+      compact('products')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\vendor\product\vendor_product_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+vendorのdashboardのサイドバーより、
+productの一覧表示のページが疎通できたらOK

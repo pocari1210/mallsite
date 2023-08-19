@@ -1,0 +1,75 @@
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Brand All Route 
+  Route::controller(BrandController::class)->group(function () {
+
+    // Brand:編集処理のルート
+    Route::get('/edit/brand/{id}', 'EditBrand')
+      ->name('edit.brand');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\brand\brand_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+
+    ↓↓追記↓↓
+    <a href="{{ route('edit.brand',$item->id) }}" class="btn btn-info">Edit</a>
+    <a href="" class="btn btn-danger">Delete</a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BrandController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Brand:編集処理のコントローラー
+  public function EditBrand($id)
+  {
+    $brand = Brand::findOrFail($id);
+
+    return view(
+      'backend.brand.brand_edit',
+      compact('brand')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\brand\brand_edit.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+一覧ページから、編集ページに遷移されたらOK
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

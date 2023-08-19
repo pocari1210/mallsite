@@ -1,0 +1,57 @@
+
+1-雛形作成
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Vendor:ログイン処理のルート
+Route::get('/vendor/login', [VendorController::class, 'VendorLogin'])
+  ->name('vendor.login');
+
+Route::get('/become/vendor', [VendorController::class, 'BecomeVendor'])
+  ->name('become.vendor');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\footer.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="footer-link-widget col wow animate__animated animate__fadeInUp" data-wow-delay=".3s">
+    <h4 class="widget-title">Corporate</h4>
+    <ul class="footer-list mb-sm-5 mb-md-0">
+      <li><a href="{{ route('become.vendor') }}">Become a Vendor</a></li>
+      <li><a href="#">Affiliate Program</a></li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\VendorController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function BecomeVendor()
+  {
+    return view('auth.become_vendor');
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\auth\become_vendor.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+vendorの登録ページに遷移されたらOK

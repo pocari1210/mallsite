@@ -1,0 +1,115 @@
+
+4-subcategory_追加,保存処理
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\SubCategory.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class SubCategory extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  ↓↓追記↓↓
+  public function category()
+  {
+    return $this->belongsTo(Category::class, 'category_id', 'id');
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // SubCategory All Route 
+  Route::controller(SubCategoryController::class)->group(function () {
+
+    // subcategory:新規作成のルート
+    Route::get('/add/subcategory', 'AddSubCategory')
+      ->name('add.subcategory');
+
+    // subcategory:保存処理のルート
+    Route::post('/store/subcategory', 'StoreSubCategory')
+      ->name('store.subcategory');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元1)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="menu-title">SubCategory</div>
+</a>
+<ul>
+  <li> <a href="{{ route('all.subcategory') }}"><i class="bx bx-right-arrow-alt"></i>All SubCategory</a>
+  </li>
+
+  ↓↓routeの追記↓↓
+  <li> <a href="{{ route('add.subcategory') }}"><i class="bx bx-right-arrow-alt"></i>Add SubCategory</a>
+  </li>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元2)◆
+
+ディレクトリ
+\resources\views\backend\subcategory\subcategory_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="ms-auto">
+    <div class="btn-group">
+      <a href="{{ route('add.subcategory') }}" class="btn btn-primary">Add SubCategory</a>
+    </div>
+  </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\SubCategoryController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 追加のコントローラー
+  public function AddSubCategory()
+  {
+    $categories = Category::orderBy('category_name', 'ASC')->get();
+    return view('backend.subcategory.subcategory_add', compact('categories'));
+  } // End Method 
+
+  // 保存処理のコントローラー
+  public function StoreSubCategory(Request $request)
+  {
+    SubCategory::insert([
+      'category_id' => $request->category_id,
+      'subcategory_name' => $request->subcategory_name,
+      'subcategory_slug' => strtolower(str_replace(' ', '-', $request->subcategory_name)),
+    ]);
+
+    $notification = array(
+      'message' => 'SubCategory Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.subcategory')->with($notification);
+  } // End Method   
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

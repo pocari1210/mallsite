@@ -1,0 +1,73 @@
+
+13-アクティブと非アクティブ
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Product All Route 
+  Route::controller(ProductController::class)->group(function () {
+
+    // Product:inactiveのルート
+    Route::get('/product/inactive/{id}', 'ProductInactive')
+      ->name('product.inactive');
+
+    // Product:activeのルート
+    Route::get('/product/active/{id}', 'ProductActive')
+      ->name('product.active');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+C:\xampp\htdocs\mallsite\cms\resources\views\backend\product\product_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @if($item->status == 1)
+  <a href="{{ route('product.inactive',$item->id) }}" class="btn btn-primary" title="Inactive"> <i class="fa-solid fa-thumbs-down"></i> </a>
+  @else
+  <a href="{{ route('product.active',$item->id) }}" class="btn btn-primary" title="Active"> <i class="fa-solid fa-thumbs-up"></i> </a>
+  @endif
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Inactiveのコントローラー
+  public function ProductInactive($id)
+  {
+    Product::findOrFail($id)->update(['status' => 0]);
+    $notification = array(
+      'message' => 'Product Inactive',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+  // Activeのコントローラー
+  public function ProductActive($id)
+  {
+    Product::findOrFail($id)->update(['status' => 1]);
+    $notification = array(
+      'message' => 'Product Active',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Productの一覧ページのActionの項目のActiveボタンを押し、
+statusが変更されたらOK

@@ -1,0 +1,57 @@
+
+6-ステータス変更
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Vendor Active and Inactive All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    // InactiveVendor:承認のルート(ステータス変更)
+    Route::post('/active/vendor/approve', 'ActiveVendorApprove')
+      ->name('active.vendor.approve');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\vendor\inactive_vendor_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // ステータス変更のコントローラー
+  public function ActiveVendorApprove(Request $request)
+  {
+    $verdor_id = $request->id;
+    $user = User::findOrFail($verdor_id)->update([
+      'status' => 'active',
+    ]);
+
+    $notification = array(
+      'message' => 'Vendor Active Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('active.vendor')->with($notification);
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ステータスがActiveに変更されたらOK

@@ -1,0 +1,118 @@
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Vendor Add Product All Route 
+  Route::controller(VendorProductController::class)->group(function () {
+
+    // VendorProduct:追加ページのルート
+    Route::get('/vendor/add/product', 'VendorAddProduct')
+      ->name('vendor.add.product');
+
+    Route::get('/vendor/subcategory/ajax/{category_id}', 'VendorGetSubCategory');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ライブラリのimport◆
+
+ディレクトリ
+\resources\views\vendor\vendor_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+\resources\views\admin\admin_dashboard.blade.phpを参考に、
+ライブラリをimportする
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元1)◆
+
+ディレクトリ
+\resources\views\vendor\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+      <div class="menu-title">Product Manage </div>
+    </a>
+    <ul>
+      <li> <a href="{{ route('vendor.all.product') }}"><i class="bx bx-right-arrow-alt"></i>All Product</a>
+      </li>
+
+      ↓↓routeの追加↓↓
+      <li> <a href="{{ route('vendor.add.product') }}"><i class="bx bx-right-arrow-alt"></i>Add Product</a>
+      </li>
+    </ul>
+  </li>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元2)◆
+
+ディレクトリ
+\resources\views\vendor\backend\product\vendor_product_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="ms-auto">
+    <div class="btn-group">
+
+      ↓↓routeの編集↓↓
+      <a href="{{ route('vendor.add.product') }}" class="btn btn-primary">Add Product</a>
+    </div>
+  </div>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\VendorProductController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // 追加ページ遷移のコントローラー
+  public function VendorAddProduct()
+  {
+    $brands = Brand::latest()->get();
+    $categories = Category::latest()->get();
+
+    return view(
+      'vendor.backend.product.vendor_product_add',
+      compact('brands', 'categories')
+    );
+  } // End Method 
+
+  public function VendorGetSubCategory($category_id)
+  {
+    $subcat = SubCategory::where('category_id', $category_id)
+      ->orderBy('subcategory_name', 'ASC')->get();
+
+    return json_encode($subcat);
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\vendor\backend\product\vendor_product_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+\resources\views\backend\product\product_add.blade.phpを参考に、
+ファイルを作成
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+vendorのサイドバーまたは一覧ページの追加ボタンを押し、
+追加ページに遷移されたらOK
