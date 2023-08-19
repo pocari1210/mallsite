@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\SiteSetting;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +23,9 @@ class DatabaseSeeder extends Seeder
     $this->call(PermissionsTableSeeder::class);
     $this->call(RolesTableSeeder::class);
     $this->call(RoleHasPermissionsTableSeeder::class);
+    $this->call(SeoTableSeeder::class);
+    $this->call(SiteSettingTableSeeder::class);
+
     \App\Models\User::factory(8)->create();
     // \App\Models\User::factory(10)->create();
 
