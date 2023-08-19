@@ -1,0 +1,142 @@
+
+4-Districtの一覧と追加と保存処理
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\ShipDistricts.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class ShipDistricts extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  ↓↓追記↓↓
+  public function division()
+  {
+    return $this->belongsTo(ShipDivision::class, 'division_id', 'id');
+  }
+}
+
+★コード解説★
+ShipDivisionモデルとテーブル結合している
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Shipping District All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Districtの一覧のルート
+    Route::get('/all/district', 'AllDistrict')
+      ->name('all.district');
+
+    // Districtの追加ページ遷移のルート
+    Route::get('/add/district', 'AddDistrict')
+      ->name('add.district');
+
+    // Districtの保存処理のルート
+    Route::post('/store/district', 'StoreDistrict')
+      ->name('store.district');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Shipping Area </div>
+  </a>
+  <ul>
+    <li> <a href="{{ route('all.division') }}"><i class="bx bx-right-arrow-alt"></i>All Division</a>
+    </li>
+
+    ↓↓routeの編集↓↓
+    <li> <a href="{{ route('all.district') }}"><i class="bx bx-right-arrow-alt"></i>All District</a>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ShippingAreaController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  /////////////// District CRUD ///////////////
+
+  // Districtの一覧ページ遷移のコントローラー
+  public function AllDistrict()
+  {
+    $district = ShipDistricts::latest()->get();
+
+    return view(
+      'backend.ship.district.district_all',
+      compact('district')
+    );
+  } // End Method 
+
+  // Districtの追加ページ遷移のコントローラー
+  public function AddDistrict()
+  {
+    $division = ShipDivision::orderBy('division_name', 'ASC')->get();
+
+    return view(
+      'backend.ship.district.district_add',
+      compact('division')
+    );
+  } // End Method 
+
+  // Districtの保存処理のコントローラー
+  public function StoreDistrict(Request $request)
+  {
+    ShipDistricts::insert([
+      'division_id' => $request->division_id,
+      'district_name' => $request->district_name,
+    ]);
+
+    $notification = array(
+      'message' => 'ShipDistricts Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.district')->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先①)◆
+
+ディレクトリ
+\resources\views\backend\ship\district\district_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+一覧ページが表示されたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先②)◆
+
+ディレクトリ
+\resources\views\backend\ship\district\district_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+追加ページに遷移され、保存処理が実行できたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

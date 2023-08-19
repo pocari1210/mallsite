@@ -1,0 +1,51 @@
+
+4-削除処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::controller(CompareController::class)->group(function(){
+
+    // compareの削除処理のルート
+    Route::get('/compare-remove/{id}', 'CompareRemove');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td class="row_remove">
+  <a type="submit" class="text-muted"  id="${value.id}" onclick="compareRemove(this.id)">
+    <i class="fi-rs-trash mr-5"></i>
+    <span>Remove</span> 
+  </a>
+  </td>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\CompareController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function CompareRemove($id)
+  {
+    Compare::where('user_id', Auth::id())
+      ->where('id', $id)->delete();
+
+    return response()->json(['success' => 'Successfully Product Remove']);
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

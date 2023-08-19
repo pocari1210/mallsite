@@ -1,0 +1,119 @@
+
+2-ShippingDivisionの一覧と追加
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\Backend\ShippingAreaController;
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Shipping Division All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Divisionの一覧のルート
+    Route::get('/all/division', 'AllDivision')
+      ->name('all.division');
+
+    // Divisionの追加のルート
+    Route::get('/add/division', 'AddDivision')
+      ->name('add.division');
+
+    // Divisionの保存処理のルート
+    Route::post('/store/division', 'StoreDivision')
+      ->name('store.division');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="menu-title">Shipping Area </div>
+  </a>
+  <ul>
+
+    ↓↓routeの編集↓↓
+    <li> <a href="{{ route('all.division') }}"><i class="bx bx-right-arrow-alt"></i>All Division</a>
+    </li>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ShippingAreaController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\ShipDivision;
+use App\Models\ShipDistricts;
+use App\Models\ShipState;
+use Carbon\Carbon;
+
+  // Divisionの一覧のコントローラー
+  public function AllDivision()
+  {
+    $division = ShipDivision::latest()->get();
+
+    return view(
+      'backend.ship.division.division_all',
+      compact('division')
+    );
+  } // End Method 
+
+  // Divisionの追加ページ遷移のコントローラー
+  public function AddDivision()
+  {
+    return view('backend.ship.division.division_add');
+  } // End Method 
+
+  // Divisionの保存処理のコントローラー
+  public function StoreDivision(Request $request)
+  {
+    ShipDivision::insert([
+      'division_name' => $request->division_name,
+    ]);
+
+    $notification = array(
+      'message' => 'ShipDivision Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.division')->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先①)◆
+
+ディレクトリ
+\resources\views\backend\ship\division\division_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+一覧ページが疎通されたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先②)◆
+
+ディレクトリ
+\resources\views\backend\ship\division\division_add.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+追加ページに遷移され、保存処理が行えたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////a

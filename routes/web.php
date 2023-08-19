@@ -13,9 +13,16 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\VendorProductController;
 use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\CouponController;
+use App\Http\Controllers\Backend\ShippingAreaController;
+use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
+use App\Http\Controllers\User\CompareController;
+use App\Http\Controllers\User\CheckoutController;
+use App\Http\Controllers\User\StripeController;
+use App\Http\Controllers\User\AllUserController;
 
 
 /*
@@ -272,6 +279,128 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/delete/banner/{id}', 'DeleteBanner')
       ->name('delete.banner');
   });
+
+  // Coupon All Route 
+  Route::controller(CouponController::class)->group(function () {
+
+    // クーポンの一覧表示のルート
+    Route::get('/all/coupon', 'AllCoupon')
+      ->name('all.coupon');
+
+    // クーポンの追加のルート
+    Route::get('/add/coupon', 'AddCoupon')
+      ->name('add.coupon');
+
+    // クーポンの保存処理のルート
+    Route::post('/store/coupon', 'StoreCoupon')
+      ->name('store.coupon');
+
+    // クーポンの編集のルート
+    Route::get('/edit/coupon/{id}', 'EditCoupon')
+      ->name('edit.coupon');
+
+    // クーポンの更新処理のルート
+    Route::post('/update/coupon', 'UpdateCoupon')
+      ->name('update.coupon');
+
+    // クーポンの削除処理のルート
+    Route::get('/delete/coupon/{id}', 'DeleteCoupon')
+      ->name('delete.coupon');
+  });
+
+  // Shipping Division All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Divisionの一覧のルート
+    Route::get('/all/division', 'AllDivision')
+      ->name('all.division');
+
+    // Divisionの追加のルート
+    Route::get('/add/division', 'AddDivision')
+      ->name('add.division');
+
+    // Divisionの保存処理のルート
+    Route::post('/store/division', 'StoreDivision')
+      ->name('store.division');
+
+    // Divisionの更新ページ遷移のルート
+    Route::get('/edit/division/{id}', 'EditDivision')
+      ->name('edit.division');
+
+    // Divisionの更新処理のルート
+    Route::post('/update/division', 'UpdateDivision')
+      ->name('update.division');
+
+    // Divisionの削除処理のルート
+    Route::get('/delete/division/{id}', 'DeleteDivision')
+      ->name('delete.division');
+  });
+
+  // Shipping District All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Districtの一覧のルート
+    Route::get('/all/district', 'AllDistrict')
+      ->name('all.district');
+
+    // Districtの追加ページ遷移のルート
+    Route::get('/add/district', 'AddDistrict')
+      ->name('add.district');
+
+    // Districtの保存処理のルート
+    Route::post('/store/district', 'StoreDistrict')
+      ->name('store.district');
+
+    // Districtの編集ページ遷移のルート
+    Route::get('/edit/district/{id}', 'EditDistrict')
+      ->name('edit.district');
+
+    // Districtの更新処理のルート
+    Route::post('/update/district', 'UpdateDistrict')
+      ->name('update.district');
+
+    // Districtの削除処理のルート
+    Route::get('/delete/district/{id}', 'DeleteDistrict')
+      ->name('delete.district');
+  });
+
+  // Shipping State All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Stateの一覧のルート
+    Route::get('/all/state', 'AllState')
+      ->name('all.state');
+
+    // Stateの追加ページ遷移のルート
+    Route::get('/add/state', 'AddState')
+      ->name('add.state');
+
+    // Stateの保存処理のルート
+    Route::post('/store/state', 'StoreState')
+      ->name('store.state');
+
+    // Stateの編集のルート
+    Route::get('/edit/state/{id}', 'EditState')
+      ->name('edit.state');
+
+    // Stateの更新処理のルート
+    Route::post('/update/state', 'UpdateState')
+      ->name('update.state');
+
+    // Stateの削除処理のルート
+    Route::get('/delete/state/{id}', 'DeleteState')
+      ->name('delete.state');
+
+    Route::get('/district/ajax/{division_id}', 'GetDistrict');
+  });
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    // Adminの注文のペンディング画面のルート
+    Route::get('/pending/order', 'PendingOrder')
+      ->name('pending.order');
+  });
 }); // Admin End Middleware 
 
 // Admin:ログイン処理のルート
@@ -352,7 +481,12 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 
     Route::get('/vendor/subcategory/ajax/{category_id}', 'VendorGetSubCategory');
   });
-});
+
+  Route::controller(VendorOrderController::class)->group(function () {
+    Route::get('/vendor/order', 'VendorOrder')
+      ->name('vendor.order');
+  });
+}); // end Vendor Group middleware
 
 // Vendor:ログイン処理のルート
 Route::get('/vendor/login', [VendorController::class, 'VendorLogin'])
@@ -427,6 +561,31 @@ Route::post('/dcart/data/store/{id}', [CartController::class, 'AddToCartDetails'
 /// Add to Wishlist 
 Route::post('/add-to-wishlist/{product_id}', [WishlistController::class, 'AddToWishList']);
 
+/// Add to Compare 
+Route::post('/add-to-compare/{product_id}', [CompareController::class, 'AddToCompare']);
+
+/// Frontend Coupon Option
+Route::post('/coupon-apply', [CartController::class, 'CouponApply']);
+
+Route::get('/coupon-calculation', [CartController::class, 'CouponCalculation']);
+
+Route::get('/coupon-remove', [CartController::class, 'CouponRemove']);
+
+// Checkout Page Route 
+Route::get('/checkout', [CartController::class, 'CheckoutCreate'])
+  ->name('checkout');
+
+// Cart All Route 
+Route::controller(CartController::class)->group(function () {
+  Route::get('/mycart', 'MyCart')
+    ->name('mycart');
+
+  Route::get('/get-cart-product', 'GetCartProduct');
+  Route::get('/cart-remove/{rowId}', 'CartRemove');
+  Route::get('/cart-increment/{rowId}', 'CartIncrement');
+  Route::get('/cart-decrement/{rowId}', 'CartDecrement');
+});
+
 /// User All Route
 Route::middleware(['auth', 'role:user'])->group(function () {
 
@@ -442,7 +601,57 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // WishList削除のルート
     Route::get('/wishlist-remove/{id}', 'WishlistRemove');
   });
-}); // end group middleware
+
+  // Compare All Route 
+  Route::controller(CompareController::class)->group(function () {
+
+    // Compareの一覧表示のルート
+    Route::get('/compare', 'AllCompare')
+      ->name('compare');
+
+    // GetCompareProductメソッドのajax通信のルート
+    Route::get('/get-compare-product', 'GetCompareProduct');
+
+    // compareの削除処理のルート
+    Route::get('/compare-remove/{id}', 'CompareRemove');
+  });
+
+  // Checkout All Route 
+  Route::controller(CheckoutController::class)->group(function () {
+    Route::get('/district-get/ajax/{division_id}', 'DistrictGetAjax');
+    Route::get('/state-get/ajax/{district_id}', 'StateGetAjax');
+
+    Route::post('/checkout/store', 'CheckoutStore')
+      ->name('checkout.store');
+  });
+
+  // Stripe All Route 
+  Route::controller(StripeController::class)->group(function () {
+    // Stripe決済のルート
+    Route::post('/stripe/order', 'StripeOrder')
+      ->name('stripe.order');
+
+    // 代金引換決済のルート
+    Route::post('/cash/order', 'CashOrder')
+      ->name('cash.order');
+  });
+
+  // User Dashboard All Route 
+  Route::controller(AllUserController::class)->group(function () {
+    Route::get('/user/account/page', 'UserAccount')
+      ->name('user.account.page');
+
+    Route::get('/user/change/password', 'UserChangePassword')
+      ->name('user.change.password');
+
+    Route::get('/user/order/page', 'UserOrderPage')
+      ->name('user.order.page');
+
+    Route::get('/user/order_details/{order_id}', 'UserOrderDetails');
+
+    Route::get('/user/invoice_download/{order_id}', 'UserOrderInvoice');
+  });
+}); // end Usergroup middleware
 
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

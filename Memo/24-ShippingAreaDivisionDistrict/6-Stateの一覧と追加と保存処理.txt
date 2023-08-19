@@ -1,0 +1,122 @@
+
+6-Stateの一覧と追加と保存処理
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\ShipState.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class ShipState extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+
+  public function division()
+  {
+    return $this->belongsTo(ShipDivision::class, 'division_id', 'id');
+  }
+
+  public function district()
+  {
+    return $this->belongsTo(ShipDistricts::class, 'district_id', 'id');
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Shipping State All Route 
+  Route::controller(ShippingAreaController::class)->group(function () {
+
+    // Stateの一覧のルート
+    Route::get('/all/state', 'AllState')
+      ->name('all.state');
+
+    // Stateの追加ページ遷移のルート
+    Route::get('/add/state', 'AddState')
+      ->name('add.state');
+
+    // Stateの保存処理のルート
+    Route::post('/store/state', 'StoreState')
+      ->name('store.state');
+
+    Route::get('/district/ajax/{division_id}', 'GetDistrict');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li> <a href="{{ route('all.state') }}"><i class="bx bx-right-arrow-alt"></i>All State</a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ShippingAreaController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AllState()
+  {
+    $state = ShipState::latest()->get();
+
+    return view(
+      'backend.ship.state.state_all',
+      compact('state')
+    );
+  } // End Method 
+
+  public function AddState()
+  {
+    $division = ShipDivision::orderBy('division_name', 'ASC')->get();
+    $district = ShipDistricts::orderBy('district_name', 'ASC')->get();
+
+    return view(
+      'backend.ship.state.state_add',
+      compact('division', 'district')
+    );
+  } // End Method 
+
+  public function StoreState(Request $request)
+  {
+
+    ShipState::insert([
+      'division_id' => $request->division_id,
+      'district_id' => $request->district_id,
+      'state_name' => $request->state_name,
+    ]);
+
+    $notification = array(
+      'message' => 'ShipState Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.state')->with($notification);
+  } // End Method 
+
+  public function GetDistrict($division_id)
+  {
+    $dist = ShipDistricts::where('division_id', $division_id)
+      ->orderBy('district_name', 'ASC')->get();
+
+    return json_encode($dist);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

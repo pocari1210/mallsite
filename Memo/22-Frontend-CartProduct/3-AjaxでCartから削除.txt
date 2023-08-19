@@ -1,0 +1,88 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Cart All Route 
+  Route::controller(CartController::class)->group(function () {
+
+    Route::get('/cart-remove/{rowId}', 'CartRemove');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+            <td class="action text-center" data-title="Remove">
+            <a type="submit" class="text-body"  id="${value.rowId}" 
+            onclick="cartRemove(this.id)"><i class="fi-rs-trash"></i></a>
+            </td>
+
+    // Cart Remove Start 
+    function cartRemove(id) {
+      $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "/cart-remove/" + id,
+        success: function(data) {
+          cart();
+          miniCart();
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              icon: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              icon: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+    // Cart Remove End 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function CartRemove($rowId)
+  {
+    Cart::remove($rowId);
+    return response()->json(['success' => 'Successfully Remove From Cart']);
+  } // End Method
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Cart画面からProduvtを削除できたらOK

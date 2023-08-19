@@ -1,0 +1,97 @@
+
+3-Couponの削除処理
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::get('/coupon-remove', [CartController::class, 'CouponRemove']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <tr>
+    <td class="cart_total_label">
+        <h6 class="text-muted">Coupon </h6>
+    </td>
+    <td class="cart_total_amount">
+      <h6 class="text-brand text-end">${data.coupon_name} 
+
+        ↓↓削除のメソッド追記↓↓
+        <a type="submit" onclick="couponRemove()"><i class="fi-rs-trash"></i> </a> 
+      </h6>
+    </td>
+  </tr>
+
+  <!--  ////////////// End Apply Coupon ////////////// -->
+
+  <script type="text/javascript">
+    // Coupon Remove Start 
+    function couponRemove() {
+      $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: "/coupon-remove",
+        success: function(data) {
+          couponCalculation();
+          $('#couponField').show();
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              icon: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              icon: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+    // Coupon Remove End 
+  </script>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function CouponRemove()
+  {
+    Session::forget('coupon');
+    return response()->json(['success' => 'Coupon Remove Successfully']);
+  } // End Method
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Couponの適応を削除できたらOK

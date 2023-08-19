@@ -1,0 +1,75 @@
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller Backend/OrderController
+
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    // Adminの注文のペンディング画面のルート
+    Route::get('/pending/order', 'PendingOrder')
+      ->name('pending.order');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a href="javascript:;" class="has-arrow">
+      <div class="parent-icon"><i class='bx bx-cart'></i>
+      </div>
+      <div class="menu-title">Order Manage </div>
+    </a>
+    <ul>
+      <li> <a href="{{ route('pending.order') }}"><i class="bx bx-right-arrow-alt"></i>Pending Order</a>
+      </li>
+    </ul>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\OrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function PendingOrder()
+  {
+    $orders = Order::where('status', 'pending')
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.orders.pending_orders',
+      compact('orders')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\orders\pending_orders.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+注文があった商品の一覧が表示されていたらOK

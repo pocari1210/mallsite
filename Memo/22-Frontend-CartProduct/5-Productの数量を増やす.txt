@@ -1,0 +1,62 @@
+
+5-Productの数量を増やす
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Cart All Route 
+  Route::controller(CartController::class)->group(function () {
+
+    Route::get('/cart-increment/{rowId}', 'CartIncrement');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <input type="text" name="quantity" class="qty-val" value="${value.qty}" min="1">
+    <a type="submit" class="qty-up" id="${value.rowId}" onclick="cartIncrement(this.id)"><i class="fi-rs-angle-small-up"></i></a>
+  </div>
+
+    // Cart INCREMENT 
+
+    function cartIncrement(rowId) {
+      $.ajax({
+        type: 'GET',
+        url: "/cart-increment/" + rowId,
+        dataType: 'json',
+        success: function(data) {
+          cart();
+          miniCart();
+        }
+      });
+    }
+    // Cart INCREMENT End 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function CartIncrement($rowId)
+  {
+    $row = Cart::get($rowId);
+    Cart::update($rowId, $row->qty + 1);
+
+    return response()->json('Increment');
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

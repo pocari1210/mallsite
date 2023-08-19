@@ -1,0 +1,134 @@
+
+1-雛形作成
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// Frontend Coupon Option
+Route::post('/coupon-apply', [CartController::class, 'CouponApply']);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ベーステンプレート◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <!--  ////////////// Start Apply Coupon ////////////// -->
+  <script type="text/javascript">
+    function applyCoupon(id) {
+      var coupon_name = $('#coupon_name').val();
+      $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+          coupon_name: coupon_name
+        },
+        url: "/coupon-apply",
+        success: function(data) {
+
+          if (data.validity == true) {
+            $('#couponField').hide();
+          }
+
+          // Start Message 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+
+            showConfirmButton: false,
+            timer: 3000
+          })
+          if ($.isEmptyObject(data.error)) {
+
+            Toast.fire({
+              type: 'success',
+              icon: 'success',
+              title: data.success,
+            })
+          } else {
+
+            Toast.fire({
+              type: 'error',
+              icon: 'error',
+              title: data.error,
+            })
+          }
+          // End Message  
+        }
+      })
+    }
+  </script>
+
+  <!--  ////////////// End Apply Coupon ////////////// -->
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\CartController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\Coupon;
+
+  public function CouponApply(Request $request)
+  {
+    $coupon = Coupon::where('coupon_name', $request->coupon_name)
+      ->where('coupon_validity', '>=', Carbon::now()->format('Y-m-d'))->first();
+
+    if ($coupon) {
+      Session::put('coupon', [
+        'coupon_name' => $coupon->coupon_name,
+        'coupon_discount' => $coupon->coupon_discount,
+        'discount_amount' => round(Cart::total() * $coupon->coupon_discount / 100),
+        'total_amount' => round(Cart::total() - Cart::total() * $coupon->coupon_discount / 100)
+      ]);
+
+      return response()->json(array(
+        'validity' => true,
+        'success' => 'Coupon Applied Successfully'
+      ));
+    } else {
+      return response()->json(['error' => 'Invalid Coupon']);
+    }
+  } // End Method
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\mycart\view_mycart.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="col-lg-5">
+    @if(Session::has('coupon'))
+
+    @else
+    <div class="p-40" id="couponField">
+      <h4 class="mb-10">Apply Coupon</h4>
+      <p class="mb-30"><span class="font-lg text-muted">Using A Promo Code?</p>
+      <form action="#">
+        <div class="d-flex justify-content-between">
+          <input class="font-medium mr-15 coupon" id="coupon_name" placeholder="Enter Your Coupon">
+          <a type="submit" onclick="applyCoupon()" class="btn btn-success"><i class="fi-rs-label mr-10"></i>Apply</a>
+        </div>
+      </form>
+    </div>
+    @endif
+  </div>
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+mycartページで、Couponの記入欄が表示されたらOK

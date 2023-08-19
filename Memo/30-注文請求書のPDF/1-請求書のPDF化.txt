@@ -1,0 +1,67 @@
+
+laravel-dompdf
+https://github.com/barryvdh/laravel-dompdf
+
+インストールコマンド
+composer require barryvdh/laravel-dompdf
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // User Dashboard All Route 
+  Route::controller(AllUserController::class)->group(function () {
+
+    Route::get('/user/invoice_download/{order_id}', 'UserOrderInvoice');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ url('user/order_details/'.$order->id) }}" class="btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
+
+    ↓↓urlの追記↓↓
+    <a href="{{ url('user/invoice_download/'.$order->id) }}" class="btn-sm btn-danger"><i class="fa fa-download"></i> Invoice</a>
+  </td>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\AllUserController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Barryvdh\DomPDF\Facade\Pdf;
+
+  public function UserOrderInvoice($order_id)
+  {
+
+    $order = Order::with('division', 'district', 'state', 'user')
+      ->where('id', $order_id)->where('user_id', Auth::id())->first();
+    $orderItem = OrderItem::with('product')
+      ->where('order_id', $order_id)->orderBy('id', 'DESC')->get();
+
+    $pdf = Pdf::loadView('frontend.order.order_invoice', compact('order', 'orderItem'))
+      ->setPaper('a4')->setOption([
+        'tempDir' => public_path(),
+        'chroot' => public_path(),
+      ]);
+    return $pdf->download('invoice.pdf');
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+PDFをインストールし、表示が確認とれたらOK

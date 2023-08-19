@@ -1,0 +1,67 @@
+
+2-商品の合計金額の修正
+
+複数商品を購入し、クーポンを適応した後にProductを削除した際、
+DiscountAmountとGrandTotalの金額の変更が行えていなかったため、
+修正を行う
+
+◆コントローラーの編集◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    public function CartRemove($rowId){
+        Cart::remove($rowId);
+
+         ↓↓追記↓↓
+         if(Session::has('coupon')){
+            $coupon_name = Session::get('coupon')['coupon_name'];
+            $coupon = Coupon::where('coupon_name',$coupon_name)->first();
+
+           Session::put('coupon',[
+                'coupon_name' => $coupon->coupon_name, 
+                'coupon_discount' => $coupon->coupon_discount, 
+                'discount_amount' => round(Cart::total() * $coupon->coupon_discount/100), 
+                'total_amount' => round(Cart::total() - Cart::total() * $coupon->coupon_discount/100 )
+            ]); 
+        }
+
+         ↑↑追記↑↑
+
+
+        return response()->json(['success' => 'Successfully Remove From Cart']);
+
+★コード解説★
+商品を削除した後に、金額が更新されていたらOK
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆テンプレートベース◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+cartRemove(id)
+cartIncrement(rowId)
+cartDecrement(rowId)
+applyCoupon()
+couponRemove()
+
+上記の関数に、
+couponCalculation()を追記し、
+商品を増減させたり、クーポンを適応した際に、
+計算を連動させるようにする
+
+
+
+
+
+
+
+
+
+
