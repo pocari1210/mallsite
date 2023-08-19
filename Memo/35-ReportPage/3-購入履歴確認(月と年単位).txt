@@ -1,0 +1,102 @@
+
+
+3-購入履歴確認(月と年単位)
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Report All Route 
+  Route::controller(ReportController::class)->group(function () {
+
+    // 購入履歴検索(月単位)のルート
+    Route::post('/search/by/month', 'SearchByMonth')
+      ->name('search-by-month');
+
+    // 購入履歴検索(年単位)のルート
+    Route::post('/search/by/year', 'SearchByYear')
+      ->name('search-by-year');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\report\report_view.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    ↓↓ルートの追記↓↓
+    <form method="post" action="{{ route('search-by-month')}}">
+      @csrf
+      <div class="col">
+        <div class="card">
+
+          <div class="card-body">
+            <h5 class="card-title">Search By Month</h5>
+            <label class="form-label">Select Month:</label>
+            <select name="month" class="form-select mb-3" aria-label="Default select example">
+              <option selected="">Open this select Month</option>
+
+
+    ↓↓ルートの追記↓↓
+    <form method="post" action="{{ route('search-by-year')}}">
+      @csrf
+      <div class="col">
+        <div class="card">
+
+          <div class="card-body">
+            <h5 class="card-title">Search By Year</h5>
+
+            <label class="form-label">Select Year:</label>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ReportController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function SearchByMonth(Request $request)
+  {
+    $month = $request->month;
+    $year = $request->year_name;
+    $orders = Order::where('order_month', $month)
+      ->where('order_year', $year)->latest()->get();
+
+    return view(
+      'backend.report.report_by_month',
+      compact('orders', 'month', 'year')
+    );
+  } // End Method 
+
+  public function SearchByYear(Request $request)
+  {
+    $year = $request->year;
+    $orders = Order::where('order_year', $year)
+      ->latest()->get();
+
+    return view(
+      'backend.report.report_by_year',
+      compact('orders', 'year')
+    );
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\report\report_by_month.blade.php
+\resources\views\backend\report\report_by_year.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+月単位と年単位の購入履歴を表示できたらOK

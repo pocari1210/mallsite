@@ -1,0 +1,83 @@
+
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller Backend/ReturnController
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\Backend\ReturnController;
+
+  // Return Order All Route 
+  Route::controller(ReturnController::class)->group(function () {
+
+    Route::get('/return/request', 'ReturnRequest')
+      ->name('return.request');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a href="javascript:;" class="has-arrow">
+      <div class="parent-icon"><i class='bx bx-cart'></i>
+      </div>
+      <div class="menu-title">Return Order </div>
+    </a>
+    <ul>
+      <li> <a href="{{ route('return.request') }}"><i class="bx bx-right-arrow-alt"></i>Return Request</a>
+      </li>
+      <li> <a href="{{ route('admin.confirmed.order') }}"><i class="bx bx-right-arrow-alt"></i>Complete Request</a>
+      </li>
+    </ul>
+  </li>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ReturnController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\Order;
+
+class ReturnController extends Controller
+{
+  public function ReturnRequest()
+  {
+    $orders = Order::where('return_order', 1)
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.return_order.return_request',
+      compact('orders')
+    );
+  } // End Method
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Adminの管理画面のページにて、返品のあったproductの商品を
+疎通できたらOK
+
+
+
+
+
+

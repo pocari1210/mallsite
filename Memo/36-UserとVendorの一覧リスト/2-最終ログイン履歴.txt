@@ -1,0 +1,67 @@
+
+2-最終行動履歴
+
+
+◆ミドルウェアの編集◆
+
+ディレクトリ
+\app\Http\Middleware\Role.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+use App\Models\User;
+
+  public function handle(Request $request, Closure $next, $role)
+  {
+
+    ↓↓追記↓↓
+    if (Auth::check()) {
+      $expireTime = Carbon::now()->addSeconds(30);
+      Cache::put('user-is-online' . Auth::user()->id, true, $expireTime);
+      User::where('id', Auth::user()->id)->update(['last_seen' => Carbon::now()]);
+    }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆モデルの編集◆
+
+ディレクトリ
+\app\Models\User.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Illuminate\Support\Facades\Cache;
+
+  // User Active Now 
+  public function UserOnline()
+  {
+    return Cache::has('user-is-online' . $this->id);
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\user\user_all_data.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    @if($item->UserOnline())
+    <span class="badge badge-pill bg-success">Active Now </span>
+    @else
+    <span class="badge badge-pill bg-danger"> {{ Carbon\Carbon::parse($item->last_seen)->diffForHumans() }} </span>
+    @endif
+  </td>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+User権限でプロフィールの画像などの変更をした後、
+Userアカウントの一覧で、最終履歴が秒単位で表示ができていればOK

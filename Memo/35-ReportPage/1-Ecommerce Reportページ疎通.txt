@@ -1,0 +1,74 @@
+
+1-Ecommerce Reportページ疎通
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller Backend/ReportController
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Http\Controllers\Backend\ReportController;
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Report All Route 
+  Route::controller(ReportController::class)->group(function () {
+
+    Route::get('/report/view', 'ReportView')
+      ->name('report.view');
+  });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <li>
+      <a href="javascript:;" class="has-arrow">
+        <div class="parent-icon"><i class="bx bx-category"></i>
+        </div>
+        <div class="menu-title">Reports Manage</div>
+      </a>
+      <ul>
+        <li> <a href="{{ route('report.view') }}"><i class="bx bx-right-arrow-alt"></i>Report View</a>
+        </li>
+      </ul>
+    </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ReportController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class ReportController extends Controller
+{
+  public function ReportView()
+  {
+    return view('backend.report.report_view');
+  } // End Method 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+resources/views/backend/report/report_view.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Ecommerce Reportページが疎通されたらOK
+

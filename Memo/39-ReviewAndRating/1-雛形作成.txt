@@ -1,0 +1,85 @@
+
+1-雛形作成
+
+下記コマンドでコントローラー新規作成
+php artisan make:controller User/ReviewController
+
+下記コマンドでmodelとtableを新規作成
+php artisan make:model Review -m
+
+◆Modelの編集◆
+
+ディレクトリ
+\app\Models\Review.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+class Review extends Model
+{
+  use HasFactory;
+  protected $guarded = [];
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Tableの編集◆
+
+ディレクトリ
+\database\migrations\2023_08_13_232139_create_reviews_table.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function up()
+  {
+    Schema::create('reviews', function (Blueprint $table) {
+      $table->id();
+      $table->unsignedBigInteger('product_id')->unsigned();
+      $table->unsignedBigInteger('user_id')->unsigned();
+      $table->string('comment');
+      $table->string('rating');
+      $table->foreign('product_id')
+        ->references('id')->on('products')
+        ->onDelete('cascade');
+
+      $table->foreign('user_id')
+        ->references('id')->on('users')
+        ->onDelete('cascade');
+
+      $table->string('status')->default(0);
+      $table->integer('vendor_id')->nullable();
+      $table->timestamps();
+    });
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\product\product_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+@guest
+    // ユーザーは認証されていません。
+@else
+    // ユーザーは認証されています。
+@endguest
+
+★参考サイト★
+https://qiita.com/yumaeda/items/75eb84f19dba787b298d
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ログイン時と非ログイン時で、レビューの項目が切り替わっていたらOK
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

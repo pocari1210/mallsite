@@ -16,6 +16,11 @@ use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\ShippingAreaController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Backend\ReturnController;
+use App\Http\Controllers\Backend\VendorOrderController;
+use App\Http\Controllers\Backend\ReportController;
+use App\Http\Controllers\Backend\ActiveUserController;
+use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -23,6 +28,7 @@ use App\Http\Controllers\User\CompareController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\StripeController;
 use App\Http\Controllers\User\AllUserController;
+use App\Http\Controllers\User\ReviewController;
 
 
 /*
@@ -400,6 +406,154 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Adminの注文のペンディング画面のルート
     Route::get('/pending/order', 'PendingOrder')
       ->name('pending.order');
+
+    // Adminの注文の返品処理画面のルート
+    Route::get('/admin/order/details/{order_id}', 'AdminOrderDetails')
+      ->name('admin.order.details');
+
+    Route::get('/admin/confirmed/order', 'AdminConfirmedOrder')
+      ->name('admin.confirmed.order');
+
+    Route::get('/admin/processing/order', 'AdminProcessingOrder')
+      ->name('admin.processing.order');
+
+    Route::get('/admin/delivered/order', 'AdminDeliveredOrder')
+      ->name('admin.delivered.order');
+
+    Route::get('/pending/confirm/{order_id}', 'PendingToConfirm')
+      ->name('pending-confirm');
+
+    // ConfirmからProcessにステータス変更のルート
+    Route::get('/confirm/processing/{order_id}', 'ConfirmToProcess')
+      ->name('confirm-processing');
+
+    // ProcessからDeliveredにステータス変更のルート
+    Route::get('/processing/delivered/{order_id}', 'ProcessToDelivered')
+      ->name('processing-delivered');
+
+    Route::get('/admin/invoice/download/{order_id}', 'AdminInvoiceDownload')
+      ->name('admin.invoice.download');
+  });
+
+  // Return Order All Route 
+  Route::controller(ReturnController::class)->group(function () {
+
+    Route::get('/return/request', 'ReturnRequest')
+      ->name('return.request');
+
+    Route::get('/return/request/approved/{order_id}', 'ReturnRequestApproved')
+      ->name('return.request.approved');
+
+    Route::get('/complete/return/request', 'CompleteReturnRequest')
+      ->name('complete.return.request');
+  });
+
+  // Report All Route 
+  Route::controller(ReportController::class)->group(function () {
+
+    Route::get('/report/view', 'ReportView')
+      ->name('report.view');
+
+    // 購入履歴検索(日付)のルート
+    Route::post('/search/by/date', 'SearchByDate')
+      ->name('search-by-date');
+
+    // 購入履歴検索(月単位)のルート
+    Route::post('/search/by/month', 'SearchByMonth')
+      ->name('search-by-month');
+
+    // 購入履歴検索(年単位)のルート
+    Route::post('/search/by/year', 'SearchByYear')
+      ->name('search-by-year');
+
+    Route::get('/order/by/user', 'OrderByUser')
+      ->name('order.by.user');
+
+    Route::post('/search/by/user', 'SearchByUser')
+      ->name('search-by-user');
+  });
+
+  // Active user and vendor All Route 
+  Route::controller(ActiveUserController::class)->group(function () {
+
+    // Userの一覧リストのルート
+    Route::get('/all/user', 'AllUser')
+      ->name('all-user');
+
+    // Vendorの一覧リストのルート
+    Route::get('/all/vendor', 'AllVendor')
+      ->name('all-vendor');
+  });
+
+  // Blog All Route
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/admin/blog/category', 'AllBlogCateogry')
+      ->name('admin.blog.category');
+
+    // Blogのカテゴリー追加ページ遷移のルート
+    Route::get('/admin/add/blog/category', 'AddBlogCateogry')
+      ->name('add.blog.categroy');
+
+    // Blogのカテゴリーの保存処理のルート
+    Route::post('/admin/store/blog/category', 'StoreBlogCateogry')
+      ->name('store.blog.category');
+
+    // Blogのカテゴリー編集ページ遷移のルート
+    Route::get('/admin/edit/blog/category/{id}', 'EditBlogCateogry')
+      ->name('edit.blog.category');
+
+    // Blogのカテゴリーの更新処理のルート
+    Route::post('/admin/update/blog/category', 'UpdateBlogCateogry')
+      ->name('update.blog.category');
+
+    // Blogのカテゴリーの削除処理のルート
+    Route::get('/admin/delete/blog/category/{id}', 'DeleteBlogCateogry')
+      ->name('delete.blog.category');
+  });
+
+  // Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    // BlogPostの一覧ページのルート
+    Route::get('/admin/blog/post', 'AllBlogPost')
+      ->name('admin.blog.post');
+
+    // BlogPostの追加ページ遷移のルート
+    Route::get('/admin/add/blog/post', 'AddBlogPost')
+      ->name('add.blog.post');
+
+    // BlogPostの保存処理のルート
+    Route::post('/admin/store/blog/post', 'StoreBlogPost')
+      ->name('store.blog.post');
+
+    // BlogPostの編集ページ遷移のルート
+    Route::get('/admin/edit/blog/post/{id}', 'EditBlogPost')
+      ->name('edit.blog.post');
+
+    // BlogPostの更新処理のルート
+    Route::post('/admin/update/blog/post', 'UpdateBlogPost')
+      ->name('update.blog.post');
+
+    // BlogPostの削除処理のルート
+    Route::get('/admin/delete/blog/post/{id}', 'DeleteBlogPost')
+      ->name('delete.blog.post');
+  });
+
+  // Admin Reviw All Route 
+  Route::controller(ReviewController::class)->group(function () {
+
+    Route::get('/pending/review', 'PendingReview')
+      ->name('pending.review');
+
+    Route::get('/review/approve/{id}', 'ReviewApprove')
+      ->name('review.approve');
+
+    Route::get('/publish/review', 'PublishReview')
+      ->name('publish.review');
+
+    Route::get('/review/delete/{id}', 'ReviewDelete')
+      ->name('review.delete');
   });
 }); // Admin End Middleware 
 
@@ -485,6 +639,23 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
   Route::controller(VendorOrderController::class)->group(function () {
     Route::get('/vendor/order', 'VendorOrder')
       ->name('vendor.order');
+
+    // VendorのProductの一覧リストのルート
+    Route::get('/vendor/return/order', 'VendorReturnOrder')
+      ->name('vendor.return.order');
+
+    // VendorのProductの返品リストのルート
+    Route::get('/vendor/complete/return/order', 'VendorCompleteReturnOrder')
+      ->name('vendor.complete.return.order');
+
+    Route::get('/vendor/order/details/{order_id}', 'VendorOrderDetails')
+      ->name('vendor.order.details');
+  });
+
+  Route::controller(ReviewController::class)->group(function () {
+
+    Route::get('/vendor/all/review', 'VendorAllReview')
+      ->name('vendor.all.review');
   });
 }); // end Vendor Group middleware
 
@@ -586,6 +757,13 @@ Route::controller(CartController::class)->group(function () {
   Route::get('/cart-decrement/{rowId}', 'CartDecrement');
 });
 
+// Frontend Blog Post All Route 
+Route::controller(ReviewController::class)->group(function () {
+
+  Route::post('/store/review', 'StoreReview')
+    ->name('store.review');
+});
+
 /// User All Route
 Route::middleware(['auth', 'role:user'])->group(function () {
 
@@ -650,6 +828,25 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/order_details/{order_id}', 'UserOrderDetails');
 
     Route::get('/user/invoice_download/{order_id}', 'UserOrderInvoice');
+
+    // Prodoctの返品処理のルート
+    Route::post('/return/order/{order_id}', 'ReturnOrder')
+      ->name('return.order');
+
+    // Productの返品リストページ遷移のルート
+    Route::get('/return/order/page', 'ReturnOrderPage')
+      ->name('return.order.page');
+  });
+  // Frontend Blog Post All Route 
+  Route::controller(BlogController::class)->group(function () {
+
+    Route::get('/blog', 'AllBlog')
+      ->name('home.blog');
+
+    // Blogの詳細ページ疎通のルート
+    Route::get('/post/details/{id}/{slug}', 'BlogDetails');
+
+    Route::get('/post/category/{id}/{slug}', 'BlogPostCategory');
   });
 }); // end Usergroup middleware
 

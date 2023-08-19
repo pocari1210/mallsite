@@ -74,7 +74,7 @@
               <img src="{{ asset('frontend/assets/imgs/theme/icons/icon-5.svg') }}" alt="" />
             </div>
             <div class="banner-text">
-              <h3 class="icon-box-title">Easy returns</h3>
+              <h3 class="icon-box-title">Mall Site returns</h3>
               <p>Within 30 days</p>
             </div>
           </div>

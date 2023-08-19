@@ -1,0 +1,62 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // User Dashboard All Route 
+  Route::controller(AllUserController::class)->group(function () {
+
+    // Prodoctの返品処理のルート
+    Route::post('/return/order/{order_id}', 'ReturnOrder')
+      ->name('return.order');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\order\order_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+ボタンの大きさとformタグのrouteの追記をおこなう
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\AllUserController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Carbon\Carbon;
+
+  public function ReturnOrder(Request $request, $order_id)
+  {
+
+    Order::findOrFail($order_id)->update([
+      'return_date' => Carbon::now()->format('d F Y'),
+      'return_reason' => $request->return_reason,
+      'return_order' => 1,
+    ]);
+
+    $notification = array(
+      'message' => 'Return Request Send Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('user.order.page')->with($notification);
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+orderDBに返品理由とステータスが変更されていたらOK

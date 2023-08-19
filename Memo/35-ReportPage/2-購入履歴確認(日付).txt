@@ -1,0 +1,68 @@
+
+
+2-購入履歴確認(日付)
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+  // Report All Route 
+  Route::controller(ReportController::class)->group(function () {
+
+    ↓↓購入履歴検索(日付)のルート
+    Route::post('/search/by/date', 'SearchByDate')
+      ->name('search-by-date');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\report\report_view.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <form method="post" action="{{ route('search-by-date')}}">
+      @csrf
+      <div class="col">
+        <div class="card">
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ReportController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function SearchByDate(Request $request)
+  {
+    $date = new DateTime($request->date);
+    $formatDate = $date->format('d F Y');
+
+    $orders = Order::where('order_date', $formatDate)
+      ->latest()->get();
+
+    return view(
+      'backend.report.report_by_date',
+      compact('orders', 'formatDate')
+    );
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\report\report_by_date.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Search By Dateから日付を選択し、購入履歴が確認とれたらOK

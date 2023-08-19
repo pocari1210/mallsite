@@ -1,0 +1,109 @@
+
+1-PendingからConfirmに変更
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin Order All Route 
+  Route::controller(OrderController::class)->group(function () {
+
+    Route::get('/pending/confirm/{order_id}', 'PendingToConfirm')
+      ->name('pending-confirm');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\orders\admin_order_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <th>
+    @if($order->status == 'pending')
+    <a href="{{ route('pending-confirm',$order->id) }}" class="btn btn-block btn-success" id="confirm">Confirm Order</a>
+    @elseif($order->status == 'confirm')
+    <a href="" class="btn btn-block btn-success">Processing Order</a>
+    @elseif($order->status == 'processing')
+    <a href="" class="btn btn-block btn-success">Delivered Order</a>
+    @endif
+  </th>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆JSファイル編集◆
+
+ディレクトリ
+\public\adminbackend\assets\js\code.js
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// Confirm Order 
+$(function () {
+  $(document).on('click', '#confirm', function (e) {
+    e.preventDefault();
+    var link = $(this).attr("href");
+
+    Swal.fire({
+      title: 'Are you sure to Confirm?',
+      text: "Once Confirm, You will not be able to pending again?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Confirm!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = link  public function PendingToConfirm($order_id)
+  {
+    Order::findOrFail($order_id)->update(['status' => 'confirm']);
+
+    $notification = array(
+      'message' => 'Order Confirm Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('admin.confirmed.order')->with($notification);
+  } // End Method 
+        Swal.fire(
+          'Confirm!',
+          'Confirm Change',
+          'success'
+        )
+      }
+    })
+  });
+
+});
+/// End Confirm Order 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\OrderController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function PendingToConfirm($order_id)
+  {
+    Order::findOrFail($order_id)->update(['status' => 'confirm']);
+
+    $notification = array(
+      'message' => 'Order Confirm Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('admin.confirmed.order')->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Pending OrderからConfirm Orderにステータスが変更されたらOK

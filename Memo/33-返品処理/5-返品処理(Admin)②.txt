@@ -1,0 +1,116 @@
+
+
+5-返品処理(Admin)②
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Return Order All Route 
+  Route::controller(ReturnController::class)->group(function () {
+
+    Route::get('/return/request/approved/{order_id}', 'ReturnRequestApproved')
+      ->name('return.request.approved');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\return_order\return_request.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('admin.order.details',$item->id) }}" class="btn btn-info" title="Details"><i class="fa fa-eye"></i> </a>
+
+    ↓↓routeの編集↓↓
+    <a href="{{ route('return.request.approved',$item->id) }}" class="btn btn-danger" title="Approved" id="approved"><i class="fa-solid fa-person-circle-check"></i> </a>
+  </td>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆JSファイルの編集◆
+
+ディレクトリ
+\public\adminbackend\assets\js\code.js
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// Return Approved Order 
+$(function () {
+  $(document).on('click', '#approved', function (e) {
+    e.preventDefault();
+    var link = $(this).attr("href");
+
+    Swal.fire({
+      title: 'Are you sure to Approved?',
+      text: "Return Order Approved",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Approved!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = link
+        Swal.fire(
+          'Approved!',
+          'Approved Change',
+          'success'
+        )
+      }
+    })
+
+  });
+
+});
+ /// End Deliverd Order
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの修正◆
+
+ディレクトリ
+\app\Http\Controllers\User\AllUserController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ReturnOrderPage()
+  {
+    $orders = Order::where('user_id', Auth::id())
+      ->where('return_reason', '!=', NULL)->orderBy('id', 'DESC')->get();
+
+★コード解説★
+抽出条件を変更
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ReturnController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ReturnRequestApproved($order_id)
+  {
+
+    Order::where('id', $order_id)->update(['return_order' => 2]);
+
+    $notification = array(
+      'message' => 'Return Order Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,102 @@
+
+
+3-編集と更新処理と削除処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Blog All Route
+  Route::controller(BlogController::class)->group(function () {
+
+    // Blogのカテゴリー編集ページ遷移のルート
+    Route::get('/admin/edit/blog/category/{id}', 'EditBlogCateogry')
+      ->name('edit.blog.category');
+
+    // Blogのカテゴリーの更新処理のルート
+    Route::post('/admin/update/blog/category', 'UpdateBlogCateogry')
+      ->name('update.blog.category');
+
+    // Blogのカテゴリーの削除処理のルート
+    Route::get('/admin/delete/blog/category/{id}', 'DeleteBlogCateogry')
+      ->name('delete.blog.category');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+resources\views\backend\blog\category\blogcategroy_all.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <td>
+    <a href="{{ route('edit.blog.category',$item->id) }}" class="btn btn-info">Edit</a>
+    <a href="{{ route('delete.blog.category',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+  </td>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\BlogController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function EditBlogCateogry($id)
+  {
+    $blogcategoryies = BlogCategory::findOrFail($id);
+
+    return view(
+      'backend.blog.category.blogcategroy_edit',
+      compact('blogcategoryies')
+    );
+  } // End Method 
+
+  public function UpdateBlogCateogry(Request $request)
+  {
+
+    $blog_id = $request->id;
+
+    BlogCategory::findOrFail($blog_id)->update([
+      'blog_category_name' => $request->blog_category_name,
+      'blog_category_slug' => strtolower(str_replace(' ', '-', $request->blog_category_name)),
+    ]);
+
+    $notification = array(
+      'message' => 'Blog Category Updated Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('admin.blog.category')->with($notification);
+  } // End Method 
+
+  public function DeleteBlogCateogry($id)
+  {
+    BlogCategory::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Blog Category Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\blog\category\blogcategroy_edit.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+編集ページから、更新処理を実行ができ、一覧ページから
+削除処理が実行出来たらOK

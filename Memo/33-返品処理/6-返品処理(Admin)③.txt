@@ -1,0 +1,66 @@
+
+6-返品処理(Admin)③
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Return Order All Route 
+  Route::controller(ReturnController::class)->group(function () {
+
+    Route::get('/complete/return/request', 'CompleteReturnRequest')
+      ->name('complete.return.request');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <ul>
+    <li> <a href="{{ route('return.request') }}"><i class="bx bx-right-arrow-alt"></i>Return Request</a>
+    </li>
+
+    ↓↓routeの編集↓↓
+    <li> <a href="{{ route('complete.return.request') }}"><i class="bx bx-right-arrow-alt"></i>Complete Request</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\ReturnController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function CompleteReturnRequest()
+  {
+    $orders = Order::where('return_order', 2)
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.return_order.complete_return_request',
+      compact('orders')
+    );
+  } // End Method 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+resources/views/backend/return_order/complete_return_request.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+返品処理が完了したproductの一覧が疎通できていたらOK

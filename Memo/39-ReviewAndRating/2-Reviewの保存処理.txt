@@ -1,0 +1,83 @@
+
+
+2-Reviewの保存処理
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Frontend Blog Post All Route 
+Route::controller(ReviewController::class)->group(function () {
+
+  Route::post('/store/review', 'StoreReview')
+    ->name('store.review');
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\product\product_details.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <form class="form-contact comment_form" action="{{ route('store.review') }}" method="post" id="commentForm">
+    @csrf
+    <div class="row">
+
+      <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+      @if($product->vendor_id == NULL)
+      <input type="hidden" name="hvendor_id" value="">
+      @else
+      <input type="hidden" name="hvendor_id" value="{{ $product->vendor_id }}">
+      @endif
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\ReviewController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\Review;
+use Carbon\Carbon;
+use Auth;
+
+  public function StoreReview(Request $request)
+  {
+
+    $product = $request->product_id;
+    $vendor = $request->hvendor_id;
+    $request->validate([
+      'comment' => 'required',
+    ]);
+
+    Review::insert([
+      'product_id' => $product,
+      'user_id' => Auth::id(),
+      'comment' => $request->comment,
+      'rating' => $request->quality,
+      'vendor_id' => $vendor,
+      'created_at' => Carbon::now(),
+    ]);
+
+    $notification = array(
+      'message' => 'Review Will Approve By Admin',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+商品詳細のReviewの項目のformに入力した内容が、
+DBにはいっていたらOK

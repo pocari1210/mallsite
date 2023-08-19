@@ -1,0 +1,108 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin Reviw All Route 
+  Route::controller(ReviewController::class)->group(function () {
+
+    Route::get('/publish/review', 'PublishReview')
+      ->name('publish.review');
+
+    Route::get('/review/delete/{id}', 'ReviewDelete')
+      ->name('review.delete');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元①)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <div class="menu-title">Review Manage</div>
+</a>
+<ul>
+  <li> <a href="{{ route('pending.review') }}"><i class="bx bx-right-arrow-alt"></i>Pending Review</a>
+  </li>
+
+  ↓↓routeの編集↓↓
+  <li> <a href="{{ route('publish.review') }}"><i class="bx bx-right-arrow-alt"></i>Publish Review</a>
+  </li>
+</ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\backend\review\pending_review.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @foreach($review as $key => $item)
+  <tr>
+    <td> {{ $key+1 }} </td>
+    <td>{{ Str::limit($item->comment, 25);  }}</td>
+    <td>{{ $item['user']['name'] }}</td>
+    <td>{{ $item['product']['product_name'] }}</td>
+
+★コード解説★
+{{ Str::limit(第一引数, 第二引数, 第三引数) }}
+
+第一引数：表示したい文字列(必須)
+第二引数：表示したい文字数(必須)
+第三引数：末尾に表示する文字列(任意)
+
+参考サイト
+https://www.motokis-brain.com/article/39
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\ReviewController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function PublishReview()
+  {
+    $review = Review::where('status', 1)
+      ->orderBy('id', 'DESC')->get();
+
+    return view(
+      'backend.review.publish_review',
+      compact('review')
+    );
+  } // End Method 
+
+  public function ReviewDelete($id)
+  {
+
+    Review::findOrFail($id)->delete();
+
+    $notification = array(
+      'message' => 'Review Deleted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->back()->with($notification);
+  } // End Method   
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\review\pending_review.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
