@@ -45,8 +45,13 @@
               <td> <img src="{{ asset($item->banner_image) }}" style="width: 70px; height:40px;"> </td>
 
               <td>
+                @if(Auth::user()->can('brand.edit'))
                 <a href="{{ route('edit.banner',$item->id) }}" class="btn btn-info">Edit</a>
+                @endif
+
+                @if(Auth::user()->can('brand.delete'))
                 <a href="{{ route('delete.banner',$item->id) }}" class="btn btn-danger" id="delete">Delete</a>
+                @endif
               </td>
             </tr>
             @endforeach
