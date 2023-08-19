@@ -1,0 +1,103 @@
+
+
+
+◆ビューの編集◆
+
+
+ディレクトリ
+\resources\views\frontend\product\search_product.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+<style type="text/css">
+  body {}
+
+  .card {
+    background-color: #fff;
+    padding: 15px;
+    border: none;
+  }
+
+  .input-box {
+    position: relative;
+  }
+
+  .input-box i {
+    position: absolute;
+    right: 13px;
+    top: 15px;
+    color: #ced4da;
+  }
+
+  .form-control {
+    height: 50px;
+    background-color: #eeeeee69;
+  }
+
+  .form-control:focus {
+    background-color: #eeeeee69;
+    box-shadow: none;
+    border-color: #eee;
+  }
+
+  .list {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .border-bottom {
+    border-bottom: 2px solid #eee;
+  }
+
+  .list i {
+    font-size: 19px;
+    color: red;
+  }
+
+  .list small {
+    color: #dedddd;
+  }
+</style>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<input onfocus="search_result_show()" onblur="search_result_hide()" name="search" id="search" placeholder="Search for items..." />
+
+<!-- End Header  -->
+
+<style>
+  #searchProducts {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    z-index: 999;
+    border-radius: 8px;
+    margin-top: 5px;
+  }
+</style>
+
+<script>
+  function search_result_show() {
+    $("#searchProducts").slideDown();
+  }
+
+  function search_result_hide() {
+    $("#searchProducts").slideUp();
+  }
+</script>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+

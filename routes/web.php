@@ -21,6 +21,8 @@ use App\Http\Controllers\Backend\VendorOrderController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\ActiveUserController;
 use App\Http\Controllers\Backend\BlogController;
+use App\Http\Controllers\Backend\SiteSettingController;
+use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\User\WishlistController;
@@ -228,6 +230,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Productの削除処理
     Route::get('/delete/product/{id}', 'ProductDelete')
       ->name('delete.product');
+
+    // For Product Stock
+    Route::get('/product/stock', 'ProductStock')
+      ->name('product.stock');
   });
 
   // Slider All Route 
@@ -540,6 +546,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
       ->name('delete.blog.post');
   });
 
+  // Site Setting All Route 
+  Route::controller(SiteSettingController::class)->group(function () {
+
+    Route::get('/site/setting', 'SiteSetting')
+      ->name('site.setting');
+
+    Route::post('/site/setting/update', 'SiteSettingUpdate')
+      ->name('site.setting.update');
+
+    Route::get('/seo/setting', 'SeoSetting')
+      ->name('seo.setting');
+
+    Route::post('/seo/setting/update', 'SeoSettingUpdate')
+      ->name('seo.setting.update');
+  });
+
   // Admin Reviw All Route 
   Route::controller(ReviewController::class)->group(function () {
 
@@ -554,6 +576,101 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/review/delete/{id}', 'ReviewDelete')
       ->name('review.delete');
+  });
+
+  // Permission All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    // permissonの一覧表示のルート
+    Route::get('/all/permission', 'AllPermission')
+      ->name('all.permission');
+
+    // permissonの追加ページ遷移のルート
+    Route::get('/add/permission', 'AddPermission')
+      ->name('add.permission');
+
+    // permissonの保存処理のルート
+    Route::post('/store/permission', 'StorePermission')
+      ->name('store.permission');
+
+    // permissonの編集ページ遷移のルート
+    Route::get('/edit/permission/{id}', 'EditPermission')
+      ->name('edit.permission');
+
+    // permissonの更新処理のルート
+    Route::post('/update/permission', 'UpdatePermission')
+      ->name('update.permission');
+
+    // permissonの削除処理のルート
+    Route::get('/delete/permission/{id}', 'DeletePermission')
+      ->name('delete.permission');
+  });
+
+  // Roles All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    Route::get('/all/roles', 'AllRoles')
+      ->name('all.roles');
+
+    Route::get('/add/roles', 'AddRoles')
+      ->name('add.roles');
+
+    Route::post('/store/roles', 'StoreRoles')
+      ->name('store.roles');
+
+    Route::get('/edit/roles/{id}', 'EditRoles')
+      ->name('edit.roles');
+
+    Route::post('/update/roles', 'UpdateRoles')
+      ->name('update.roles');
+
+    Route::post('/update/roles', 'UpdateRoles')
+      ->name('update.roles');
+
+    Route::get('/delete/roles/{id}', 'DeleteRoles')
+      ->name('delete.roles');
+
+    // add role permission 
+
+    Route::get('/add/roles/permission', 'AddRolesPermission')
+      ->name('add.roles.permission');
+
+    Route::post('/role/permission/store', 'RolePermissionStore')
+      ->name('role.permission.store');
+
+    Route::get('/all/roles/permission', 'AllRolesPermission')
+      ->name('all.roles.permission');
+
+    Route::get('/admin/edit/roles/{id}', 'AdminRolesEdit')
+      ->name('admin.edit.roles');
+
+    Route::post('/admin/roles/update/{id}', 'AdminRolesUpdate')
+      ->name('admin.roles.update');
+
+    Route::get('/admin/delete/roles/{id}', 'AdminRolesDelete')
+      ->name('admin.delete.roles');
+  });
+
+  // Admin User All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    Route::get('/all/admin', 'AllAdmin')
+      ->name('all.admin');
+
+    Route::get('/add/admin', 'AddAdmin')
+      ->name('add.admin');
+
+    Route::post('/admin/user/store', 'AdminUserStore')
+      ->name('admin.user.store');
+
+    Route::get('/edit/admin/role/{id}', 'EditAdminRole')
+      ->name('edit.admin.role');
+
+    Route::post('/admin/user/update/{id}', 'AdminUserUpdate')
+      ->name('admin.user.update');
+
+    Route::get('/delete/admin/role/{id}', 'DeleteAdminRole')
+      ->name('delete.admin.role');
   });
 }); // Admin End Middleware 
 
@@ -764,6 +881,15 @@ Route::controller(ReviewController::class)->group(function () {
     ->name('store.review');
 });
 
+Route::controller(IndexController::class)->group(function () {
+
+  // Productの検索のルート
+  Route::post('/search', 'ProductSearch')
+    ->name('product.search');
+
+  Route::post('/search-product', 'SearchProduct');
+});
+
 /// User All Route
 Route::middleware(['auth', 'role:user'])->group(function () {
 
@@ -836,6 +962,13 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Productの返品リストページ遷移のルート
     Route::get('/return/order/page', 'ReturnOrderPage')
       ->name('return.order.page');
+
+    // Order Tracking 
+    Route::get('/user/track/order', 'UserTrackOrder')
+      ->name('user.track.order');
+
+    Route::post('/order/tracking', 'OrderTracking')
+      ->name('order.tracking');
   });
   // Frontend Blog Post All Route 
   Route::controller(BlogController::class)->group(function () {

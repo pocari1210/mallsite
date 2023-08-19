@@ -1,0 +1,69 @@
+
+3-Permissonの追加と保存処理
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Role Permission All Route 
+  Route::controller(RoleController::class)->group(function () {
+
+    // permissonの追加ページ遷移のルート
+    Route::get('/add/permission', 'AddPermission')
+      ->name('add.permission');
+
+    // permissonの保存処理のルート
+    Route::post('/store/permission', 'StorePermission')
+      ->name('store.permission');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Backend\RoleController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function AddPermission()
+  {
+    return view('backend.pages.permission.add_permission');
+  } // End Method 
+
+  public function StorePermission(Request $request)
+  {
+
+    $role = Permission::create([
+      'name' => $request->name,
+      'group_name' => $request->group_name,
+    ]);
+
+    $notification = array(
+      'message' => 'Permission Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.permission')->with($notification);
+  } // End Method 
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

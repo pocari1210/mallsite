@@ -1,0 +1,61 @@
+
+1-雛形作成
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+/// User All Route
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+  // User Dashboard All Route 
+  Route::controller(AllUserController::class)->group(function () {
+
+    // Order Tracking 
+    Route::get('/user/track/order', 'UserTrackOrder')
+      ->name('user.track.order');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\dashboard_sidebar_menu.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li class="nav-item">
+    <a class="nav-link {{ ($route ==  'user.track.order')? 'active':  '' }}" href="{{ route('user.track.order') }}">
+      <i class="fi-rs-shopping-cart-check mr-10"></i>
+      Track Your Order
+    </a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\AllUserController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function UserTrackOrder()
+  {
+    return view('frontend.userdashboard.user_track_order');
+  } // End Method 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\body\dashboard_sidebar_menu.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Track Your Orderのページが疎通できていればOK

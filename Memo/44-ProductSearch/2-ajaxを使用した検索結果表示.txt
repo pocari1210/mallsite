@@ -1,0 +1,89 @@
+
+
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <input name="search" id="search" placeholder="Search for items..." />
+  <div id="searchProducts"></div>a
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆JSファイル追記◆
+
+ディレクトリ
+\public\frontend\assets\js\script.js
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+const site_url = "http://127.0.0.1:8000/";
+
+$("body").on("keyup", "#search", function () {
+
+  let text = $("#search").val();
+  //console.log(text);
+
+  if (text.length > 0) {
+    $.ajax({
+      data: { search: text },
+      url: site_url + "search-product",
+      method: 'post',
+      beforSend: function (request) {
+        return request.setRequestHeader('X-CSRF-TOKEN', ("meta[name='csrf-token']"))
+      },
+
+      success: function (result) {
+        $("#searchProducts").html(result);
+
+      }
+    }); //End Ajax
+
+  }// end if 
+
+  if (text.length < 1) $("#searchProducts").html("");
+
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆JSファイルを読み込む◆
+
+ディレクトリ
+\resources\views\frontend\master_dashboard.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+<script src="{{ asset('frontend/assets/js/script.js') }}"></script>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+Route::controller(IndexController::class)->group(function () {
+
+  Route::post('/search-product', 'SearchProduct');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集◆
+
+ディレクトリ
+\resources\views\frontend\product\search_product.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+検索バーにproductを入力し、該当するProductがでてきたらOK
+
+/////////////////////////////////////////////////////////////////////////////////////////////////

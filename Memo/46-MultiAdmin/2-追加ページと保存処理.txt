@@ -1,0 +1,116 @@
+
+
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  // Admin User All Route 
+  Route::controller(AdminController::class)->group(function () {
+
+    Route::get('/add/admin', 'AddAdmin')
+      ->name('add.admin');
+
+    Route::post('/admin/user/store', 'AdminUserStore')
+      ->name('admin.user.store');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元①)◆
+
+ディレクトリ
+\resources\views\admin\body\sidebar.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <ul>
+    <li> <a href="{{ route('all.admin') }}"><i class="bx bx-right-arrow-alt"></i>All Admin</a>
+    </li>
+
+    ↓↓routeの編集↓↓
+    <li> <a href="{{ route('add.admin') }}"><i class="bx bx-right-arrow-alt"></i>Add Admin</a>
+    </li>
+  </ul>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元②)◆
+
+ディレクトリ
+\resources\views\backend\admin\all_admin.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+    <div class="ms-auto">
+      <div class="btn-group">
+
+        ↓↓routeの編集↓↓
+        <a href="{{ route('add.admin') }}" class="btn btn-primary">Add Admin User</a>
+      </div>
+    </div>
+  </div>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\AdminController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+  public function AddAdmin()
+  {
+    $roles = Role::all();
+
+    return view(
+      'backend.admin.add_admin',
+      compact('roles')
+    );
+  } // End Mehtod 
+
+  public function AdminUserStore(Request $request)
+  {
+
+    $user = new User();
+    $user->username = $request->username;
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
+    $user->address = $request->address;
+    $user->password = Hash::make($request->password);
+    $user->role = 'admin';
+    $user->status = 'active';
+    $user->save();
+
+    if ($request->roles) {
+      $user->assignRole($request->roles);
+    }
+
+    $notification = array(
+      'message' => 'New Admin User Inserted Successfully',
+      'alert-type' => 'success'
+    );
+
+    return redirect()->route('all.admin')->with($notification);
+  } // End Mehtod 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\backend\admin\add_admin.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <form method="post" action="{{ route('admin.user.store') }}">
+    @csrf
