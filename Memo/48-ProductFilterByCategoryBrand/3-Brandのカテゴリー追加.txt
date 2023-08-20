@@ -1,0 +1,58 @@
+
+
+3-Brandのカテゴリー追加
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\ShopController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function ShopFilter(Request $request)
+  {
+
+    /// Filter For Brand
+
+    $brandUrl = "";
+    if (!empty($data['brand'])) {
+      foreach ($data['brand'] as $brand) {
+        if (empty($brandUrl)) {
+          $brandUrl .= '&brand=' . $brand;
+        } else {
+          $brandUrl .= ',' . $brand;
+        }
+      }
+    }
+
+    return redirect()->route('shop.page', $catUrl . $brandUrl);
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\product\shop_page.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  @if(!empty($_GET['brand']))
+  @php
+  $filterBrand = explode(',',$_GET['brand']);
+  @endphp
+
+  @endif
+
+  <label class="fw-900 mt-15">Brand</label>
+  @foreach($brands as $brand)
+  <div class="custome-checkbox">
+    <input class="form-check-input" type="checkbox" name="brand[]" id="exampleBrand{{ $brand->id }}" value="{{ $brand->brand_slug }}" @if(!empty($filterBrand) && in_array($brand->brand_slug,$filterBrand)) checked @endif onchange="this.form.submit()" />
+    <label class="form-check-label" for="exampleBrand{{ $brand->id }}"><span>{{ $brand->brand_name }} </span></label>
+  </div>
+  @endforeach
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
