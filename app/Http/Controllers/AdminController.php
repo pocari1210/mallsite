@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Notifications\VendorApproveNotification;
+use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 
 class AdminController extends Controller
@@ -135,6 +137,15 @@ class AdminController extends Controller
     );
   } // End Mehtod 
 
+  public function ActiveVendorDetails($id)
+  {
+    $activeVendorDetails = User::findOrFail($id);
+    return view(
+      'backend.vendor.active_vendor_details',
+      compact('activeVendorDetails')
+    );
+  } // End Mehtod 
+
   // ステータス変更のコントローラー
   public function ActiveVendorApprove(Request $request)
   {
@@ -148,16 +159,9 @@ class AdminController extends Controller
       'alert-type' => 'success'
     );
 
+    $vuser = User::where('role', 'vendor')->get();
+    Notification::send($vuser, new VendorApproveNotification($request));
     return redirect()->route('active.vendor')->with($notification);
-  } // End Mehtod 
-
-  public function ActiveVendorDetails($id)
-  {
-    $activeVendorDetails = User::findOrFail($id);
-    return view(
-      'backend.vendor.active_vendor_details',
-      compact('activeVendorDetails')
-    );
   } // End Mehtod 
 
   public function InActiveVendorApprove(Request $request)

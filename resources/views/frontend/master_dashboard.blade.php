@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="ja">
 
 @php
 $seo = App\Models\Seo::find(1);
@@ -7,7 +7,7 @@ $seo = App\Models\Seo::find(1);
 
 <head>
   <meta charset="utf-8" />
-  <title>Shop Site Online Store </title>
+  <title> @yield('title')</title>
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <meta name="title" content="{{ $seo->meta_title }}" />
   <meta name="author" content="{{ $seo->meta_author }}" />
@@ -23,6 +23,8 @@ $seo = App\Models\Seo::find(1);
   <meta property="og:image" content="" />
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/assets/imgs/theme/favicon.svg') }}" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" type="text/css" media="all" />
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{ asset('frontend/assets/css/plugins/animate.min.css') }}" />
   <link rel="stylesheet" href="{{ asset('frontend/assets/css/main.css?v=5.3') }}" />
@@ -88,7 +90,7 @@ $seo = App\Models\Seo::find(1);
   <script src="{{ asset('frontend/assets/js/main.js?v=5.3') }}"></script>
   <script src="{{ asset('frontend/assets/js/shop.js?v=5.3') }}"></script>
 
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 

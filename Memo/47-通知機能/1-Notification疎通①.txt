@@ -1,0 +1,135 @@
+
+
+◆Database Notifications◆
+https://laravel.com/docs/9.x/notifications#database-notifications
+
+
+下記コマンドでテーブル作成を行う
+php artisan notifications:table
+
+下記コマンドでファイルを作成
+php artisan make:notification OrderComplete
+php artisan make:notification VendorRegNotification
+php artisan make:notification RegisterUserNotification
+
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\User\StripeController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\User;
+use App\Notifications\OrderComplete;
+use Illuminate\Support\Facades\Notification;
+
+  public function CashOrder(Request $request)
+  {
+
+    // roleカラムをadminで条件指定し、
+    // adminのdashboardに通知をさせる
+    $user = User::where('role', 'admin')->get();
+
+
+　　　　↓↓追記↓↓
+        Notification::send($user, new OrderComplete($request->name));
+        return redirect()->route('dashboard')->with($notification); 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Notifications編集◆
+
+ディレクトリ
+\app\Notifications\OrderComplete.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function __construct($name)
+  {
+    $this->name = $name;
+  }
+
+  /**
+   * Get the notification's delivery channels.
+   *
+   * @param  mixed  $notifiable
+   * @return array
+   */
+  public function via($notifiable)
+  {
+    return ['database'];
+  }  public function toArray($notifiable)
+  {
+    return [
+      'message' => 'New Vendor Request'
+    ];
+  
+  public function toArray($notifiable)
+  {
+    return [
+      'message' => 'New Vendor Request'
+    ];
+  }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆Notifications編集◆
+
+ディレクトリ
+\app\Notifications\VendorRegNotification.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  public function __construct($request)
+  {
+    $this->request = $request;
+  }
+
+  /**
+   * Get the notification's delivery channels.
+   *
+   * @param  mixed  $notifiable
+   * @return array
+   */
+  public function via($notifiable)
+  {
+    return ['$this->request = $request;'];
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\VendorController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Notifications\VendorRegNotification;
+use Illuminate\Support\Facades\Notification;
+
+  // Vendor:登録処理のコントローラー
+  public function VendorRegister(Request $request)
+  {
+
+    $vuser = User::where('role', 'admin')->get();
+
+    ↓↓追記↓↓
+    Notification::send($vuser, new VendorRegNotification($request));
+    return redirect()->route('vendor.login')->with($notification);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Adminの通知にデータがとんできていたらOK

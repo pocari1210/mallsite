@@ -25,6 +25,7 @@ use App\Http\Controllers\Backend\SiteSettingController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\ShopController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\User\CompareController;
 use App\Http\Controllers\User\CheckoutController;
@@ -791,6 +792,16 @@ Route::post('/vendor/register', [VendorController::class, 'VendorRegister'])
 
 // Frontend:トップページのルート
 Route::get('/', [IndexController::class, 'Index']);
+
+// Shop Page All Route 
+Route::controller(ShopController::class)->group(function () {
+
+  Route::get('/shop', 'ShopPage')
+    ->name('shop.page');
+
+  Route::post('/shop/filter', 'ShopFilter')
+    ->name('shop.filter');
+});
 
 // Route::get('/', function () {
 //   return view('frontend.index');

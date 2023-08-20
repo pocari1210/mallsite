@@ -1,0 +1,49 @@
+
+◆$loopの公式サイト◆
+https://laravel.com/docs/9.x/blade
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <ul>
+    @foreach($categories as $item)
+    @if($loop->index < 5) 
+    <li>
+      <a href="{{ url('product/category/'.$item->id.'/'.$item->category_slug) }}"> <img src="{{ asset( $item->category_image ) }}" alt="" /> {{ $item->category_name }} </a>
+    </li>
+    @endif
+    @endforeach
+
+  </ul>
+  <ul class="end">
+    @foreach($categories as $item)
+    @if($loop->index > 4)
+    <li>
+      <a href="{{ url('product/category/'.$item->id.'/'.$item->category_slug) }}"> <img src="{{ asset( $item->category_image ) }}" alt="" /> {{ $item->category_name }} </a>
+    </li>
+    @endif
+    @endforeach
+
+★コード解説★
+$loop->index(ループ変数)で現在のループ反復のインデックス (0 から開始)。
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Frontendページのheaderの項目にあるAll Categoriesボタンを押し、
+疎通ができていればOK

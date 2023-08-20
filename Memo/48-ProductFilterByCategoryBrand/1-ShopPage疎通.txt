@@ -1,0 +1,79 @@
+
+下記コマンドでコントローラーファイル新規作成
+php artisan make:controller Frontend/ShopController
+
+
+◆ルートの編集◆
+
+ディレクトリ
+\routes\web.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+// Shop Page All Route 
+Route::controller(ShopController::class)->group(function () {
+
+  Route::get('/shop', 'ShopPage')
+    ->name('shop.page');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移元)◆
+
+ディレクトリ
+\resources\views\frontend\body\header.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+  <li>
+    <a href="{{ route('home.blog') }}">Blog</a>
+  </li>
+
+  ↓↓routeの追記↓↓
+  <li>
+    <a href="{{ route('shop.page') }}">Shop</a>
+  </li>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆コントローラーの編集◆
+
+ディレクトリ
+\app\Http\Controllers\Frontend\ShopController.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+use App\Models\Category; 
+use App\Models\Brand;
+use App\Models\Product;
+use App\Models\User; 
+
+class ShopController extends Controller
+{
+  public function ShopPage()
+  {
+    $products = Product::where('status', 1)
+      ->orderBy('id', 'DESC')->get();
+    $categories = Category::orderBy('category_name', 'ASC')
+      ->get();
+    $newProduct = Product::orderBy('id', 'DESC')
+      ->limit(3)->get();
+
+    return view(
+      'frontend.product.shop_page',
+      compact('products', 'categories', 'newProduct')
+    );
+  } // End Method 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+◆ビューの編集(遷移先)◆
+
+ディレクトリ
+\resources\views\frontend\product\shop_page.blade.php
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+headerのナビゲーションからshoppage画面を疎通できたらOK
