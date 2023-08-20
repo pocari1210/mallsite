@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="ja">
 
 @php
 $seo = App\Models\Seo::find(1);
@@ -7,7 +7,7 @@ $seo = App\Models\Seo::find(1);
 
 <head>
   <meta charset="utf-8" />
-  <title>Shop Site Online Store </title>
+  <title> @yield('title')</title>
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <meta name="title" content="{{ $seo->meta_title }}" />
   <meta name="author" content="{{ $seo->meta_author }}" />
