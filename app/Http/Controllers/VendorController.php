@@ -113,6 +113,13 @@ class VendorController extends Controller
   public function VendorRegister(Request $request)
   {
 
+    /**************************************************  
+     * 
+     * Userモデルのroleカラムがadminで
+     * 登録されているユーザーを取得している
+     * 
+     **************************************************/
+
     $vuser = User::where('role', 'admin')->get();
 
     $request->validate([

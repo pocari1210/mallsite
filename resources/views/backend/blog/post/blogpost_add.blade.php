@@ -116,10 +116,22 @@
         category_name: {
           required: true,
         },
+        post_title: {
+          required: true,
+        },
+        post_image: {
+          required: true,
+        },
       },
       messages: {
         category_name: {
           required: 'Please Enter Category Name',
+        },
+        post_title: {
+          required: 'Please Select Post Title',
+        },
+        post_image: {
+          required: 'Please Select Image',
         },
       },
       errorElement: 'span',

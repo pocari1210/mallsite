@@ -48,8 +48,17 @@ MyCart Page
 
       <div class="row mt-50">
         <div class="col-lg-5">
+
+          <!-------------------------------------------
+
+          ★Session::has('key')★
+          セッションにkeyが存在している場合の表示
+
+          ----------------------------------------------->
+
           @if(Session::has('coupon'))
 
+          <!-- couponがセッションで適応されていない場合の表示 -->
           @else
           <div class="p-40" id="couponField">
             <h4 class="mb-10">Apply Coupon</h4>

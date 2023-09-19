@@ -214,6 +214,14 @@ $seo = App\Models\Seo::find(1);
 
     function addToCart() {
 
+      /****************************************************************
+       * 
+       * addToCart()の各変数が、
+       * \frontend\body\quickview.blade.phpのid属性と
+       * 紐づいている
+       * 
+       *****************************************************************/
+
       var product_name = $('#pname').text();
       var id = $('#product_id').val();
       var vendor = $('#pvendor_id').text();
@@ -338,10 +346,28 @@ $seo = App\Models\Seo::find(1);
         success: function(response) {
           // console.log(response)
 
+          /***********************************************************
+           * 
+           * \Frontend\CartController.phpのAddMiniCart()で記述を行った
+           * cartTotalとcartQtyを取得している
+           * 
+           ****************************************************************/
+
           $('span[id="cartSubTotal"]').text(response.cartTotal);
           $('#cartQty').text(response.cartQty);
 
           var miniCart = ""
+
+          /***********************************************************
+           * 
+           * $.eachを用いて対象のオブジェクト(response.carts)を
+           * 繰り返し処理を実行を行っている
+           * 
+           * response.cartsは、
+           * \Frontend\CartController.phpのAddMiniCart()で記述を行った
+           * 'carts'と紐づいている
+           * 
+           ****************************************************************/
 
           $.each(response.carts, function(key, value) {
             miniCart += ` <ul>
@@ -359,7 +385,7 @@ $seo = App\Models\Seo::find(1);
             </li> 
         </ul>
         <hr><br>  
-               `
+              `
           });
 
           $('#miniCart').html(miniCart);
@@ -841,10 +867,22 @@ $seo = App\Models\Seo::find(1);
   <!--  ////////////// Start Apply Coupon ////////////// -->
   <script type="text/javascript">
     function applyCoupon() {
+
+      /********************************************************************
+       * 
+       * ★valメソッド★
+       * 
+       * \frontend\mycart\view_mycart.blade.phpで記述を行った
+       * id属性coupon_nameのvalue(入力された情報)を取得している
+       * 
+       *********************************************************************/
+
       var coupon_name = $('#coupon_name').val();
       $.ajax({
         type: "POST",
         dataType: 'json',
+
+        // サーバに入力したcoupon_nameを送信する値
         data: {
           coupon_name: coupon_name
         },
@@ -852,6 +890,17 @@ $seo = App\Models\Seo::find(1);
 
         success: function(data) {
           couponCalculation();
+
+          /******************************************************************** 
+           * 
+           * data.validityがtrueだった場合、
+           * \frontend\mycart\view_mycart.blade.phpのid属性couponFieldが
+           * hideメソッドにより非表示になる
+           * 
+           * ※data.validityは、\Frontend\CartController.phpの'validity'と
+           *  紐づいている
+           * 
+           *********************************************************************/
 
           if (data.validity == true) {
             $('#couponField').hide();
@@ -865,6 +914,17 @@ $seo = App\Models\Seo::find(1);
             showConfirmButton: false,
             timer: 3000
           })
+
+          /************************************************
+           * 
+           * $.isEmptyObject(要素)
+           * 要素が空かチェックを行っている
+           * 
+           * data.errorが空だった場合、CouponApplyで設定した
+           * successのコメントが表示される
+           * 
+           *************************************************/
+
           if ($.isEmptyObject(data.error)) {
 
             Toast.fire({
@@ -892,6 +952,8 @@ $seo = App\Models\Seo::find(1);
         url: "/coupon-calculation",
         dataType: 'json',
         success: function(data) {
+
+          // CouponCalculationのtotalと紐づいている
           if (data.total) {
             $('#couponCalField').html(
               ` <tr>
@@ -922,7 +984,7 @@ $seo = App\Models\Seo::find(1);
                         <h4 class="text-brand text-end">$${data.subtotal}</h4>
                     </td>
                 </tr>
-                 
+                
                 <tr>
                     <td class="cart_total_label">
                         <h6 class="text-muted">Coupon </h6>

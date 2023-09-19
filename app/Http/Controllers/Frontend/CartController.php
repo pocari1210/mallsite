@@ -16,6 +16,7 @@ class CartController extends Controller
 {
   public function AddToCart(Request $request, $id)
   {
+
     // 商品が新規で追加された際、couponの適応が削除される
     if (Session::has('coupon')) {
       Session::forget('coupon');
@@ -24,6 +25,15 @@ class CartController extends Controller
     $product = Product::findOrFail($id);
 
     if ($product->discount_price == NULL) {
+
+      /*********************************************************
+       * 
+       * ★Cart::add★
+       * 
+       * カートに追加するときに用いられるメソッド。
+       * 配列を用いて、productをカートに追加している。
+       * 
+       ********************************************************/
 
       Cart::add([
         'id' => $id,
@@ -109,6 +119,20 @@ class CartController extends Controller
 
   public function AddMiniCart()
   {
+
+    /*****************************************************
+     * 
+     * ★Cart::content()★
+     * Cart::addで取得したデータ情報を受け取っている
+     * 
+     * ★Cart::count()★
+     * カート内の数量を取得している
+     * 
+     * ★Cart::total()★
+     * カートの合計金額を取得
+     * 
+     ****************************************************/
+
     $carts = Cart::content();
     $cartQty = Cart::count();
     $cartTotal = Cart::total();
@@ -122,6 +146,16 @@ class CartController extends Controller
 
   public function RemoveMiniCart($rowId)
   {
+
+    /*****************************************************************
+     * 
+     * ★Cart::remove($rowId);★
+     * 
+     * $rowId(カートに入っているオブジェクトのid)を指定し、
+     * カートからproductを削除している
+     * 
+     *******************************************************************/
+
     Cart::remove($rowId);
     return response()->json(['success' => 'Product Remove From Cart']);
   } // End Method
@@ -149,6 +183,13 @@ class CartController extends Controller
   {
     Cart::remove($rowId);
 
+    /*****************************************************************
+     * 
+     * カートからproductを削除し、couponを使用していた場合の
+     * productの合計金額の計算
+     * 
+     *******************************************************************/
+
     if (Session::has('coupon')) {
       $coupon_name = Session::get('coupon')['coupon_name'];
       $coupon = Coupon::where('coupon_name', $coupon_name)->first();
@@ -166,6 +207,21 @@ class CartController extends Controller
 
   public function CartIncrement($rowId)
   {
+
+    /*****************************************************************
+     * 
+     * ★productの個数の増加処理★
+     * 
+     * ★Cart::get($rowId)★
+     * $rowId(idと紐づいたprodct)を指定し、データを取得
+     * している
+     * 
+     * ★Cart::update★
+     * 第一引数で$rowIdを指定し、第二引数に更新処理の内容を
+     * 記述。(qty(在庫数)を+1している)
+     * 
+     *******************************************************************/
+
     $row = Cart::get($rowId);
     Cart::update($rowId, $row->qty + 1);
 
@@ -186,6 +242,21 @@ class CartController extends Controller
 
   public function CartDecrement($rowId)
   {
+
+    /*****************************************************************
+     * 
+     * ★productの個数の減少処理★
+     * 
+     * ★Cart::get($rowId)★
+     * $rowId(idと紐づいたprodct)を指定し、データを取得
+     * している
+     * 
+     * ★Cart::update★
+     * 第一引数で$rowIdを指定し、第二引数に更新処理の内容を
+     * 記述。(qty(在庫数)を-1している)
+     * 
+     *******************************************************************/
+
     $row = Cart::get($rowId);
     Cart::update($rowId, $row->qty - 1);
 
@@ -206,10 +277,35 @@ class CartController extends Controller
 
   public function CouponApply(Request $request)
   {
+
+    /*****************************************************************
+     * 
+     * Couponモデルのcoupon_nameカラムをformから入力した
+     * $request->coupon_nameを取得
+     * 
+     * coupon_validityが現在の時刻(Carbon::now())より未来のものを
+     * 条件指定している
+     * 
+     *******************************************************************/
+
     $coupon = Coupon::where('coupon_name', $request->coupon_name)
       ->where('coupon_validity', '>=', Carbon::now()->format('Y-m-d'))->first();
 
+    // $couponが存在する場合の処理
     if ($coupon) {
+
+      /*****************************************************************
+       * 
+       * ★Session::put★
+       * セッションにkey(coupon): valueを保存。
+       * 
+       * ※key名のcouponは任意で作成されたもの
+       * 
+       * ★Cart::total()★
+       * カートの合計金額（税込）を取得することができる
+       * 
+       *******************************************************************/
+
       Session::put('coupon', [
         'coupon_name' => $coupon->coupon_name,
         'coupon_discount' => $coupon->coupon_discount,
@@ -217,10 +313,13 @@ class CartController extends Controller
         'total_amount' => round(Cart::total() - Cart::total() * $coupon->coupon_discount / 100)
       ]);
 
+      // クーポンの適応が成功した時のtoastr
       return response()->json(array(
         'validity' => true,
         'success' => 'Coupon Applied Successfully'
       ));
+
+      // クーポンの適応が失敗した時のtoastr
     } else {
       return response()->json(['error' => 'Invalid Coupon']);
     }
@@ -230,6 +329,15 @@ class CartController extends Controller
   {
 
     if (Session::has('coupon')) {
+
+      /*****************************************************************
+       * 
+       * ★session()->get('Key')['Value']★
+       * 
+       * CouponApplyメソッドの
+       * Session::putでキーとバリューを取得した情報を取得している
+       * 
+       *******************************************************************/
 
       return response()->json(array(
         'subtotal' => Cart::total(),
@@ -247,6 +355,15 @@ class CartController extends Controller
 
   public function CouponRemove()
   {
+
+    /*****************************************************************
+     * 
+     * ★Session::forget('Key名')★
+     * 
+     * セッションからcoupon(key) を削除
+     * 
+     *******************************************************************/
+
     Session::forget('coupon');
     return response()->json(['success' => 'Coupon Remove Successfully']);
   } // End Method

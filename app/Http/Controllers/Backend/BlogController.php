@@ -15,7 +15,11 @@ class BlogController extends Controller
   {
 
     $blogcategoryies = BlogCategory::latest()->get();
-    return view('backend.blog.category.blogcategroy_all', compact('blogcategoryies'));
+
+    return view(
+      'backend.blog.category.blogcategroy_all',
+      compact('blogcategoryies')
+    );
   } // End Method 
 
   public function AddBlogCateogry()
@@ -25,6 +29,25 @@ class BlogController extends Controller
 
   public function StoreBlogCateogry(Request $request)
   {
+
+    /****************************************************************
+     * 
+     * ★insertメソッド★
+     * BlogCategoryモデルに、
+     * \backend\blog\category\blogcategroy_add.blade.phpの
+     * formから送信されてきた情報をレコードとして登録
+     * 
+     *★strtolowerメソッド★:
+     * 大文字を小文字に変換
+     * 
+     *★str_replaceメソッド★
+     * $request->blog_category_nameに
+     * 半角スペース(第一引数)があった場合、
+     * ハイフン(第二引数)に文字が変更される
+     * 
+     * Carbon::now()で現在の時刻を取得している
+     * 
+     ****************************************************************/
 
     BlogCategory::insert([
       'blog_category_name' => $request->blog_category_name,
@@ -53,6 +76,13 @@ class BlogController extends Controller
   public function UpdateBlogCateogry(Request $request)
   {
 
+    /****************************************************************
+     * 
+     * \backend\blog\category\blogcategroy_edit.blade.phpの
+     * inputタグのhiddenのname情報からidを取得している
+     * 
+     ****************************************************************/
+
     $blog_id = $request->id;
 
     BlogCategory::findOrFail($blog_id)->update([
@@ -70,6 +100,18 @@ class BlogController extends Controller
 
   public function DeleteBlogCateogry($id)
   {
+
+    /*************************************************************
+     * 
+     * \blog\category\blogcategroy_all.blade.phpから
+     * deleteボタンを押した$idの情報を
+     * findOrFailメソッドで取得。
+     * 
+     * BlogCategoryモデルから$idで紐づいたレコードを
+     * deleteメソッドで削除している
+     * 
+     ************************************************************/
+
     BlogCategory::findOrFail($id)->delete();
 
     $notification = array(
@@ -99,10 +141,31 @@ class BlogController extends Controller
   public function StoreBlogPost(Request $request)
   {
 
+    /****************************************************************
+     * 
+     * ★Imageの保存処理★
+     * 
+     * \backend\blog\post\blogpost_add.blade.phpの
+     * formに入力されたname属性post_imageの画像データを
+     * $imageで取得
+     * 
+     * 作成された画像名を$name_genに挿入
+     * 
+     * InterventionImage::makeでInterventionImageで画像のサイズを
+     * 設定できるようにできる。
+     * 、
+     * resizeメソッドで横幅(第一引数),縦幅(第二引数)で
+     * 画像のサイズを変更。
+     * saveメソッドで、指定したディレクトリに画像を格納する
+     * 
+     * $save_urlに画像のの格納先のpathを挿入
+     * 
+     ***************************************************************/
+
     $image = $request->file('post_image');
     $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-    InterventionImage::make($image)->resize(1103, 906)->save('upload/blog/' . $name_gen);
-    $save_url = 'upload/blog/' . $name_gen;
+    InterventionImage::make($image)->resize(1103, 906)->save('storage/upload/blog/' . $name_gen);
+    $save_url = 'storage/upload/blog/' . $name_gen;
 
     BlogPost::insert([
       'category_id' => $request->category_id,
@@ -140,8 +203,8 @@ class BlogController extends Controller
 
       $image = $request->file('post_image');
       $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-      InterventionImage::make($image)->resize(1103, 906)->save('upload/blog/' . $name_gen);
-      $save_url = 'upload/blog/' . $name_gen;
+      InterventionImage::make($image)->resize(1103, 906)->save('storage/upload/blog/' . $name_gen);
+      $save_url = 'storage/upload/blog/' . $name_gen;
 
       if (file_exists($old_img)) {
         unlink($old_img);

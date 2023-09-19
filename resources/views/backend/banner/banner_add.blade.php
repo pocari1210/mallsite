@@ -64,7 +64,7 @@
                     <h6 class="mb-0"> </h6>
                   </div>
                   <div class="col-sm-9 text-secondary">
-                    <img id="showImage" src="{{ url('upload/no_image.jpg') }}" alt="Admin" style="width:100px; height: 100px;">
+                    <img id="showImage" src="{{ url('storage/upload/no_image.jpg') }}" alt="Admin" style="width:100px; height: 100px;">
                   </div>
                 </div>
 

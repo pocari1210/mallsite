@@ -10,6 +10,16 @@ class ActiveUserController extends Controller
 {
   public function AllUser()
   {
+
+    /****************************************************************
+     * 
+     * Userモデルのroleカラムがuserで登録されている情報を
+     * $usersで取得している
+     * 
+     * latest()で新しい順で表示順設定
+     * 
+     ***************************************************************/
+
     $users = User::where('role', 'user')
       ->latest()->get();
 
@@ -21,6 +31,16 @@ class ActiveUserController extends Controller
 
   public function AllVendor()
   {
+
+    /****************************************************************
+     * 
+     * Userモデルのroleカラムがvendorで登録されている情報を
+     * $vendorsで取得している
+     * 
+     * latest()で新しい順で表示順設定
+     * 
+     ***************************************************************/
+
     $vendors = User::where('role', 'vendor')
       ->latest()->get();
 
